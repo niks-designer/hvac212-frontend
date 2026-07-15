@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #172237;
+    --color-secondary: #070f1d;
+    --color-blue: #00bfff;
+    --color-yellow: #fcb116;
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    --text-19: 19px;
+    --text-19--line-height: 28px;
+}
+
+:root {
+    color-scheme: dark;
+    --font-roboto: "Roboto", sans-serif;
+    --color-primary: #172237;
+    --color-secondary: #070f1d;
+    --color-blue: #00bfff;
+    --color-yellow: #fcb116;
+    --color-white: #ffffff;
+    --color-black: #000000;
+}
+
+html.light,
+.light {
+    color-scheme: light;
+    --color-primary: #172237;
+    --color-secondary: #ffffff;
+    --color-blue: #00bfff;
+    --color-yellow: #fcb116;
+    --color-white: #ffffff;
+    --color-black: #000000;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--color-secondary);
+    color: var(--color-white);
+    font-family: var(--font-roboto), Helvetica, Arial, sans-serif;
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+html.light body {
+    color: var(--color-primary);
+}
+
+@layer utilities {
+    .container {
+        width: 100%;
+        max-width: 1280px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-inline: 15px;
+    }
+}
+/* Theme Toggle */
+.theme-toggle {
+    position: relative;
+    width: 45px;
+    height: 23px;
+    border-radius: 999px;
+    cursor: pointer;
+    overflow: hidden;
+    background: linear-gradient(180deg, #1c2740 0%, #172237 45%, #101a2f 100%);
+    border: 1px solid rgba(150, 170, 195, 0.45);
+    box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.18),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.35),
+        0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.theme-toggle::before {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 8px;
+    width: 26px;
+    height: 2px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.25);
+    filter: blur(0.5px);
+}
+
+.toggle-thumb {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #00bfff;
+    box-shadow:
+        0 0 8px rgba(0, 191, 255, 0.35),
+        inset 0 1px 1px rgba(255, 255, 255, 0.18);
+    transition: 0.35s ease;
+}
