@@ -185,7 +185,7 @@ export default function Header({ siteData }: HeaderProps) {
                                     }
                                 }}
                             >
-                                <div className="flex items-center gap-8">
+                                <div className="flex items-center gap-8 text-lg font-bold">
                                     {primaryMenu.length > 0
                                         ? primaryMenu.map((item) => {
                                               const target =
