@@ -15,8 +15,8 @@ export function CenterImageSection({
     const normalizedImage = normalizeACFImage(image);
 
     return (
-        <section className="px-4 py-16 md:px-8 lg:px-16">
-            <div className="mx-auto flex max-w-6xl flex-col items-center text-center">
+        <section className="">
+            <div className="container text-center">
                 {(title || description) && (
                     <div className="mb-10 max-w-3xl">
                         {title && (
@@ -27,39 +27,26 @@ export function CenterImageSection({
                                 {title}
                             </h2>
                         )}
+
                         {description && (
-                            <p
-                                className="mt-4 text-lg leading-relaxed"
-                                style={{ color: "var(--color-muted)" }}
-                            >
-                                {description}
-                            </p>
+                            <div
+                                className="prose"
+                                dangerouslySetInnerHTML={{
+                                    __html: description,
+                                }}
+                            />
                         )}
                     </div>
                 )}
 
                 {normalizedImage?.url && (
-                    <div
-                        className="w-full max-w-4xl overflow-hidden rounded-2xl border"
-                        style={{
-                            borderColor: "var(--color-border)",
-                            backgroundColor: "var(--color-surface)",
-                        }}
-                    >
-                        <div className="relative aspect-[16/9] w-full">
-                            <Image
-                                src={normalizedImage.url}
-                                alt={
-                                    normalizedImage.alt ||
-                                    title ||
-                                    "Center image"
-                                }
-                                fill
-                                unoptimized
-                                className="object-cover"
-                                sizes="(max-width: 768px) 100vw, 75vw"
-                            />
-                        </div>
+                    <div className="overflow-hidden rounded-3xl">
+                        <Image
+                            src={normalizedImage.url}
+                            alt={normalizedImage.alt || ""}
+                            width={normalizedImage.width}
+                            height={normalizedImage.height}
+                        />
                     </div>
                 )}
             </div>

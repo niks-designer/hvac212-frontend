@@ -30,58 +30,22 @@ export function ServicesGrid({
 }: ServicesGridProps) {
     const headingTitle =
         sectionTitle?.title?.trim() || section_title?.trim() || "";
-    const headingDescription = sectionTitle?.short_description?.trim() || "";
-    const descriptionLines = headingDescription
-        .replace(/<br\s*\/?>/gi, "\n")
-        .split(/\r?\n/)
-        .filter((line) => line.length > 0);
+    const headingDescription = sectionTitle?.short_description || "";
 
     return (
         <section className="relative py-16">
-            <div
-                className="absolute inset-0 -z-10"
-                style={{
-                    background:
-                        "radial-gradient(circle at 50% 0%, rgba(0,191,255,0.22) 0%, rgba(0,191,255,0.14) 18%, rgba(7,15,29,0) 50%), linear-gradient(180deg, #08182d 0%, #07253d 48%, #081827 100%)",
-                }}
-            />
-            <div
-                className="absolute inset-x-0 top-0 -z-10 h-72 opacity-60"
-                style={{
-                    background:
-                        "radial-gradient(circle at center, rgba(255,255,255,0.08), rgba(255,255,255,0) 65%)",
-                }}
-            />
             <div className="container">
                 {headingTitle && (
                     <div className="mb-12 text-center">
-                        <h2
-                            className="text-4xl font-bold"
-                            style={{ color: "var(--color-heading)" }}
-                        >
-                            {headingTitle}
-                        </h2>
-                        <div
-                            className="mt-5 leading-6"
-                            dangerouslySetInnerHTML={{
-                                __html: descriptionLines.join("<br />"),
-                            }}
-                        />
-                        {/* {descriptionLines.length > 0 && (
-                            <p
-                                className="mx-auto mt-4 max-w-3xl text-lg leading-relaxed whitespace-pre-wrap"
-                                style={{ color: "var(--color-muted)" }}
-                            >
-                                {descriptionLines.map((line, index) => (
-                                    <span key={`${line}-${index}`}>
-                                        {line}
-                                        {index < descriptionLines.length - 1 ? (
-                                            <br />
-                                        ) : null}
-                                    </span>
-                                ))}
-                            </p>
-                        )} */}
+                        <h2 className="h2-title">{headingTitle}</h2>
+                        {headingDescription && (
+                            <div
+                                className="prose mt-5"
+                                dangerouslySetInnerHTML={{
+                                    __html: headingDescription,
+                                }}
+                            />
+                        )}
                     </div>
                 )}
 
@@ -95,39 +59,38 @@ export function ServicesGrid({
                             return (
                                 <div
                                     key={index}
-                                    className="overflow-hidden rounded-3xl bg-[#070F1D99] p-12 text-center transition-shadow"
+                                    className={`ser-bx-${index + 1} overflow-hidden rounded-3xl bg-[#070F1D99] p-12 text-center transition-shadow`}
                                 >
                                     {/* Card Image */}
                                     {normalizedImage?.url && (
                                         <div className="text-center">
-                                            <img
+                                            <Image
                                                 src={normalizedImage.url}
                                                 alt={
                                                     normalizedImage.alt ||
                                                     card.title
                                                 }
-                                                className="mx-auto h-24 transition-transform duration-300"
+                                                width={
+                                                    normalizedImage.width || 96
+                                                }
+                                                height={
+                                                    normalizedImage.height || 96
+                                                }
+                                                className="mx-auto h-24 w-auto transition-transform duration-300"
+                                                unoptimized
                                             />
                                         </div>
                                     )}
 
                                     {/* Card Content */}
                                     <div className="pt-7">
-                                        <h3
-                                            className="mb-5 text-3xl font-bold"
-                                            style={{
-                                                color: "var(--color-heading)",
-                                            }}
-                                        >
+                                        <h3 className="mb-5 text-3xl font-bold">
                                             {card.title}
                                         </h3>
-                                        <p
-                                            className="text-19 leading-6"
-                                            style={{
-                                                color: "var(--color-muted)",
-                                            }}
+                                        <div
+                                            className="text-19 leading-7"
                                             dangerouslySetInnerHTML={{
-                                                __html: card.description,
+                                                __html: card.description || "",
                                             }}
                                         />
 

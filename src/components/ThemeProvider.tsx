@@ -1,23 +1,56 @@
 "use client";
 
-import { ThemeProvider as NextThemeProvider } from "next-themes";
-import { type ReactNode } from "react";
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+    ReactNode,
+} from "react";
 
-interface ThemeProviderProps {
-  children: ReactNode;
+type Theme = "dark" | "light";
+
+interface ThemeContextType {
+    theme: Theme;
+    toggleTheme: () => void;
 }
 
-export function ThemeProvider({ children }: ThemeProviderProps) {
-  return (
-    <NextThemeProvider
-      attribute="class"
-      defaultTheme="dark"
-      enableSystem={false}
-      storageKey="hvac-theme"
-      themes={["dark", "light"]}
-      disableTransitionOnChange
-    >
-      {children}
-    </NextThemeProvider>
-  );
+const ThemeContext = createContext<ThemeContextType | null>(null);
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+    const [theme, setTheme] = useState<Theme>("dark");
+
+    useEffect(() => {
+        const saved = (localStorage.getItem("hvac-theme") as Theme) || "dark";
+
+        setTheme(saved);
+
+        document.documentElement.classList.toggle("light", saved === "light");
+    }, []);
+
+    const toggleTheme = () => {
+        const next = theme === "dark" ? "light" : "dark";
+
+        setTheme(next);
+
+        localStorage.setItem("hvac-theme", next);
+
+        document.documentElement.classList.toggle("light", next === "light");
+    };
+
+    return (
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+            {children}
+        </ThemeContext.Provider>
+    );
+}
+
+export function useTheme() {
+    const context = useContext(ThemeContext);
+
+    if (!context) {
+        throw new Error("useTheme must be used inside ThemeProvider");
+    }
+
+    return context;
 }

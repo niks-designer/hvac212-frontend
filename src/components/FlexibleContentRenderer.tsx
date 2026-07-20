@@ -4,6 +4,10 @@ import { HeroBanner } from "./HeroBanner";
 import { ServicesGrid } from "./ServicesGrid";
 import SectionHeading from "./SectionHeading";
 import { CenterImageSection } from "./CenterImageSection";
+import { FAQSection } from "./FAQSection";
+import { TestimonialsSection } from "./TestimonialsSection";
+import TrustedBrands from "./TrustedBrands";
+import OurApproach from "./OurApproach";
 import { ReactNode } from "react";
 import type { HeroSectionTitleDescription } from "@/lib/wordpress";
 
@@ -71,6 +75,7 @@ export function FlexibleContentRenderer({
                         }
                         title={section.title as string}
                         description={section.description as string}
+                        ctaButtons={section.section_cta_buttons as any}
                     />
                 );
 
@@ -90,6 +95,54 @@ export function FlexibleContentRenderer({
                     />
                 );
             }
+
+            case "faq":
+                return (
+                    <FAQSection
+                        key={index}
+                        faq_section_title={
+                            section.faq_section_title as
+                                HeroSectionTitleDescription | undefined
+                        }
+                        faqs={section.faqs as any}
+                    />
+                );
+
+            case "testimonials":
+                return (
+                    <TestimonialsSection
+                        key={index}
+                        testimonial_section_title={
+                            section.testimonial_section_title as
+                                HeroSectionTitleDescription | undefined
+                        }
+                        testimonials={section.testimonials as any}
+                        review_platforms={section.review_platforms as any}
+                    />
+                );
+
+            case "trusted_brands":
+                return (
+                    <TrustedBrands
+                        key={index}
+                        brand_logos={section.brand_logos as any}
+                    />
+                );
+
+            case "our_approach":
+                return (
+                    <OurApproach
+                        key={index}
+                        approach_section_title={
+                            section.approach_section_title as any
+                        }
+                        left_image={section.left_image as any}
+                        approach_items={section.approach_items as any}
+                        bottom_description={
+                            section.bottom_description as string
+                        }
+                    />
+                );
 
             default:
                 console.warn(`Unknown layout: ${layout}`);

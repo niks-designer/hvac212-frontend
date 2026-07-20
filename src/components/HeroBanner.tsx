@@ -87,21 +87,15 @@ export function HeroBanner({
             )}
 
             {/* Content */}
-            <div
-                className="relative z-10 max-w-3xl px-4 text-center"
-                style={{ color: "var(--color-white)" }}
-            >
-                {title && (
-                    <h1 className="mb-4 text-4xl font-bold drop-shadow-lg md:text-5xl lg:text-6xl">
-                        {title}
-                    </h1>
-                )}
+            <div className="relative z-10 flex max-w-3xl flex-col gap-4 px-4 text-center text-white">
+                {title && <h1 className="h1-title">{title}</h1>}
                 {description && (
-                    <p className="text-lg drop-shadow-md md:text-xl">
-                        {description}
-                    </p>
+                    <div
+                        className="prose text-2xl"
+                        dangerouslySetInnerHTML={{ __html: description }}
+                    />
                 )}
-                <div className="btn-wrap mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <div className="btn-wrap mt-2 flex flex-col items-center justify-center gap-4 sm:flex-row">
                     {/* Primary Button */}
                     {primaryButton?.url && (
                         <a
@@ -116,11 +110,7 @@ export function HeroBanner({
                                     ? "noopener noreferrer"
                                     : undefined
                             }
-                            className="inline-block rounded-[100] px-8 py-4 font-bold transition-colors"
-                            style={{
-                                backgroundColor: "var(--color-blue)",
-                                color: "var(--color-secondary)",
-                            }}
+                            className="theme-btn"
                         >
                             {primaryButton.title || "Learn More"}
                         </a>
@@ -139,12 +129,7 @@ export function HeroBanner({
                                     ? "noopener noreferrer"
                                     : undefined
                             }
-                            className="inline-block rounded-lg border-2 px-8 py-3 font-bold transition-colors"
-                            style={{
-                                backgroundColor: "transparent",
-                                color: "var(--color-white)",
-                                borderColor: "var(--color-white)",
-                            }}
+                            className="theme-btn theme-btn-outline"
                         >
                             {secondaryButton.title || "Get Started"}
                         </a>

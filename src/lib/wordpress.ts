@@ -1,5 +1,7 @@
 /**
- * WordPress REST API utility functions
+ * WordPress API utility functions.
+ * Uses the custom headless API for page content and keeps the existing
+ * REST-based helpers for posts and site data where appropriate.
  */
 
 const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
@@ -39,13 +41,15 @@ async function wpGet<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export interface WordPressMenuItem {
-  id: number;
-  title: string;
-  url: string;
-  target?: string;
-  parent?: number;
-  order?: number;
-  children?: WordPressMenuItem[];
+    id: number;
+    title: string;
+    url: string;
+    target: string;
+    slug?: string;
+    has_mega_menu?: boolean;   // <-- Add this
+    parent: number;
+    order: number;
+    children?: WordPressMenuItem[];
 }
 
 export interface LinkField {
@@ -89,12 +93,51 @@ export interface HeroSectionTitleDescription {
   short_description?: string;
 }
 
+export interface ACFImage {
+  id?: number;
+  url: string;
+  alt?: string;
+  title?: string;
+  width?: number;
+  height?: number;
+}
+
 export interface HeroBannerSection extends ACFFlexibleContent {
   hero_section_title?: HeroSectionTitleDescription | null;
-  background_image?: number | Record<string, unknown> | null;
+  background_image?: ACFImage | null;
+  add_image?: ACFImage | null;
   primary_button?: LinkField | null;
   secondary_button?: LinkField | null;
   form_shortcode?: string;
+}
+
+export interface FAQ {
+  question: string;
+  answer: string;
+}
+
+export interface FAQSection extends ACFFlexibleContent {
+  faq_section_title?: HeroSectionTitleDescription | null;
+  faqs?: FAQ[];
+}
+
+export interface Testimonial {
+  rating: string;
+  review: string;
+  author_name: string;
+  author_designation: string;
+  author_image: ACFImage;
+}
+
+export interface ReviewPlatform {
+  logo: ACFImage;
+  button?: LinkField | null;
+}
+
+export interface TestimonialsSection extends ACFFlexibleContent {
+  testimonial_section_title?: HeroSectionTitleDescription | null;
+  testimonials?: Testimonial[];
+  review_platforms?: ReviewPlatform[];
 }
 
 interface WordPressPost {
@@ -113,38 +156,26 @@ interface WordPressPost {
   slug: string;
 }
 
-interface WordPressMedia {
-  id: number;
-  guid?: {
-    rendered?: string;
-  };
-  source_url?: string;
-  alt_text?: string;
-  alt?: string;
-  media_details?: {
-    image_meta?: {
-      image_alt?: string;
-    };
-  };
-  title?: {
-    rendered?: string;
-  };
-}
-
-interface ACFFlexibleContent {
+export interface ACFFlexibleContent {
   acf_fc_layout: string;
   [key: string]: unknown;
 }
 
-interface WordPressPageWithACF extends WordPressPost {
+interface WordPressPageWithACF {
+  id?: number;
+  slug?: string;
+  title?: string | { rendered?: string; raw?: string };
+  content?: string | { rendered?: string };
+  excerpt?: string | { rendered?: string };
   acf?: {
     page_builder?: ACFFlexibleContent[];
     [key: string]: unknown;
   };
+  [key: string]: unknown;
 }
 
 /**
- * Fetch posts from WordPress
+ * Fetch posts from WordPress.
  */
 export async function getPosts(
   perPage: number = 10,
@@ -161,7 +192,7 @@ export async function getPosts(
 }
 
 /**
- * Fetch a single post by slug
+ * Fetch a single post by slug.
  */
 export async function getPostBySlug(slug: string): Promise<WordPressPost | null> {
   try {
@@ -174,7 +205,7 @@ export async function getPostBySlug(slug: string): Promise<WordPressPost | null>
 }
 
 /**
- * Fetch a single page by slug
+ * Fetch a single page by slug from the legacy REST API.
  */
 export async function getPageBySlug(slug: string): Promise<WordPressPost | null> {
   try {
@@ -187,17 +218,13 @@ export async function getPageBySlug(slug: string): Promise<WordPressPost | null>
 }
 
 /**
- * Fetch a single page by slug with ACF data
+ * Fetch a single page by slug from the custom headless API.
  */
 export async function getPageBySlugWithACF(
   slug: string
 ): Promise<WordPressPageWithACF | null> {
   try {
-    const pages = await wpGet<WordPressPageWithACF[]>(
-      `wp/v2/pages?slug=${slug}&_embed&acf=true`
-    );
-
-    return pages.length > 0 ? pages[0] : null;
+    return await wpGet<WordPressPageWithACF>(`hvac/v1/page/${slug}`);
   } catch (error) {
     console.error("Error fetching page:", error);
     return null;
@@ -205,15 +232,17 @@ export async function getPageBySlugWithACF(
 }
 
 /**
- * Fetch featured image by media ID
+ * Fetch a page and return its processed ACF flexible content.
  */
-export async function getMediaById(id: number): Promise<WordPressMedia | null> {
-  try {
-    return await wpGet<WordPressMedia>(`wp/v2/media/${id}`);
-  } catch (error) {
-    console.error("Error fetching media:", error);
-    return null;
+export async function getPageContentBySlug(slug: string): Promise<ACFFlexibleContent[]> {
+  const page = await getPageBySlugWithACF(slug);
+  const flexibleContent = (page?.acf?.page_builder as ACFFlexibleContent[] | undefined) || [];
+
+  if (flexibleContent.length === 0) {
+    return [];
   }
+
+  return processACFFlexibleContent(flexibleContent);
 }
 
 /**
@@ -230,20 +259,8 @@ export async function getSiteData(): Promise<SiteData | null> {
 }
 
 /**
- * Fetch image URL from media ID
- */
-function getMediaAltText(media: WordPressMedia): string {
-  return (
-    media.alt_text ||
-    media.alt ||
-    media.media_details?.image_meta?.image_alt ||
-    media.title?.rendered ||
-    ""
-  );
-}
-
-/**
- * Process ACF flexible content and resolve image IDs to URLs
+ * Normalize hero section title data for the new headless API response.
+ * Image fields are expected to already be formatted objects from the API.
  */
 export async function processACFFlexibleContent(
   sections: ACFFlexibleContent[]
@@ -252,122 +269,33 @@ export async function processACFFlexibleContent(
     return [];
   }
 
-  return Promise.all(
-    sections.map(async (section) => {
-      const processed = { ...section } as ACFFlexibleContent & HeroBannerSection;
+  return sections.map((section) => {
+    const processed = { ...section } as ACFFlexibleContent & HeroBannerSection;
 
-      if (processed.acf_fc_layout === "hero_banner") {
-        const heroSectionTitle = processed.hero_section_title;
+    if (processed.acf_fc_layout === "hero_banner") {
+      const heroSectionTitle = processed.hero_section_title;
 
-        if (
-          heroSectionTitle &&
-          typeof heroSectionTitle === "object" &&
-          !Array.isArray(heroSectionTitle)
-        ) {
-          const title =
-            typeof (heroSectionTitle as HeroSectionTitleDescription).title === "string"
-              ? (heroSectionTitle as HeroSectionTitleDescription).title
-              : "";
-          const shortDescription =
-            typeof (heroSectionTitle as HeroSectionTitleDescription).short_description === "string"
-              ? (heroSectionTitle as HeroSectionTitleDescription).short_description
-              : "";
+      if (
+        heroSectionTitle &&
+        typeof heroSectionTitle === "object" &&
+        !Array.isArray(heroSectionTitle)
+      ) {
+        const title =
+          typeof (heroSectionTitle as HeroSectionTitleDescription).title === "string"
+            ? (heroSectionTitle as HeroSectionTitleDescription).title
+            : "";
+        const shortDescription =
+          typeof (heroSectionTitle as HeroSectionTitleDescription).short_description === "string"
+            ? (heroSectionTitle as HeroSectionTitleDescription).short_description
+            : "";
 
-          processed.hero_section_title = {
-            title,
-            short_description: shortDescription,
-          };
-        }
+        processed.hero_section_title = {
+          title,
+          short_description: shortDescription,
+        };
       }
+    }
 
-      // Process background_image field (Image ID)
-      if (processed.background_image && typeof processed.background_image === "number") {
-        const imageId = processed.background_image;
-        const media = await getMediaById(imageId);
-        // console.log("Full media object for background image ID", imageId, ":", media);
-
-        if (media) {
-          // Extract alt text from various WordPress fields
-          const alt =
-            (media as any).alt_text ||
-            (media as any).alt ||
-            (media as any).media_details?.image_meta?.image_alt ||
-            "";
-
-          processed.background_image = {
-            ID: imageId,
-            url: (media as any).source_url,
-            alt: alt,
-          };
-          // console.log("Processed background image:", processed.background_image);
-        }
-      }
-
-      // Process add_image field (Image ID) for center_image layout or similar
-      if (processed.add_image && typeof processed.add_image === "number") {
-        const imageId = processed.add_image;
-        const media = await getMediaById(imageId);
-
-        if (media) {
-          const alt = getMediaAltText(media);
-
-          processed.add_image = {
-            ID: imageId,
-            url: (media as any).source_url,
-            alt: alt,
-          };
-        }
-      }
-
-      // Process icon fields in features array
-      if (Array.isArray(processed.features)) {
-        processed.features = await Promise.all(
-          processed.features.map(async (feature: any) => {
-            if (feature.icon && typeof feature.icon === "number") {
-              const iconId = feature.icon;
-              const media = await getMediaById(iconId);
-
-              if (media) {
-                return {
-                  ...feature,
-                  icon: {
-                    ID: iconId,
-                    url: media.source_url,
-                    alt: getMediaAltText(media),
-                  },
-                };
-              }
-            }
-            return feature;
-          })
-        );
-      }
-
-      // Process cards in services_grid
-      if (Array.isArray(processed.cards)) {
-        processed.cards = await Promise.all(
-          processed.cards.map(async (card: any) => {
-            if (card.image && typeof card.image === "number") {
-              const imageId = card.image;
-              const media = await getMediaById(imageId);
-
-              if (media) {
-                return {
-                  ...card,
-                  image: {
-                    ID: imageId,
-                    url: media.source_url,
-                    alt: getMediaAltText(media),
-                  },
-                };
-              }
-            }
-            return card;
-          })
-        );
-      }
-
-      return processed;
-    })
-  );
+    return processed;
+  });
 }

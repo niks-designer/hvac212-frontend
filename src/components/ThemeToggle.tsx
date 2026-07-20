@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import { Sun } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
 
 export function ThemeToggle() {
-    const { theme, setTheme, resolvedTheme } = useTheme();
+    const { theme, toggleTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -14,8 +14,7 @@ export function ThemeToggle() {
         return () => window.cancelAnimationFrame(frame);
     }, []);
 
-    const activeTheme = theme === "system" ? resolvedTheme : theme;
-    const isDark = activeTheme === "dark" || activeTheme === undefined;
+    const isDark = theme === "dark";
 
     if (!mounted) {
         return <div className="theme-toggle" aria-hidden="true" />;
@@ -26,12 +25,12 @@ export function ThemeToggle() {
             type="button"
             aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
             aria-pressed={isDark}
-            onClick={() => setTheme(isDark ? "light" : "dark")}
+            onClick={toggleTheme}
             className="theme-toggle"
         >
             <div
                 className={`toggle-thumb transition-all duration-300 ease-in-out will-change-transform ${
-                    isDark ? "translate-x-0" : "translate-x-5.5"
+                    isDark ? "translate-x-0" : "translate-x-[22px]"
                 }`}
             >
                 {isDark ? (
@@ -48,7 +47,91 @@ export function ThemeToggle() {
                         />
                     </svg>
                 ) : (
-                    <Sun size={13} />
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        viewBox="0 0 17 17"
+                        fill="none"
+                    >
+                        <path
+                            d="M8.67873 12.1687C6.76031 12.1687 5.20513 10.6135 5.20513 8.69504C5.20513 6.77662 6.76031 5.22144 8.67873 5.22144C10.5972 5.22144 12.1523 6.77662 12.1523 8.69504C12.1523 10.6135 10.5972 12.1687 8.67873 12.1687Z"
+                            stroke="#172237"
+                            strokeMiterlimit="10"
+                        />
+                        <path
+                            d="M8.5 0.5V3.47403"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M8.5 13.5262V16.5"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M0.500039 8.50012H3.47388"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M13.526 8.50012H16.5"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M5.05026 14.7156L5.96362 13.196"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M11.096 4.16099L12.1282 2.58179"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M12.0837 14.7051L11.2219 13.1556"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M5.94897 4.20189L5.09484 2.51959"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M14.6338 12.1537L13.1166 11.2365"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M4.09473 6.08071L2.51828 5.04437"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M14.7283 5.27515L13.1554 6.09347"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <path
+                            d="M4.05835 11.1146L2.35303 11.9215"
+                            stroke="#172237"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
                 )}
             </div>
         </button>

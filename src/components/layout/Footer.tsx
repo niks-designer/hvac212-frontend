@@ -1,3 +1,8 @@
+"use client";
+
+import Image from "next/image";
+import { useTheme } from "@/components/ThemeProvider";
+import { normalizeACFImage } from "@/lib/acfNormalizers";
 import Link from "next/link";
 import {
     FaFacebookF,
@@ -6,7 +11,8 @@ import {
     FaXTwitter,
     FaLinkedin,
 } from "react-icons/fa6";
-import { SiteData, WordPressMenuItem, FooterSettings } from "@/lib/wordpress";
+
+import { SiteData, WordPressMenuItem } from "@/lib/wordpress";
 
 interface FooterProps {
     siteData?: SiteData | null;
@@ -34,6 +40,7 @@ function renderMenuItems(items: WordPressMenuItem[]) {
 }
 
 export default function Footer({ siteData }: FooterProps) {
+    const { theme } = useTheme();
     const settings = siteData?.settings;
     const footerMenu = siteData?.menus?.footerQuickLinks || [];
     const servicesMenu = siteData?.menus?.footerServices || [];
@@ -41,11 +48,12 @@ export default function Footer({ siteData }: FooterProps) {
     const currentYear = new Date().getFullYear();
     const footerSettings = settings ?? {};
 
-    const logoSrc =
+    const footerLogo = normalizeACFImage(
         footerSettings.footerLogo ||
-        footerSettings.siteLogo ||
-        footerSettings.darkLogo ||
-        "";
+            (theme === "dark"
+                ? footerSettings.darkLogo
+                : footerSettings.siteLogo)
+    );
     const email = footerSettings.email;
     const officeAddress = footerSettings.officeAddress;
     const manhattanLink = footerSettings.manhattanLink;
@@ -54,24 +62,20 @@ export default function Footer({ siteData }: FooterProps) {
         `All Rights Reserved. © ${currentYear} 212 HVAC®.`;
 
     return (
-        <footer
-            style={{
-                backgroundColor: "var(--color-primary)",
-                color: "var(--color-white)",
-            }}
-            className="pt-12"
-        >
+        <footer className="bg-primary pt-12 text-white">
             <div className="container">
                 <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_0.8fr_1.5fr]">
                     <div className="space-y-4">
                         <Link href="/" className="inline-block">
-                            {logoSrc ? (
-                                <img
-                                    alt="212 HVAC"
-                                    width="160"
-                                    height="50"
-                                    className="h-auto w-auto"
-                                    src={logoSrc}
+                            {footerLogo?.url ? (
+                                <Image
+                                    key={theme}
+                                    src={footerLogo.url}
+                                    alt={footerLogo.alt || "212 HVAC"}
+                                    // width={footerLogo.width || 180}
+                                    // height={footerLogo.height || 60}
+                                    width={185}
+                                    height={60}
                                 />
                             ) : (
                                 <span
@@ -363,10 +367,7 @@ export default function Footer({ siteData }: FooterProps) {
                 </div>
             </div>
 
-            <div
-                className="mt-12"
-                style={{ backgroundColor: "var(--color-secondary)" }}
-            >
+            <div className="mt-12 bg-[#070f1d]">
                 <div className="flex flex-col items-center justify-center space-y-4 py-10 text-center">
                     <svg
                         width="24"
