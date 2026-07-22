@@ -96,11 +96,7 @@ export default function ContactForm() {
                     value={form.name}
                     onChange={handleChange}
                     placeholder="Name"
-                    className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60"
-                    style={{
-                        backgroundColor: "var(--color-white)",
-                        color: "var(--color-primary)",
-                    }}
+                    className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60 bg-white text-primary"
                 />
 
                 <input
@@ -108,11 +104,7 @@ export default function ContactForm() {
                     value={form.email}
                     onChange={handleChange}
                     placeholder="Email"
-                    className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60"
-                    style={{
-                        backgroundColor: "var(--color-white)",
-                        color: "var(--color-primary)",
-                    }}
+                    className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60 bg-white text-primary"
                 />
 
                 <div className="grid grid-cols-2 gap-3">
@@ -121,22 +113,14 @@ export default function ContactForm() {
                         value={form.phone}
                         onChange={handleChange}
                         placeholder="Phone"
-                        className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60"
-                        style={{
-                            backgroundColor: "var(--color-white)",
-                            color: "var(--color-primary)",
-                        }}
+                        className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60 bg-white text-primary"
                     />
                     <input
                         name="zip"
                         value={form.zip}
                         onChange={handleChange}
                         placeholder="Zip"
-                        className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60"
-                        style={{
-                            backgroundColor: "var(--color-white)",
-                            color: "var(--color-primary)",
-                        }}
+                        className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60 bg-white text-primary"
                     />
                 </div>
                 <div className="space-y-3">
@@ -183,11 +167,7 @@ export default function ContactForm() {
                     value={form.message}
                     onChange={handleChange}
                     placeholder="Additional Information"
-                    className="h-15 w-full resize-none rounded-2xl px-4 py-3 text-sm placeholder:opacity-60"
-                    style={{
-                        backgroundColor: "var(--color-white)",
-                        color: "var(--color-primary)",
-                    }}
+                    className="h-15 w-full resize-none rounded-2xl px-4 py-3 text-sm placeholder:opacity-60 bg-white text-primary"
                 />
 
                 <label htmlFor="photo" className="cursor-pointer underline">

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Sun } from "lucide-react";
-import { useTheme } from "@/components/ThemeProvider";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 export function ThemeToggle() {
     const { theme, toggleTheme } = useTheme();

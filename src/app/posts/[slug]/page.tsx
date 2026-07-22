@@ -32,21 +32,21 @@ export default async function PostPage({ params }: PostPageProps) {
   });
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--color-background)" }}>
-      <header style={{ backgroundColor: "var(--color-surface)", boxShadow: "var(--shadow-card)" }}>
+    <div className="min-h-screen">
+      <header>
         <div className="mx-auto max-w-4xl px-4 py-12">
-          <Link href="/" className="mb-4 inline-block font-semibold" style={{ color: "var(--color-blue)" }}>
+          <Link href="/" className="mb-4 inline-block font-semibold">
             ← Back to Posts
           </Link>
-          <h1 className="text-4xl font-bold" style={{ color: "var(--color-heading)" }}>
+          <h1 className="text-4xl font-bold">
             {post.title.rendered}
           </h1>
-          <p className="mt-2" style={{ color: "var(--color-muted)" }}>{date}</p>
+          <p className="mt-2">{date}</p>
         </div>
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-12">
-        <article className="rounded-lg p-8" style={{ backgroundColor: "var(--color-surface)", boxShadow: "var(--shadow-card)" }}>
+        <article className="rounded-lg p-8">
           <div
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content.rendered }}

@@ -5,11 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { getMegaMenu, type MegaMenuData } from "@/lib/megamenu";
 import { SiteData, WordPressMenuItem } from "@/lib/wordpress";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import MegaMenu from "@/components/megamenu/MegaMenu";
-import { useTheme } from "@/components/ThemeProvider";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import MegaMenu from "@/components/layout/MegaMenu";
+import { useTheme } from "@/components/providers/ThemeProvider";
 import { normalizeACFImage } from "@/lib/acfNormalizers";
-import { MdCall } from "react-icons/md";
 
 interface HeaderProps {
     siteData?: SiteData | null;
@@ -151,7 +150,7 @@ export default function Header({ siteData }: HeaderProps) {
             <nav className="bg-secondary relative">
                 <div className="container flex items-center justify-between py-4">
                     {/* Logo */}
-                    <Link href="/">
+                    <Link href="/" className="order-2 lg:order-0">
                         {logo ? (
                             <Image
                                 key={theme}
@@ -164,17 +163,14 @@ export default function Header({ siteData }: HeaderProps) {
                                 priority
                             />
                         ) : (
-                            <span
-                                className="text-lg font-semibold"
-                                style={{ color: "var(--color-foreground)" }}
-                            >
+                            <span className="text-lg font-semibold">
                                 {brandName}
                             </span>
                         )}
                     </Link>
 
                     {/* Desktop Menu */}
-                    <div className="flex-1">
+                    <div className="hidden flex-1 lg:block">
                         <div className="justify-content: center; hidden lg:flex">
                             <div
                                 className="relative mx-auto"
@@ -244,11 +240,6 @@ export default function Header({ siteData }: HeaderProps) {
                                                           }
                                                       }}
                                                       className="inline-flex items-center gap-2 transition-colors"
-                                                      style={{
-                                                          color: "var(--color-foreground)",
-                                                          transitionProperty:
-                                                              "color",
-                                                      }}
                                                       aria-haspopup={
                                                           hasMega
                                                               ? "menu"
@@ -326,9 +317,6 @@ export default function Header({ siteData }: HeaderProps) {
                                                           : undefined
                                                   }
                                                   className="transition-colors"
-                                                  style={{
-                                                      color: "var(--color-foreground)",
-                                                  }}
                                               >
                                                   {item.title}
                                               </a>
@@ -354,68 +342,63 @@ export default function Header({ siteData }: HeaderProps) {
                     </div>
 
                     {/* Mobile Icons*/}
-                    <div className="flex items-center justify-end gap-2 lg:hidden">
-                        <a
-                            href={phoneHref ? `tel:${phoneHref}` : "#"}
-                            className="text-[var(--color-yellow)]"
+                    <a
+                        href={phoneHref ? `tel:${phoneHref}` : "#"}
+                        className={`order-1 lg:hidden ${
+                            theme === "light" ? "text-yellow" : "text-white"
+                        }`}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="33"
+                            height="42"
+                            viewBox="0 0 33 42"
+                            fill="none"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="33"
-                                height="42"
-                                viewBox="0 0 33 42"
-                                fill="none"
-                            >
-                                <path
-                                    d="M9.1807 18.5668C8.89995 17.7105 9.26107 16.7662 10.0281 16.3556C11.3566 15.6444 13.2496 14.4699 13.3411 13.5115C13.5769 11.042 12.9587 3.57099 12.1453 1.70376C11.6575 0.5838 8.86878 -0.229689 7.73038 0.058437C6.52786 0.362773 2.30349 2.5748 0.463878 8.52719C-1.37574 14.4795 2.76337 22.5126 4.05115 25.2226C5.33882 27.9326 12.0497 37.3631 16.074 39.5823C19.7682 41.6194 24.5782 43.7373 30.0815 39.7403C34.4708 36.5525 32.7944 33.1668 32.105 32.675C30.6017 31.6026 26.32 29.2997 24.2358 28.574C23.6446 28.3682 22.7586 28.2355 21.748 28.7023C21.3346 28.8933 20.7584 29.3432 20.2248 29.8052C19.3217 30.5873 18.023 30.5894 17.1183 29.8092C14.859 27.8607 10.9222 23.8788 9.1807 18.5668Z"
-                                    fill="white"
-                                />
-                            </svg>
-                        </a>
+                            <path
+                                d="M9.1807 18.5668C8.89995 17.7105 9.26107 16.7662 10.0281 16.3556C11.3566 15.6444 13.2496 14.4699 13.3411 13.5115C13.5769 11.042 12.9587 3.57099 12.1453 1.70376C11.6575 0.5838 8.86878 -0.229689 7.73038 0.058437C6.52786 0.362773 2.30349 2.5748 0.463878 8.52719C-1.37574 14.4795 2.76337 22.5126 4.05115 25.2226C5.33882 27.9326 12.0497 37.3631 16.074 39.5823C19.7682 41.6194 24.5782 43.7373 30.0815 39.7403C34.4708 36.5525 32.7944 33.1668 32.105 32.675C30.6017 31.6026 26.32 29.2997 24.2358 28.574C23.6446 28.3682 22.7586 28.2355 21.748 28.7023C21.3346 28.8933 20.7584 29.3432 20.2248 29.8052C19.3217 30.5873 18.023 30.5894 17.1183 29.8092C14.859 27.8607 10.9222 23.8788 9.1807 18.5668Z"
+                                fill="currentColor"
+                            />
+                        </svg>
+                    </a>
 
-                        <button
-                            type="button"
-                            aria-label="Toggle menu"
-                            onClick={() => {
-                                setMobileMenuOpen(!mobileMenuOpen);
-                                setActiveMegaSlug(null);
-                                setMobileAccordion(null);
-                            }}
-                            className="flex h-11 w-11 cursor-pointer items-center justify-center"
-                        >
-                            <div className="relative h-5 w-8">
-                                <span
-                                    className={`absolute left-0 h-[2px] w-[30px] rounded-full bg-white transition-all duration-300 ease-in-out ${
-                                        mobileMenuOpen
-                                            ? "top-2 rotate-45"
-                                            : "top-0"
-                                    }`}
-                                />
+                    <button
+                        type="button"
+                        aria-label="Toggle menu"
+                        onClick={() => {
+                            setMobileMenuOpen(!mobileMenuOpen);
+                            setActiveMegaSlug(null);
+                            setMobileAccordion(null);
+                        }}
+                        className="order-3 flex h-11 w-11 cursor-pointer items-center justify-center lg:hidden"
+                    >
+                        <div className="relative h-5 w-8">
+                            <span
+                                className={`hamburger-line absolute left-0 h-[2px] w-[30px] rounded-full transition-all duration-300 ease-in-out ${
+                                    mobileMenuOpen ? "top-2 rotate-45" : "top-0"
+                                }`}
+                            />
 
-                                <span
-                                    className={`absolute top-2 left-0 h-[2px] w-[30px] rounded-full bg-white transition-all duration-300 ease-in-out ${
-                                        mobileMenuOpen
-                                            ? "opacity-0"
-                                            : "opacity-100"
-                                    }`}
-                                />
+                            <span
+                                className={`hamburger-line absolute top-2 left-0 h-[2px] w-[30px] rounded-full transition-all duration-300 ease-in-out ${
+                                    mobileMenuOpen ? "opacity-0" : "opacity-100"
+                                }`}
+                            />
 
-                                <span
-                                    className={`absolute left-0 h-[2px] w-[30px] rounded-full bg-white transition-all duration-300 ease-in-out ${
-                                        mobileMenuOpen
-                                            ? "top-2 -rotate-45"
-                                            : "top-4"
-                                    }`}
-                                />
-                            </div>
-                        </button>
-                    </div>
+                            <span
+                                className={`hamburger-line absolute left-0 h-[2px] w-[30px] rounded-full transition-all duration-300 ease-in-out ${
+                                    mobileMenuOpen
+                                        ? "top-2 -rotate-45"
+                                        : "top-4"
+                                }`}
+                            />
+                        </div>
+                    </button>
 
                     {/* Phone  */}
                     <a
                         href={phoneHref ? `tel:${phoneHref}` : "#"}
-                        className="hidden text-2xl font-bold transition-colors lg:block"
-                        style={{ color: "var(--color-yellow)" }}
+                        className="text-yellow hidden text-2xl font-bold transition-colors lg:block"
                     >
                         {phoneNumber}
                     </a>
@@ -440,7 +423,11 @@ export default function Header({ siteData }: HeaderProps) {
                             return (
                                 <div
                                     key={item.id}
-                                    className="border-b border-white/10"
+                                    className={`border-b ${
+                                        theme === "light"
+                                            ? "border-[#ececec]"
+                                            : "border-white/10"
+                                    }`}
                                 >
                                     <button
                                         className="flex w-full items-center justify-between px-5 py-4 text-left"
@@ -482,7 +469,7 @@ export default function Header({ siteData }: HeaderProps) {
                                     <div
                                         className={`overflow-hidden transition-all duration-500 ease-in-out ${
                                             open
-                                                ? "max-h-[1200px] opacity-100"
+                                                ? "max-h-[2000px] opacity-100"
                                                 : "max-h-0 opacity-0"
                                         }`}
                                     >

@@ -11,9 +11,14 @@ interface FAQ {
 interface FAQSectionProps {
     faq_section_title?: HeroSectionTitleDescription | null;
     faqs?: FAQ[];
+    className?: string;
 }
 
-export function FAQSection({ faq_section_title, faqs }: FAQSectionProps) {
+export function FAQSection({
+    faq_section_title,
+    faqs,
+    className,
+}: FAQSectionProps) {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
     const title = faq_section_title?.title?.trim() || "FAQ";
@@ -28,11 +33,11 @@ export function FAQSection({ faq_section_title, faqs }: FAQSectionProps) {
     }
 
     return (
-        <section className="px-4 py-16 md:px-8 lg:px-16">
-            <div className="mx-auto max-w-6xl">
+        <section className={`${className || "pt-0 pb-30"}`}>
+            <div className="container">
                 {/* Section Header */}
-                <div className="mb-12 text-center">
-                    {title && <h2 className="text-4xl font-bold">{title}</h2>}
+                <div className="mb-6 text-center">
+                    {title && <h2 className="h2-title">{title}</h2>}
                     {description && (
                         <div
                             className="prose mx-auto mt-6 max-w-3xl"
@@ -116,7 +121,6 @@ function AccordionItem({
                 className="w-full"
                 style={{
                     ...contentStyle,
-                    color: "var(--color-white)",
                     padding: expanded ? "0 0 25px" : "0rem",
                 }}
                 dangerouslySetInnerHTML={{ __html: faq.answer }}

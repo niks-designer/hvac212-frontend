@@ -27,12 +27,14 @@ interface TestimonialsSectionProps {
     testimonial_section_title?: HeroSectionTitleDescription | null;
     testimonials?: Testimonial[];
     review_platforms?: ReviewPlatform[];
+    className?: string;
 }
 
 export function TestimonialsSection({
     testimonial_section_title,
     testimonials,
     review_platforms,
+    className,
 }: TestimonialsSectionProps) {
     const [emblaRef, emblaApi] = useEmblaCarousel({
         loop: true,
@@ -76,7 +78,7 @@ export function TestimonialsSection({
     const authorImage = normalizeACFImage(currentTestimonial.author_image);
 
     return (
-        <section className="py-16">
+        <section className={`${className || "py-16"}`}>
             <div className="container">
                 <div className="bg-testimonial rounded-3xl px-6 py-16">
                     <div className="mx-auto max-w-6xl">
@@ -161,13 +163,7 @@ export function TestimonialsSection({
                                                 {/* Author Section */}
                                                 <div className="flex flex-col items-center gap-4 md:flex-row md:justify-center">
                                                     {/* Author Avatar */}
-                                                    <div
-                                                        className="flex h-13 w-13 items-center justify-center rounded-full"
-                                                        style={{
-                                                            backgroundColor:
-                                                                "var(--color-blue)",
-                                                        }}
-                                                    >
+                                                    <div className="bg-blue flex h-13 w-13 items-center justify-center rounded-full">
                                                         {authorImage?.url ? (
                                                             <Image
                                                                 src={
@@ -215,7 +211,6 @@ export function TestimonialsSection({
                                 <button
                                     onClick={handlePrevious}
                                     className="absolute top-1/2 left-6 z-20 hidden -translate-y-1/2 cursor-pointer items-center justify-center md:flex"
-                                    style={{ color: "var(--color-white)" }}
                                     aria-label="Previous testimonial"
                                 >
                                     <svg
@@ -227,7 +222,7 @@ export function TestimonialsSection({
                                     >
                                         <path
                                             d="M27 50.73L0.999998 25.0691L27 0.729981"
-                                            stroke="white"
+                                            stroke="currentColor"
                                             strokeWidth="2"
                                             strokeLinejoin="round"
                                         />
@@ -237,7 +232,6 @@ export function TestimonialsSection({
                                 <button
                                     onClick={handleNext}
                                     className="absolute top-1/2 right-6 z-20 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center md:flex"
-                                    style={{ color: "var(--color-white)" }}
                                     aria-label="Next testimonial"
                                 >
                                     <svg
@@ -249,7 +243,7 @@ export function TestimonialsSection({
                                     >
                                         <path
                                             d="M0.702393 0.71167L26.7024 26.3725L0.702393 50.7117"
-                                            stroke="white"
+                                            stroke="currentColor"
                                             strokeWidth="2"
                                             strokeLinejoin="round"
                                         />
@@ -265,17 +259,9 @@ export function TestimonialsSection({
                                             onClick={() =>
                                                 emblaApi?.scrollTo(index)
                                             }
-                                            className="h-[14px] w-[14px] cursor-pointer rounded-full border-2 border-solid border-white transition-all"
-                                            style={{
-                                                backgroundColor:
-                                                    index === currentIndex
-                                                        ? "var(--color-white)"
-                                                        : "var(--color-primary)",
-                                                width:
-                                                    index === currentIndex
-                                                        ? ""
-                                                        : "",
-                                            }}
+                                            className={`testimonial-dot ${
+                                                index === currentIndex ? "testimonial-dot-active" : ""
+                                            }`}
                                             aria-label={`Go to testimonial ${index + 1}`}
                                         />
                                     ))}
@@ -309,7 +295,7 @@ export function TestimonialsSection({
                                                             }
                                                             width={100}
                                                             height={50}
-                                                            className="h-auto w-full object-contain"
+                                                            className="brand-logo h-auto w-full object-contain"
                                                             unoptimized
                                                         />
                                                     </div>

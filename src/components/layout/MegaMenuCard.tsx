@@ -13,7 +13,10 @@ export default function MegaMenuCard({ item, cardRadius }: MegaMenuCardProps) {
     const radius = Number(cardRadius) || 18;
 
     return (
-        <Link href={item.link?.url || "#"} className="group block">
+        <Link
+            href={item.link?.url || "#"}
+            className="group mx-auto block w-fit"
+        >
             <div
                 className="flex h-full flex-col rounded-2xl transition-all duration-300 hover:-translate-y-1"
                 style={{
@@ -47,7 +50,7 @@ export default function MegaMenuCard({ item, cardRadius }: MegaMenuCardProps) {
 
                 {item.description && (
                     <div
-                        className="mt-4 text-lg leading-8 text-white"
+                        className="mt-4 text-[17px] leading-5"
                         dangerouslySetInnerHTML={{
                             __html: item.description,
                         }}

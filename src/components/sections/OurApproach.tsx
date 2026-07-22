@@ -18,6 +18,7 @@ interface OurApproachProps {
     left_image?: ACFImage | null;
     approach_items?: ApproachItem[] | null;
     bottom_description?: string | null;
+    className?: string;
 }
 
 export default function OurApproach({
@@ -25,6 +26,7 @@ export default function OurApproach({
     left_image,
     approach_items,
     bottom_description,
+    className,
 }: OurApproachProps) {
     const title = approach_section_title?.title?.trim() || "";
     const shortDescription = approach_section_title?.short_description || "";
@@ -35,7 +37,7 @@ export default function OurApproach({
         .filter(Boolean) as string[];
 
     return (
-        <section className="">
+        <section className={`${className || ""}`}>
             <div className="container">
                 <div className="flex flex-col items-center gap-8 px-16 md:flex-row lg:gap-[65px]">
                     {/* Left image */}

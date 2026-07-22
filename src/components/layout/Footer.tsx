@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useTheme } from "@/components/ThemeProvider";
+import { useTheme } from "@/components/providers/ThemeProvider";
 import { normalizeACFImage } from "@/lib/acfNormalizers";
 import Link from "next/link";
 import {
@@ -30,7 +30,6 @@ function renderMenuItems(items: WordPressMenuItem[]) {
                     target={target}
                     rel={rel}
                     className="transition-colors"
-                    style={{ color: "var(--color-subtle)" }}
                 >
                     {item.title}
                 </a>
@@ -79,8 +78,7 @@ export default function Footer({ siteData }: FooterProps) {
                                 />
                             ) : (
                                 <span
-                                    className="text-2xl font-bold"
-                                    style={{ color: "var(--color-white)" }}
+                                    className="text-2xl font-bold text-white"
                                 >
                                     212 HVAC
                                 </span>
@@ -90,8 +88,7 @@ export default function Footer({ siteData }: FooterProps) {
 
                     <div className="space-y-3">
                         <h3
-                            className="text-xl font-semibold"
-                            style={{ color: "var(--color-blue)" }}
+                            className="text-xl font-semibold text-blue"
                         >
                             Quick Links
                         </h3>
@@ -160,9 +157,6 @@ export default function Footer({ siteData }: FooterProps) {
                                           <a
                                               href={item.url}
                                               className="transition-colors"
-                                              style={{
-                                                  color: "var(--color-subtle)",
-                                              }}
                                           >
                                               {item.title}
                                           </a>
@@ -173,8 +167,7 @@ export default function Footer({ siteData }: FooterProps) {
 
                     <div className="space-y-3">
                         <h3
-                            className="text-xl font-semibold"
-                            style={{ color: "var(--color-blue)" }}
+                            className="text-xl font-semibold text-blue"
                         >
                             Our Services
                         </h3>
@@ -219,9 +212,6 @@ export default function Footer({ siteData }: FooterProps) {
                                           <a
                                               href={item.url}
                                               className="transition-colors"
-                                              style={{
-                                                  color: "var(--color-subtle)",
-                                              }}
                                           >
                                               {item.title}
                                           </a>
@@ -232,8 +222,7 @@ export default function Footer({ siteData }: FooterProps) {
 
                     <div className="space-y-3">
                         <h3
-                            className="text-xl font-semibold"
-                            style={{ color: "var(--color-blue)" }}
+                            className="text-xl font-semibold text-blue"
                         >
                             Media
                         </h3>
@@ -242,7 +231,6 @@ export default function Footer({ siteData }: FooterProps) {
                                 <Link
                                     href="/blog"
                                     className="transition-colors"
-                                    style={{ color: "var(--color-subtle)" }}
                                 >
                                     Blog
                                 </Link>
@@ -253,8 +241,7 @@ export default function Footer({ siteData }: FooterProps) {
                     <div className="space-y-4">
                         <div className="flex items-center gap-5">
                             <h3
-                                className="text-xl font-semibold"
-                                style={{ color: "var(--color-blue)" }}
+                                className="text-xl font-semibold text-blue"
                             >
                                 Follow Us
                             </h3>
@@ -265,7 +252,7 @@ export default function Footer({ siteData }: FooterProps) {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="transition-colors"
-                                        style={{ color: "var(--color-subtle)" }}
+
                                         aria-label="Facebook"
                                     >
                                         <FaFacebookF className="h-7 w-7" />
@@ -277,7 +264,7 @@ export default function Footer({ siteData }: FooterProps) {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="transition-colors"
-                                        style={{ color: "var(--color-subtle)" }}
+
                                         aria-label="Instagram"
                                     >
                                         <FaInstagram className="h-7 w-7" />
@@ -289,7 +276,7 @@ export default function Footer({ siteData }: FooterProps) {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="transition-colors"
-                                        style={{ color: "var(--color-subtle)" }}
+
                                         aria-label="Twitter"
                                     >
                                         <FaXTwitter className="h-7 w-7" />
@@ -301,7 +288,7 @@ export default function Footer({ siteData }: FooterProps) {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="transition-colors"
-                                        style={{ color: "var(--color-subtle)" }}
+
                                         aria-label="Youtube"
                                     >
                                         <FaYoutube className="h-7 w-7" />
@@ -313,7 +300,7 @@ export default function Footer({ siteData }: FooterProps) {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="transition-colors"
-                                        style={{ color: "var(--color-subtle)" }}
+
                                         aria-label="LinkedIn"
                                     >
                                         <FaLinkedin className="h-7 w-7" />
@@ -356,8 +343,7 @@ export default function Footer({ siteData }: FooterProps) {
                                 </svg>
                                 <a
                                     href={`mailto:${email}`}
-                                    className="text-md font-bold underline underline-offset-4 transition-colors"
-                                    style={{ color: "var(--color-blue)" }}
+                                    className="text-md font-bold underline underline-offset-4 transition-colors text-blue"
                                 >
                                     {email}
                                 </a>
@@ -385,8 +371,7 @@ export default function Footer({ siteData }: FooterProps) {
                         {officeAddress ? (
                             <p className="text-lg font-normal">
                                 <span
-                                    className="font-semibold"
-                                    style={{ color: "var(--color-blue)" }}
+                                    className="font-semibold text-blue"
                                 >
                                     Office &amp; Warehouse:
                                 </span>{" "}
@@ -403,8 +388,7 @@ export default function Footer({ siteData }: FooterProps) {
                                             ? "noopener noreferrer"
                                             : undefined
                                     }
-                                    className="text-lg font-bold underline transition-colors"
-                                    style={{ color: "var(--color-blue)" }}
+                                    className="text-lg font-bold underline transition-colors text-blue"
                                 >
                                     {manhattanLink.title}
                                 </a>
@@ -414,7 +398,6 @@ export default function Footer({ siteData }: FooterProps) {
                 </div>
                 <div
                     className="py-4 text-center"
-                    style={{ borderColor: "var(--color-border)" }}
                 >
                     {copyright}
                 </div>

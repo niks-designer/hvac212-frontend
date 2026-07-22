@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { normalizeACFImage } from "@/lib/acfNormalizers";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 interface ServiceCard {
     image?: any;
@@ -21,19 +22,22 @@ interface ServicesGridProps {
     section_title?: string;
     sectionTitle?: ServiceGridTitle | null;
     cards: ServiceCard[];
+    className?: string;
 }
 
 export function ServicesGrid({
     section_title,
     sectionTitle,
     cards,
+    className,
 }: ServicesGridProps) {
+    const { theme } = useTheme();
     const headingTitle =
         sectionTitle?.title?.trim() || section_title?.trim() || "";
     const headingDescription = sectionTitle?.short_description || "";
 
     return (
-        <section className="relative py-16">
+        <section className={`relative ${className || "py-16"}`}>
             <div className="container">
                 {headingTitle && (
                     <div className="mb-12 text-center">
@@ -59,11 +63,15 @@ export function ServicesGrid({
                             return (
                                 <div
                                     key={index}
-                                    className={`ser-bx-${index + 1} overflow-hidden rounded-3xl bg-[#070F1D99] p-12 text-center transition-shadow`}
+                                    className={`ser-bx-${index + 1} overflow-hidden rounded-3xl p-12 text-center transition-shadow ${
+                                        theme === "light"
+                                            ? "bg-testimonial"
+                                            : "bg-[#070F1D99]"
+                                    }`}
                                 >
                                     {/* Card Image */}
                                     {normalizedImage?.url && (
-                                        <div className="text-center">
+                                        <div className="ser-img text-center">
                                             <Image
                                                 src={normalizedImage.url}
                                                 alt={
@@ -84,7 +92,7 @@ export function ServicesGrid({
 
                                     {/* Card Content */}
                                     <div className="pt-7">
-                                        <h3 className="mb-5 text-3xl font-bold">
+                                        <h3 className="mb-3 text-3xl font-bold">
                                             {card.title}
                                         </h3>
                                         <div
@@ -110,10 +118,7 @@ export function ServicesGrid({
                                                         ? "noopener noreferrer"
                                                         : undefined
                                                 }
-                                                className="hidden font-semibold transition-colors"
-                                                style={{
-                                                    color: "var(--color-blue)",
-                                                }}
+                                                className="text-blue hidden font-semibold transition-colors"
                                             >
                                                 {card.link.title ||
                                                     "Learn More"}{" "}

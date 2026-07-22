@@ -1,4 +1,4 @@
-interface SectionTitleDescription {
+interface HeroSectionTitleDescription {
     title?: string;
     short_description?: string;
 }
@@ -9,48 +9,53 @@ interface CTAButton {
     target?: string;
 }
 
-interface SectionHeadingCTAButtons {
+interface HeroCTAButtons {
     primary_button?: CTAButton | null;
     secondary_button?: CTAButton | null;
 }
 
-interface SectionHeadingProps {
-    sectionTitle?: SectionTitleDescription | null;
-    title?: string;
-    description?: string;
-    ctaButtons?: SectionHeadingCTAButtons | null;
+interface HeadingWithBottomActionProps {
+    title?: HeroSectionTitleDescription | null;
+    bottomAction?: string | null;
+    ctaButtons?: HeroCTAButtons | null;
+    className?: string;
 }
 
-export default function SectionHeading({
-    sectionTitle,
+export default function HeadingWithBottomAction({
     title,
-    description,
+    bottomAction,
     ctaButtons,
-}: SectionHeadingProps) {
-    const headingTitle = sectionTitle?.title?.trim() || title?.trim() || "";
-    const headingDescription =
-        sectionTitle?.short_description || description || "";
-
+    className,
+}: HeadingWithBottomActionProps) {
+    const heading = title?.title?.trim() || "";
+    const shortDescription = title?.short_description || "";
     const primaryButton = ctaButtons?.primary_button;
     const secondaryButton = ctaButtons?.secondary_button;
 
     return (
-        <section className="py-16 text-white">
-            <div className="container text-center">
-                <div className="mx-auto max-w-4xl space-y-4">
-                    {headingTitle && (
-                        <h2 className="h2-title">{headingTitle}</h2>
-                    )}
-                    {headingDescription && (
+        <section className={`relative overflow-hidden ${className || "py-16"}`}>
+            <div className="container">
+                <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-8 text-center">
+                    {heading && <h2 className="h2-title">{heading}</h2>}
+
+                    {shortDescription && (
                         <div
-                            className="prose text-19 leading-7"
+                            className="prose"
                             dangerouslySetInnerHTML={{
-                                __html: headingDescription,
+                                __html: shortDescription,
                             }}
                         />
                     )}
+
+                    {bottomAction && (
+                        <div
+                            className="action-link text-4xl font-bold"
+                            dangerouslySetInnerHTML={{ __html: bottomAction }}
+                        />
+                    )}
+
                     {(primaryButton?.url || secondaryButton?.url) && (
-                        <div className="btn-wrap mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                             {primaryButton?.url && (
                                 <a
                                     href={primaryButton.url}
@@ -64,12 +69,11 @@ export default function SectionHeading({
                                             ? "noopener noreferrer"
                                             : undefined
                                     }
-                                    className="theme-btn"
+                                    className="theme-btn bgc-yellow"
                                 >
                                     {primaryButton.title || "Learn More"}
                                 </a>
                             )}
-
                             {secondaryButton?.url && (
                                 <a
                                     href={secondaryButton.url}

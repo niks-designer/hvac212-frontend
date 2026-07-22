@@ -5,25 +5,24 @@ interface CenterImageSectionProps {
     title?: string;
     description?: string;
     image?: any;
+    className?: string;
 }
 
 export function CenterImageSection({
     title,
     description,
     image,
+    className,
 }: CenterImageSectionProps) {
     const normalizedImage = normalizeACFImage(image);
 
     return (
-        <section className="">
+        <section className={`${className || ""}`}>
             <div className="container text-center">
                 {(title || description) && (
                     <div className="mb-10 max-w-3xl">
                         {title && (
-                            <h2
-                                className="text-3xl font-bold md:text-4xl"
-                                style={{ color: "var(--color-heading)" }}
-                            >
+                            <h2 className="h2-title">
                                 {title}
                             </h2>
                         )}

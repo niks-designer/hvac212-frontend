@@ -27,14 +27,14 @@ export default function MegaMenu({
             className={`${
                 isMobile
                     ? "relative w-full"
-                    : "absolute top-[57px] left-1/2 w-[1100px] max-w-[calc(100vw-120px)] -translate-x-1/2"
+                    : "absolute top-[59px] left-1/2 w-[1100px] max-w-[calc(100vw-120px)] -translate-x-1/2"
             } z-50 min-h-[500px] transform-gpu transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 isOpen
                     ? "pointer-events-auto visible translate-y-0 opacity-100"
                     : "pointer-events-none invisible -translate-y-4 opacity-0"
             } `}
         >
-            <div className="bg-primary overflow-hidden rounded-b-2xl shadow-2xl">
+            <div className="bg-megamenu overflow-hidden rounded-b-2xl shadow-2xl">
                 <div className="w-full">
                     {/* Loading */}
                     {/* {isLoading && (
@@ -103,11 +103,30 @@ export default function MegaMenu({
                                 <div className="space-y-5 p-5">
                                     {onClose && (
                                         <div className="flex justify-end">
-                                            <button
-                                                onClick={onClose}
-                                                className="text-white"
-                                            >
-                                                ✕
+                                            <button onClick={onClose}>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="25"
+                                                    height="25"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.5"
+                                                    strokeLinecap="square"
+                                                >
+                                                    <line
+                                                        x1="18"
+                                                        y1="6"
+                                                        x2="6"
+                                                        y2="18"
+                                                    ></line>
+                                                    <line
+                                                        x1="6"
+                                                        y1="6"
+                                                        x2="18"
+                                                        y2="18"
+                                                    ></line>
+                                                </svg>
                                             </button>
                                         </div>
                                     )}
@@ -128,12 +147,7 @@ export default function MegaMenu({
 
                                     {megaMenu.bottom_links &&
                                         megaMenu.bottom_links.length > 0 && (
-                                            <div
-                                                className="rounded-xl p-4 text-center"
-                                                style={{
-                                                    background: "#12C8FF",
-                                                }}
-                                            >
+                                            <div className="bg-blue rounded-xl p-4 text-center">
                                                 <div className="mb-2 font-semibold text-black">
                                                     {megaMenu.bottom_cta_title}
                                                 </div>
