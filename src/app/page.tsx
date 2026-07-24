@@ -3,6 +3,11 @@ export const dynamic = "force-dynamic";
 import { getPageContentBySlug, getPosts } from "@/lib/wordpress";
 import { PostCard } from "@/components/common/PostCard";
 import { FlexibleContentRenderer } from "@/components/FlexibleContentRenderer";
+import { generatePageMetadata } from "@/lib/seo";
+
+export async function generateMetadata() {
+    return generatePageMetadata("home");
+}
 
 export default async function Home() {
     const posts = await getPosts(10);
@@ -69,8 +74,10 @@ export default async function Home() {
                 <FlexibleContentRenderer
                     sections={flexibleContent}
                     sectionClassNames={JSON.stringify({
-                        testimonials: "pt-16 pb-0",
-                    })}
+                            services_grid: "py-20",
+                            center_image: "py-8"
+                        })
+                    }
                 />
             )}
 
@@ -78,7 +85,9 @@ export default async function Home() {
             {posts.length > 0 && (
                 <section className="hidden px-4 py-12">
                     <div className="mx-auto max-w-6xl">
-                        <h2 className="mb-12 text-center text-3xl font-bold">
+                        <h2
+                            className="mb-12 text-center text-3xl font-bold"
+                        >
                             Latest Articles
                         </h2>
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

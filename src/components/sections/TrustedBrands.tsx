@@ -1,9 +1,26 @@
 "use client";
 
 import Image from "next/image";
+import { normalizeACFImage } from "@/lib/acfNormalizers";
+import { useTheme } from "@/components/providers/ThemeProvider";
+
+interface ACFImageLike {
+    id?: number;
+    url: string;
+    alt?: string;
+    title?: string;
+    width?: number;
+    height?: number;
+    mime_type?: string;
+}
+
+interface BrandLogoFields {
+    select_dark_logo?: ACFImageLike | null;
+    select_light_logo?: ACFImageLike | null;
+}
 
 interface BrandLogoItem {
-    add_logo?: unknown;
+    add_logo?: BrandLogoFields | null;
     [key: string]: unknown;
 }
 
@@ -13,11 +30,22 @@ interface TrustedBrandsProps {
 }
 
 interface NormalizedBrandLogo {
-    url: string;
-    alt?: string;
-    title?: string;
-    width: number;
-    height: number;
+    darkLogo: {
+        url: string;
+        alt: string;
+        title: string;
+        width: number;
+        height: number;
+        unoptimized: boolean;
+    };
+    lightLogo: {
+        url: string;
+        alt: string;
+        title: string;
+        width: number;
+        height: number;
+        unoptimized: boolean;
+    };
 }
 
 function toPositiveNumber(value: unknown): number | null {
@@ -43,6 +71,18 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     return value as Record<string, unknown>;
 }
 
+function isSvgImage(image: ACFImageLike | null): boolean {
+    if (!image?.url) {
+        return false;
+    }
+
+    if (typeof image.mime_type === "string") {
+        return image.mime_type === "image/svg+xml";
+    }
+
+    return image.url.toLowerCase().endsWith(".svg");
+}
+
 function normalizeBrandLogo(item: BrandLogoItem): NormalizedBrandLogo | null {
     const parent = asRecord(item);
     if (!parent) return null;
@@ -50,29 +90,60 @@ function normalizeBrandLogo(item: BrandLogoItem): NormalizedBrandLogo | null {
     const nestedLogo = asRecord(parent.add_logo);
     const logo = nestedLogo ?? parent;
 
-    const url = typeof logo.url === "string" ? logo.url : "";
-    if (!url) return null;
+    const darkRaw = asRecord(logo.select_dark_logo);
+    const lightRaw = asRecord(logo.select_light_logo);
+    const darkLogo = normalizeACFImage(darkRaw);
+    const lightLogo = normalizeACFImage(lightRaw);
 
-    const mediaDetails = asRecord(logo.media_details);
+    if (!darkLogo?.url || !lightLogo?.url) {
+        return null;
+    }
 
-    const width =
-        toPositiveNumber(logo.width) ??
-        toPositiveNumber(mediaDetails?.width) ??
+    const darkMediaDetails = asRecord(darkRaw?.media_details);
+    const lightMediaDetails = asRecord(lightRaw?.media_details);
+
+    const darkWidth =
+        toPositiveNumber(darkLogo.width) ??
+        toPositiveNumber(darkMediaDetails?.width) ??
         160;
-    const height =
-        toPositiveNumber(logo.height) ??
-        toPositiveNumber(mediaDetails?.height) ??
+    const darkHeight =
+        toPositiveNumber(darkLogo.height) ??
+        toPositiveNumber(darkMediaDetails?.height) ??
+        48;
+    const lightWidth =
+        toPositiveNumber(lightLogo.width) ??
+        toPositiveNumber(lightMediaDetails?.width) ??
+        160;
+    const lightHeight =
+        toPositiveNumber(lightLogo.height) ??
+        toPositiveNumber(lightMediaDetails?.height) ??
         48;
 
-    const alt = typeof logo.alt === "string" ? logo.alt : "";
-    const title = typeof logo.title === "string" ? logo.title : "";
+    const darkImageWithMime = darkRaw as ACFImageLike | null;
+    const lightImageWithMime = lightRaw as ACFImageLike | null;
 
     return {
-        url,
-        alt,
-        title,
-        width,
-        height,
+        darkLogo: {
+            url: darkLogo.url,
+            alt: darkLogo.alt || darkLogo.title || "brand logo",
+            title: darkLogo.title || "",
+            width: darkWidth,
+            height: darkHeight,
+            unoptimized: isSvgImage(darkImageWithMime),
+        },
+        lightLogo: {
+            url: lightLogo.url,
+            alt:
+                lightLogo.alt ||
+                lightLogo.title ||
+                darkLogo.alt ||
+                darkLogo.title ||
+                "brand logo",
+            title: lightLogo.title || "",
+            width: lightWidth,
+            height: lightHeight,
+            unoptimized: isSvgImage(lightImageWithMime),
+        },
     };
 }
 
@@ -80,11 +151,13 @@ export default function TrustedBrands({
     brand_logos,
     className,
 }: TrustedBrandsProps) {
+    const { theme } = useTheme();
+
     if (!brand_logos || brand_logos.length === 0) return null;
 
     const logos = brand_logos
         .map((item) => normalizeBrandLogo(item))
-        .filter((logo): logo is NormalizedBrandLogo => !!logo?.url);
+        .filter((logo): logo is NormalizedBrandLogo => !!logo?.darkLogo?.url);
 
     if (logos.length === 0) return null;
 
@@ -101,21 +174,29 @@ export default function TrustedBrands({
                             animation: `marquee 28s linear infinite`,
                         }}
                     >
-                        {loopLogos.map((logo, i) => (
-                            <div
-                                key={`${logo.url}-${i}`}
-                                className="flex shrink-0 items-center justify-center"
-                            >
-                                <Image
-                                    src={logo.url}
-                                    alt={logo.alt || "brand logo"}
-                                    width={logo.width}
-                                    height={logo.height}
-                                    className="brand-logo w-auto object-contain"
-                                    unoptimized
-                                />
-                            </div>
-                        ))}
+                        {loopLogos.map((logo, i) => {
+                            const activeLogo =
+                                theme === "light"
+                                    ? logo.lightLogo
+                                    : logo.darkLogo;
+
+                            return (
+                                <div
+                                    key={`${logo.darkLogo.url}-${logo.lightLogo.url}-${i}`}
+                                    className="flex shrink-0 items-center justify-center"
+                                >
+                                    <Image
+                                        src={activeLogo.url}
+                                        alt={activeLogo.alt}
+                                        width={activeLogo.width}
+                                        height={activeLogo.height}
+                                        className="w-auto object-contain"
+                                        title={activeLogo.title || undefined}
+                                        unoptimized={activeLogo.unoptimized}
+                                    />
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

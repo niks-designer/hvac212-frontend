@@ -118,7 +118,7 @@ function ContactPopup({
                 onClick={(e) => e.stopPropagation()}
                 style={panelStyle}
             >
-                <div className="bg-yellow text-primary rounded-tl-2xl rounded-bl-2xl px-5 py-8 shadow-xl">
+                <div className="bg-yellow text-primary rounded-tl-2xl rounded-bl-2xl px-7 py-8 shadow-xl">
                     <button
                         aria-label="Close contact form"
                         onClick={onClose}

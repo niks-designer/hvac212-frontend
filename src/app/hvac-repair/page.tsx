@@ -10,7 +10,7 @@ export default async function AboutUsPage() {
         <div className="relative min-h-screen overflow-hidden">
             <div className="bg-shapes">
                 <div
-                    className="pointer-events-none absolute top-[383px] left-1/2 -z-10 h-[1500px] w-[1582px] -translate-x-1/2"
+                    className="pointer-events-none absolute top-95.75 left-1/2 -z-10 h-375 w-[1582px] -translate-x-1/2"
                     style={{
                         background:
                             "radial-gradient(50% 50% at 50% 50%, rgba(0, 191, 255, 0.36) 0%, rgba(7, 15, 29, 0.36) 100%)",

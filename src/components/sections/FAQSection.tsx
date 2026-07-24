@@ -128,15 +128,15 @@ function AccordionItem({
 
             <button
                 onClick={onToggle}
-                className="theme-btn cursor-pointer rounded-full transition-all duration-300"
+                className="theme-btn"
                 style={{
                     marginTop: expanded ? "25px" : "0px",
                     backgroundColor: expanded
                         ? "var(--color-white)"
-                        : "var(--color-blue)",
+                        : "",
                     color: expanded
-                        ? "var(--color-blue)"
-                        : "var(--color-white)",
+                        ? ""
+                        : "",
                 }}
             >
                 {expanded ? "Close" : "Find Out"}

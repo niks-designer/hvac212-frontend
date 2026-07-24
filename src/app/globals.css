@@ -256,6 +256,7 @@ html.light .toggle-thumb,
     background-color: var(--color-blue);
     color: var(--color-secondary);
     transition: all 0.6s;
+    cursor: pointer;
 }
 .theme-btn:hover {
     background-color: var(--color-yellow);
@@ -271,6 +272,7 @@ html.light .toggle-thumb,
     color: var(--color-white);
     border: 2px solid var(--color-white);
     transition: all 0.6s;
+    cursor: pointer;
 }
 .theme-btn-outline:hover {
     background-color: var(--color-blue);
@@ -299,10 +301,6 @@ html.light .ser-img img {
 .hero-overlay {
     background-color: rgb(0 0 0 / 40%);
 }
-html.light .brand-logo {
-    filter: brightness(0) saturate(100%) invert(13%) sepia(37%) saturate(1535%)
-        hue-rotate(151deg) brightness(91%) contrast(104%);
-}
 .testimonial-dot {
     width: 14px;
     height: 14px;
@@ -324,4 +322,17 @@ html.light .testimonial-dot {
 
 html.light .testimonial-dot-active {
     background: var(--color-primary);
+}
+/* Submenu Custom Layout */
+.submenu-services {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.submenu-services,
+.submenu-why-us,
+.submenu-aircare {
+    text-align: center;
+}
+.submenu-aircare .group:nth-child(4) h3 {
+    margin-right: -5px;
 }

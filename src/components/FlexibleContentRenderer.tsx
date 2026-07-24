@@ -34,21 +34,23 @@ export function FlexibleContentRenderer({
     try {
         if (typeof sectionClassNames === "string") {
             sectionClassMap = JSON.parse(sectionClassNames || "{}");
-        } else if (typeof sectionClassNames === "object" && sectionClassNames !== null) {
+        } else if (
+            typeof sectionClassNames === "object" &&
+            sectionClassNames !== null
+        ) {
             sectionClassMap = sectionClassNames as Record<string, string>;
         }
     } catch (e) {
         // parsing failed — fall back to empty map
         // eslint-disable-next-line no-console
-        console.warn("FlexibleContentRenderer: failed to parse sectionClassNames", e);
+        console.warn(
+            "FlexibleContentRenderer: failed to parse sectionClassNames",
+            e
+        );
         sectionClassMap = {};
     }
     if (!sections || sections.length === 0) {
-        return (
-            <div className="py-12 text-center">
-                No content available
-            </div>
-        );
+        return <div className="py-12 text-center">No content available</div>;
     }
 
     const renderSection = (
@@ -67,6 +69,7 @@ export function FlexibleContentRenderer({
                                 HeroSectionTitleDescription | undefined
                         }
                         backgroundImage={section.background_image as any}
+                        backgroundVideo={section.select_bg_video_ as any}
                         ctaButtons={section.cta_buttons as any}
                         primary_button={section.primary_button as any}
                         secondary_button={section.secondary_button as any}
@@ -78,8 +81,10 @@ export function FlexibleContentRenderer({
                 return (
                     <InnerPageHeroBanner
                         key={index}
-                        title={section.ihs_title as
-                            HeroSectionTitleDescription | undefined}
+                        title={
+                            section.ihs_title as
+                                HeroSectionTitleDescription | undefined
+                        }
                         backgroundImage={section.ihs_bgimg as any}
                         ctaButtons={section.ihs_cta_buttons as any}
                         className={sectionClassMap?.[layout]}
@@ -115,8 +120,10 @@ export function FlexibleContentRenderer({
                 return (
                     <HeadingWithBottomAction
                         key={index}
-                        title={section.hwba_title as
-                            HeroSectionTitleDescription | undefined}
+                        title={
+                            section.hwba_title as
+                                HeroSectionTitleDescription | undefined
+                        }
                         bottomAction={section.hwba_bottom_action as string}
                         ctaButtons={section.hwba_cta_buttons as any}
                         className={sectionClassMap?.[layout]}
@@ -127,8 +134,10 @@ export function FlexibleContentRenderer({
                 return (
                     <SelectHVACSystem
                         key={index}
-                        sectionTitle={section.shs_title as
-                            HeroSectionTitleDescription | undefined}
+                        sectionTitle={
+                            section.shs_title as
+                                HeroSectionTitleDescription | undefined
+                        }
                         items={section.add_system as any}
                         className={sectionClassMap?.[layout]}
                     />
@@ -207,10 +216,7 @@ export function FlexibleContentRenderer({
             default:
                 console.warn(`Unknown layout: ${layout}`);
                 return (
-                    <div
-                        key={index}
-                        className="py-12 text-center"
-                    >
+                    <div key={index} className="py-12 text-center">
                         Unknown section type: {layout}
                     </div>
                 );

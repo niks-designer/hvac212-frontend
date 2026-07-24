@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import MegaMenuCard from "./MegaMenuCard";
-import type { MegaMenuData } from "@/lib/megamenu";
+import type {
+    MegaMenuData,
+    MegaMenuLink,
+    MegaMenuMaybeLink,
+} from "@/lib/megamenu";
 
 interface MegaMenuProps {
     megaMenu?: MegaMenuData | null;
@@ -11,6 +15,24 @@ interface MegaMenuProps {
     isMobile?: boolean;
     isLoading?: boolean;
     onClose?: () => void;
+}
+
+function toMenuSlug(value: string): string {
+    return value
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "")
+        .replace(/-+/g, "-");
+}
+
+function isValidLink(link: MegaMenuMaybeLink): link is MegaMenuLink {
+    return (
+        !!link &&
+        typeof link === "object" &&
+        typeof link.url === "string" &&
+        link.url.trim().length > 0
+    );
 }
 
 export default function MegaMenu({
@@ -22,19 +44,31 @@ export default function MegaMenu({
 }: MegaMenuProps) {
     if (isLoading) return null;
 
+    const submenuClass = megaMenu?.title
+        ? `submenu-${toMenuSlug(megaMenu.title)}`
+        : "submenu";
+    const menuItems = Array.isArray(megaMenu?.menu_items)
+        ? megaMenu.menu_items
+        : [];
+    const bottomLinks = Array.isArray(megaMenu?.bottom_links)
+        ? megaMenu.bottom_links
+              .map((item) => item?.link)
+              .filter((link): link is MegaMenuLink => isValidLink(link))
+        : [];
+
     return (
         <div
             className={`${
                 isMobile
                     ? "relative w-full"
-                    : "absolute top-[59px] left-1/2 w-[1100px] max-w-[calc(100vw-120px)] -translate-x-1/2"
-            } z-50 min-h-[500px] transform-gpu transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    : "absolute top-14.75 left-1/2 w-327.5 -translate-x-1/2"
+            } z-51 min-h-125 transform-gpu transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 isOpen
                     ? "pointer-events-auto visible translate-y-0 opacity-100"
                     : "pointer-events-none invisible -translate-y-4 opacity-0"
             } `}
         >
-            <div className="bg-megamenu overflow-hidden rounded-b-2xl shadow-2xl">
+            <div className="bg-megamenu min-h-125 overflow-hidden rounded-b-2xl shadow-2xl">
                 <div className="w-full">
                     {/* Loading */}
                     {/* {isLoading && (
@@ -48,13 +82,13 @@ export default function MegaMenu({
                             {/* Desktop */}
                             <div className="hidden lg:block">
                                 <div
-                                    className={`grid gap-6 px-14 py-8 ${
-                                        megaMenu.menu_items.length === 4
+                                    className={`${submenuClass} grid gap-4 px-16 pt-15 pb-8 ${
+                                        menuItems.length === 4
                                             ? "grid-cols-4"
                                             : "grid-cols-5"
                                     }`}
                                 >
-                                    {megaMenu.menu_items.map((item, index) => (
+                                    {menuItems.map((item, index) => (
                                         <MegaMenuCard
                                             key={index}
                                             item={item}
@@ -63,34 +97,30 @@ export default function MegaMenu({
                                     ))}
                                 </div>
 
-                                {megaMenu.bottom_links &&
-                                    megaMenu.bottom_links.length > 0 && (
-                                        <div className="bg-blue flex flex-wrap items-center justify-center gap-2 px-6 py-4 text-center text-xl text-[#002D3E]">
-                                            <span className="mr-2 font-medium">
-                                                {megaMenu.bottom_cta_title}
-                                            </span>
+                                {bottomLinks.length > 0 && (
+                                    <div className="bg-blue flex flex-wrap items-center justify-center gap-2 px-6 py-4 text-center text-xl text-[#002D3E]">
+                                        <span className="mr-2 font-medium">
+                                            {megaMenu.bottom_cta_title}
+                                        </span>
 
-                                            {megaMenu.bottom_links.map(
-                                                (item, index, arr) => (
-                                                    <span key={index}>
-                                                        <Link
-                                                            href={item.link.url}
-                                                            className="font-semibold text-black underline transition hover:opacity-70"
-                                                        >
-                                                            {item.link.title}
-                                                        </Link>
+                                        {bottomLinks.map((link, index, arr) => (
+                                            <span key={index}>
+                                                <Link
+                                                    href={link.url}
+                                                    className="font-semibold text-black underline transition hover:opacity-70"
+                                                >
+                                                    {link.title}
+                                                </Link>
 
-                                                        {index <
-                                                            arr.length - 1 && (
-                                                            <span className="mx-2 text-black">
-                                                                |
-                                                            </span>
-                                                        )}
+                                                {index < arr.length - 1 && (
+                                                    <span className="mx-2 text-black">
+                                                        |
                                                     </span>
-                                                )
-                                            )}
-                                        </div>
-                                    )}
+                                                )}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Mobile */}
@@ -132,52 +162,43 @@ export default function MegaMenu({
                                     )}
 
                                     <div className="grid grid-cols-2 gap-5">
-                                        {megaMenu.menu_items.map(
-                                            (item, index) => (
-                                                <MegaMenuCard
-                                                    key={index}
-                                                    item={item}
-                                                    cardRadius={
-                                                        megaMenu.card_radius
-                                                    }
-                                                />
-                                            )
-                                        )}
+                                        {menuItems.map((item, index) => (
+                                            <MegaMenuCard
+                                                key={index}
+                                                item={item}
+                                                cardRadius={
+                                                    megaMenu.card_radius
+                                                }
+                                            />
+                                        ))}
                                     </div>
 
-                                    {megaMenu.bottom_links &&
-                                        megaMenu.bottom_links.length > 0 && (
-                                            <div className="bg-blue rounded-xl p-4 text-center">
-                                                <div className="mb-2 font-semibold text-black">
-                                                    {megaMenu.bottom_cta_title}
-                                                </div>
-
-                                                <div className="flex flex-wrap justify-center gap-3">
-                                                    {megaMenu.bottom_links.map(
-                                                        (item, index) => (
-                                                            <Link
-                                                                key={index}
-                                                                href={
-                                                                    item.link
-                                                                        .url
-                                                                }
-                                                                className="font-medium text-black underline"
-                                                            >
-                                                                {
-                                                                    item.link
-                                                                        .title
-                                                                }
-                                                            </Link>
-                                                        )
-                                                    )}
-                                                </div>
+                                    {bottomLinks.length > 0 && (
+                                        <div className="bg-blue rounded-xl p-4 text-center">
+                                            <div className="mb-2 font-semibold text-black">
+                                                {megaMenu.bottom_cta_title}
                                             </div>
-                                        )}
+
+                                            <div className="flex flex-wrap justify-center gap-3">
+                                                {bottomLinks.map(
+                                                    (link, index) => (
+                                                        <Link
+                                                            key={index}
+                                                            href={link.url}
+                                                            className="font-medium text-black underline"
+                                                        >
+                                                            {link.title}
+                                                        </Link>
+                                                    )
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </>
                     ) : (
-                        <div className="h-[420px]" />
+                        <div className="h-105" />
                     )}
                 </div>
             </div>

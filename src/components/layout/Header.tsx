@@ -121,9 +121,12 @@ export default function Header({ siteData }: HeaderProps) {
     }, [mobileMenuOpen]);
 
     return (
-        <header onMouseLeave={() => setActiveMegaSlug(null)}>
+        <header
+            className="sticky top-0 z-50 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
+            onMouseLeave={() => setActiveMegaSlug(null)}
+        >
             <div className="bg-top-bar">
-                <div className="container mx-auto grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-3 sm:px-0">
+                <div className="mx-auto grid w-full max-w-337.5 grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-3">
                     <div />
 
                     <div className="flex justify-center">
@@ -148,7 +151,7 @@ export default function Header({ siteData }: HeaderProps) {
             </div>
 
             <nav className="bg-secondary relative">
-                <div className="container flex items-center justify-between py-4">
+                <div className="mx-auto flex max-w-337.5 items-center justify-between p-4">
                     {/* Logo */}
                     <Link href="/" className="order-2 lg:order-0">
                         {logo ? (
@@ -262,8 +265,8 @@ export default function Header({ siteData }: HeaderProps) {
                                                                       ? "rotate-180"
                                                                       : ""
                                                               }`}
-                                                              width="10"
-                                                              height="6"
+                                                              width="13"
+                                                              height="9"
                                                               viewBox="0 0 10 6"
                                                               fill="none"
                                                               xmlns="http://www.w3.org/2000/svg"
@@ -374,19 +377,19 @@ export default function Header({ siteData }: HeaderProps) {
                     >
                         <div className="relative h-5 w-8">
                             <span
-                                className={`hamburger-line absolute left-0 h-[2px] w-[30px] rounded-full transition-all duration-300 ease-in-out ${
+                                className={`hamburger-line absolute left-0 h-0.5 w-7.5 rounded-full transition-all duration-300 ease-in-out ${
                                     mobileMenuOpen ? "top-2 rotate-45" : "top-0"
                                 }`}
                             />
 
                             <span
-                                className={`hamburger-line absolute top-2 left-0 h-[2px] w-[30px] rounded-full transition-all duration-300 ease-in-out ${
+                                className={`hamburger-line absolute top-2 left-0 h-0.5 w-7.5 rounded-full transition-all duration-300 ease-in-out ${
                                     mobileMenuOpen ? "opacity-0" : "opacity-100"
                                 }`}
                             />
 
                             <span
-                                className={`hamburger-line absolute left-0 h-[2px] w-[30px] rounded-full transition-all duration-300 ease-in-out ${
+                                className={`hamburger-line absolute left-0 h-0.5 w-7.5 rounded-full transition-all duration-300 ease-in-out ${
                                     mobileMenuOpen
                                         ? "top-2 -rotate-45"
                                         : "top-4"
@@ -406,7 +409,7 @@ export default function Header({ siteData }: HeaderProps) {
 
                 {/* Mobile Menu */}
                 <div
-                    className={`bg-secondary fixed right-0 left-0 z-[999] transition-all duration-300 ease-in-out lg:hidden ${
+                    className={`bg-secondary fixed right-0 left-0 z-999 transition-all duration-300 ease-in-out lg:hidden ${
                         mobileMenuOpen
                             ? "visible translate-y-0 opacity-100"
                             : "pointer-events-none invisible -translate-y-2 opacity-0"

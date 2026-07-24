@@ -15,11 +15,7 @@ const roboto = Roboto({
     weight: ["400", "700"],
 });
 
-export const metadata: Metadata = {
-    title: "HVAC Installation Brooklyn, NY | AC Repair NYC | 212 HVAC®",
-    description:
-        "212 HVAC® premier Air conditioning services company providing best AC Installation , repair & maintenance Brooklyn, NYC & nearby.",
-};
+// Note: metadata is provided per-page by `generateMetadata` or `head.tsx`.
 
 export default async function RootLayout({
     children,
@@ -34,7 +30,7 @@ export default async function RootLayout({
                 <ThemeProvider>
                     <ContactPopupProvider>
                         <Header siteData={siteData} />
-                        <main className="flex-grow">{children}</main>
+                        <main className="grow">{children}</main>
                         <Footer siteData={siteData} />
                     </ContactPopupProvider>
                 </ThemeProvider>

@@ -7,6 +7,9 @@ interface ACFImage {
     url: string;
     alt?: string;
     title?: string;
+    mime_type?: string;
+    width?: number;
+    height?: number;
 }
 
 interface CTAButton {
@@ -28,6 +31,7 @@ interface HeroCTAButtons {
 interface HeroBannerProps {
     heroSectionTitle?: HeroSectionTitleDescription | null;
     backgroundImage?: ACFImage | any;
+    backgroundVideo?: ACFImage | any;
     ctaButtons?: HeroCTAButtons | null;
     primary_button?: CTAButton | any;
     secondary_button?: CTAButton | any;
@@ -37,16 +41,20 @@ interface HeroBannerProps {
 export function HeroBanner({
     heroSectionTitle,
     backgroundImage,
+    backgroundVideo,
     ctaButtons,
     primary_button,
     secondary_button,
     className,
 }: HeroBannerProps) {
     const normalizedImage = normalizeACFImage(backgroundImage);
+    const normalizedVideo = normalizeACFImage(backgroundVideo);
     const title = heroSectionTitle?.title?.trim() || "";
     const description = heroSectionTitle?.short_description?.trim() || "";
     const primaryButton = ctaButtons?.primary_button || primary_button;
     const secondaryButton = ctaButtons?.secondary_button || secondary_button;
+    const hasBackgroundVideo = Boolean(normalizedVideo?.url);
+    const isVideoFile = backgroundVideo?.mime_type?.startsWith("video/");
 
     //   console.log("HeroBanner - backgroundImage prop:", backgroundImage);
     //   console.log("HeroBanner - normalizedImage:", normalizedImage);
@@ -56,8 +64,32 @@ export function HeroBanner({
         <section
             className={`relative flex h-96 items-center justify-center overflow-hidden md:h-[650px] ${className || ""}`}
         >
-            {/* Background Image */}
-            {normalizedImage?.url ? (
+            {/* Background Media */}
+            {hasBackgroundVideo ? (
+                <div className="absolute inset-0">
+                    {isVideoFile ? (
+                        <video
+                            className="h-full w-full object-cover"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                        >
+                            <source
+                                src={normalizedVideo?.url}
+                                type={backgroundVideo?.mime_type}
+                            />
+                        </video>
+                    ) : (
+                        <img
+                            src={normalizedVideo?.url}
+                            alt={normalizedVideo?.alt || "Hero background"}
+                            className="h-full w-full object-cover"
+                        />
+                    )}
+                    <div className="hero-overlay absolute inset-0"></div>
+                </div>
+            ) : normalizedImage?.url ? (
                 <div className="absolute inset-0">
                     <Image
                         src={normalizedImage.url}

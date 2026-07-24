@@ -16,6 +16,13 @@ export default function ContactForm() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const API_URL =
+        process.env.NEXT_PUBLIC_WORDPRESS_API_URL ||
+        "https://nextjs212hvac.wpenginepowered.com/wp-json";
+    const CONTACT_FORM_ID = process.env.NEXT_PUBLIC_CONTACT_FORM_ID || "231";
+    const CONTACT_FORM_ENDPOINT = `${API_URL}/hvac/v1/contact`;
 
     const toggleService = (service: string) => {
         setForm((prev) => ({
@@ -38,36 +45,39 @@ export default function ContactForm() {
         setLoading(true);
         setSuccess("");
         setError("");
+        setErrors({});
 
         const data = new FormData();
 
-        data.append("your-name", form.name);
-        data.append("your-email", form.email);
-        data.append("your-phone", form.phone);
-        data.append("your-zip", form.zip);
-        data.append("your-message", form.message);
+        data.append("name", form.name);
+        data.append("email", form.email);
+        data.append("phone", form.phone);
+        data.append("zip", form.zip);
+        data.append("message", form.message);
 
         form.services.forEach((service) => {
-            data.append("services[]", service);
+            data.append("services", service);
         });
 
         if (form.photo) {
-            data.append("your-photo", form.photo);
+            data.append("photo", form.photo, form.photo.name);
         }
 
         try {
-            const response = await fetch(
-                "http://localhost/triangles-ph/wp-json/contact-form-7/v1/contact-forms/231/feedback",
-                {
-                    method: "POST",
-                    body: data,
-                }
-            );
+            for (const pair of data.entries()) {
+                console.log(pair[0], pair[1]);
+            }
+
+            const response = await fetch(CONTACT_FORM_ENDPOINT, {
+                method: "POST",
+                body: data,
+            });
 
             const result = await response.json();
 
-            if (result.status === "mail_sent") {
+            if (result.success) {
                 setSuccess(result.message);
+                setErrors({});
 
                 setForm({
                     name: "",
@@ -79,10 +89,14 @@ export default function ContactForm() {
                     photo: null,
                 });
             } else {
-                setError(result.message);
+                setError(result.message || "");
+                setErrors(result.errors || {});
             }
-        } catch {
-            setError("Something went wrong.");
+        } catch (err) {
+            console.error("Contact form submission failed:", err);
+            setError(
+                err instanceof Error ? err.message : "Something went wrong."
+            );
         }
 
         setLoading(false);
@@ -91,37 +105,64 @@ export default function ContactForm() {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-2">
-                <input
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Name"
-                    className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60 bg-white text-primary"
-                />
-
-                <input
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="Email"
-                    className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60 bg-white text-primary"
-                />
+                <div className="relative">
+                    <input
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        placeholder="Name"
+                        className="text-primary w-full rounded-full bg-white px-4 py-1 text-center text-sm focus-visible:outline-none"
+                    />
+                    {errors.name && (
+                        <p className="text-[11px] text-[#9F1D20]">
+                            {errors.name}
+                        </p>
+                    )}
+                </div>
+                <div className="relative">
+                    <input
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        placeholder="Email"
+                        className="text-primary w-full rounded-full bg-white px-4 py-1 text-center text-sm focus-visible:outline-none"
+                    />
+                    {errors.email && (
+                        <p className="text-[11px] text-[#9F1D20]">
+                            {errors.email}
+                        </p>
+                    )}
+                </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                    <input
-                        name="phone"
-                        value={form.phone}
-                        onChange={handleChange}
-                        placeholder="Phone"
-                        className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60 bg-white text-primary"
-                    />
-                    <input
-                        name="zip"
-                        value={form.zip}
-                        onChange={handleChange}
-                        placeholder="Zip"
-                        className="w-full rounded-full px-4 py-1 text-sm text-[#9B9B9B] placeholder:opacity-60 bg-white text-primary"
-                    />
+                    <div className="relative">
+                        <input
+                            name="phone"
+                            value={form.phone}
+                            onChange={handleChange}
+                            placeholder="Phone"
+                            className="text-primary w-full rounded-full bg-white px-4 py-1 text-center text-sm focus-visible:outline-none"
+                        />
+                        {errors.phone && (
+                            <p className="text-[11px] text-[#9F1D20]">
+                                {errors.phone}
+                            </p>
+                        )}
+                    </div>
+                    <div className="relative">
+                        <input
+                            name="zip"
+                            value={form.zip}
+                            onChange={handleChange}
+                            placeholder="Zip"
+                            className="text-primary w-full rounded-full bg-white px-4 py-1 text-center text-sm focus-visible:outline-none"
+                        />
+                        {errors.zip && (
+                            <p className="text-[11px] text-[#9F1D20]">
+                                {errors.zip}
+                            </p>
+                        )}
+                    </div>
                 </div>
                 <div className="space-y-3">
                     {["Emergency Repair", "Installation", "Maintenance"].map(
@@ -161,14 +202,27 @@ export default function ContactForm() {
                             );
                         }
                     )}
+                    {errors.services && (
+                        <p className="-mt-2 text-[11px] text-[#9F1D20]">
+                            {errors.services}
+                        </p>
+                    )}
                 </div>
-                <textarea
-                    name="message"
-                    value={form.message}
-                    onChange={handleChange}
-                    placeholder="Additional Information"
-                    className="h-15 w-full resize-none rounded-2xl px-4 py-3 text-sm placeholder:opacity-60 bg-white text-primary"
-                />
+
+                <div className="relative">
+                    <textarea
+                        name="message"
+                        value={form.message}
+                        onChange={handleChange}
+                        placeholder="Additional Information"
+                        className="text-primary h-15 w-full resize-none rounded-2xl bg-white px-4 py-3 text-center text-sm focus-visible:outline-none"
+                    />
+                    {errors.message && (
+                        <p className="-mt-1 text-[11px] text-[#9F1D20]">
+                            {errors.message}
+                        </p>
+                    )}
+                </div>
 
                 <label htmlFor="photo" className="cursor-pointer underline">
                     <span className="flex items-center gap-2 text-sm text-[#002D3E]">
@@ -187,38 +241,79 @@ export default function ContactForm() {
                         Upload unit photo
                     </span>
                     <input
+                        id="photo"
+                        name="your-photo"
                         type="file"
                         hidden
                         accept=".jpg,.jpeg,.png,.webp,.pdf"
                         onChange={(e) =>
-                            setForm({
-                                ...form,
+                            setForm((prev) => ({
+                                ...prev,
                                 photo: e.target.files?.[0] ?? null,
-                            })
+                            }))
                         }
                     />
                 </label>
+                {form.photo && (
+                    <p className="-mt-1 text-[11px] text-[#002D3E]">
+                        File: {form.photo.name}
+                    </p>
+                )}
 
                 <div className="pt-2 text-center">
                     <button
                         type="submit"
                         disabled={loading}
-                        className="bg-primary text-primary hover:text-primary w-fit w-full cursor-pointer rounded-full px-6 py-3 text-sm font-semibold text-white transition-colors duration-300 hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                        className="bg-primary hover:text-primary hover:bg-blue w-fit cursor-pointer rounded-full px-6 py-3 text-sm font-semibold text-white transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        {loading ? "Sending..." : "Submit"}
+                        {loading ? (
+                            <span className="relative inline-flex items-center justify-center">
+                                <span className="invisible">Submit</span>
+                                <span className="absolute inset-0 flex items-center justify-center">
+                                    <svg
+                                        className="h-4 w-4 animate-spin"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        aria-hidden
+                                    >
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                        />
+                                        <path
+                                            className="opacity-90"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                        />
+                                    </svg>
+                                </span>
+                                <span className="sr-only">Sending...</span>
+                            </span>
+                        ) : (
+                            "Submit"
+                        )}
                     </button>
-                    {success && (
+                    {/* {success && (
                         <p className="text-center text-green-600">{success}</p>
+                    )} */}
+                    {success && (
+                        <p className="mt-2 text-center text-[14px] leading-5 text-[#002D3E]">
+                            Thank you! We will reach out to you shortly.
+                        </p>
                     )}
 
                     {error && (
-                        <p className="text-center text-red-600">{error}</p>
+                        <p className="text-center text-[11px] text-[#9F1D20]">
+                            {error}
+                        </p>
                     )}
                 </div>
 
-                <p className="mt-2 text-center text-[14px] leading-5 text-[#002D3E]">
-                    Thank you! We will reach out to you shortly.
-                </p>
                 <p className="mt-2 text-center text-[9px] leading-3 text-[#002D3E]">
                     By submitting, you agree to receive emails and texts from
                     212 HVAC LLC. Message & data rates may apply. Frequency
