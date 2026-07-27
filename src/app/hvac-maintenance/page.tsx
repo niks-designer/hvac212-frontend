@@ -1,22 +1,19 @@
 export const dynamic = "force-dynamic";
 
-import { getPageContentBySlug, getPosts } from "@/lib/wordpress";
-import { PostCard } from "@/components/common/PostCard";
 import { FlexibleContentRenderer } from "@/components/FlexibleContentRenderer";
+import { getPageContentBySlug } from "@/lib/wordpress";
 import { generatePageMetadata } from "@/lib/seo";
 
 export async function generateMetadata() {
-    return generatePageMetadata("home");
+    return generatePageMetadata("hvac-maintenance");
 }
 
-export default async function Home() {
-    const posts = await getPosts(10);
-    const flexibleContent = await getPageContentBySlug("home");
+export default async function HvacMaintenancePage() {
+    const flexibleContent = await getPageContentBySlug("hvac-maintenance");
 
     return (
         <div className="relative min-h-screen overflow-hidden">
             <div className="bg-shapes">
-                {/* Blue Background */}
                 <div
                     className="pointer-events-none absolute top-95.75 left-1/2 -z-10 h-375 w-[1582px] -translate-x-1/2"
                     style={{
@@ -25,21 +22,14 @@ export default async function Home() {
                     }}
                     aria-hidden="true"
                 />
-
-                {/* Yellow Background */}
                 <div
-                    className="pointer-events-none absolute -z-10"
+                    className="pointer-events-none absolute top-374.5 -left-62.5 -z-10 h-[1816px] w-[1916px]"
                     style={{
-                        width: "1916px",
-                        height: "1816px",
-                        left: "calc(50% - 958px - 389px)",
-                        top: "1853px",
                         background:
-                            "radial-gradient(50% 50% at 50% 50%, rgba(228, 187, 76, 0.36) 0%, rgba(7, 15, 29, 0) 100%)",
+                            "radial-gradient(50% 50% at 50% 50%, rgba(228, 187, 76, 0.35) 0%, rgba(7, 15, 29, 0) 100%)",
                     }}
                     aria-hidden="true"
                 />
-
                 {/* Background Gradient */}
                 <div
                     className="pointer-events-none absolute -z-10"
@@ -68,30 +58,22 @@ export default async function Home() {
                     aria-hidden="true"
                 />
             </div>
-
-            {/* ACF Flexible Content Sections */}
-            {flexibleContent.length > 0 && (
+            {flexibleContent.length > 0 ? (
                 <FlexibleContentRenderer
                     sections={flexibleContent}
-                    sectionClassNames={JSON.stringify({
-                        services_grid: "",
-                        center_image: "py-8",
-                    })}
+                    sectionClassNames={{
+                        section_heading: ["pb-10 lg:pb-16", ""],
+                        system_replacement_signs: ["pb-6 lg:pb-10"],
+                    }}
                 />
-            )}
-
-            {/* Blog Posts Section */}
-            {posts.length > 0 && (
-                <section className="hidden px-4 py-12">
-                    <div className="mx-auto max-w-6xl">
-                        <h2 className="mb-12 text-center text-3xl font-bold">
-                            Latest Articles
-                        </h2>
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {posts.map((post) => (
-                                <PostCard key={post.id} post={post} />
-                            ))}
-                        </div>
+            ) : (
+                <section className="px-4 py-24 text-center md:px-8 lg:px-16">
+                    <div className="bg-secondary mx-auto max-w-3xl rounded-2xl border border-white/10 p-12">
+                        <h1 className="text-3xl font-bold">HVAC Maintenance</h1>
+                        <p className="mt-4">
+                            Content for this page will appear here once it is
+                            added in WordPress.
+                        </p>
                     </div>
                 </section>
             )}

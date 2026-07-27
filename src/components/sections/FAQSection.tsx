@@ -33,29 +33,34 @@ export function FAQSection({
     }
 
     return (
-        <section className={`${className || "pt-0 pb-30"}`}>
+        <section className={`${className || "pt-0 pb-10 lg:pb-30"}`}>
             <div className="container">
                 {/* Section Header */}
-                <div className="mb-6 text-center">
+                <div className="sec-ttl mx-auto mb-6 space-y-5 text-center">
                     {title && <h2 className="h2-title">{title}</h2>}
                     {description && (
                         <div
-                            className="prose mx-auto mt-6 max-w-3xl"
+                            className="prose"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
                     )}
                 </div>
 
                 {/* FAQ Grid */}
-                <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+                <div className="flex flex-wrap justify-center gap-5 xl:gap-10">
                     {faqs.map((faq, index) => (
-                        <AccordionItem
+                        <div
                             key={index}
-                            faq={faq}
-                            index={index}
-                            expanded={expandedIndex === index}
-                            onToggle={() => toggleAccordion(index)}
-                        />
+                            className="w-[calc(50%-10px)] lg:w-[calc(25%-30px)]"
+                        >
+                            <AccordionItem
+                                key={index}
+                                faq={faq}
+                                index={index}
+                                expanded={expandedIndex === index}
+                                onToggle={() => toggleAccordion(index)}
+                            />
+                        </div>
                     ))}
                 </div>
             </div>
@@ -95,8 +100,8 @@ function AccordionItem({
     };
 
     return (
-        <div className="bg-testimonial flex flex-col items-center justify-center rounded-2xl px-3 py-8 text-center transition-colors duration-300">
-            <div className="mb-6 text-6xl font-bold">
+        <div className="bg-testimonial flex h-full flex-col items-center justify-center rounded-2xl px-3 py-8 text-center transition-colors duration-300">
+            <div className="mb-4 text-6xl font-bold lg:mb-6">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="54"
@@ -112,7 +117,7 @@ function AccordionItem({
             </div>
 
             <h3
-                className="mb-6 text-2xl leading-8 font-bold"
+                className="mb-6 text-base leading-5 font-bold lg:text-[26px] lg:leading-8"
                 dangerouslySetInnerHTML={{ __html: faq.question }}
             />
 
@@ -131,12 +136,8 @@ function AccordionItem({
                 className="theme-btn"
                 style={{
                     marginTop: expanded ? "25px" : "0px",
-                    backgroundColor: expanded
-                        ? "var(--color-white)"
-                        : "",
-                    color: expanded
-                        ? ""
-                        : "",
+                    backgroundColor: expanded ? "var(--color-white)" : "",
+                    color: expanded ? "#070F1D" : "",
                 }}
             >
                 {expanded ? "Close" : "Find Out"}

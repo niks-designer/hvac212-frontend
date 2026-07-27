@@ -61,7 +61,7 @@ export default function MegaMenu({
             className={`${
                 isMobile
                     ? "relative w-full"
-                    : "absolute top-14.75 left-1/2 w-327.5 -translate-x-1/2"
+                    : "absolute top-14.75 left-1/2 w-[calc(100vw-2rem)] max-w-327.5 -translate-x-1/2"
             } z-51 min-h-125 transform-gpu transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 isOpen
                     ? "pointer-events-auto visible translate-y-0 opacity-100"

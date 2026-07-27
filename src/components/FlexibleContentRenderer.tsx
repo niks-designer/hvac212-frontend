@@ -11,8 +11,15 @@ import TrustedBrands from "./sections/TrustedBrands";
 import OurApproach from "./sections/OurApproach";
 import HeadingWithBottomAction from "./sections/HeadingWithBottomAction";
 import SelectHVACSystem from "./sections/SelectHVACSystem";
+import WhyChooseUs from "./sections/WhyChooseUs";
+import SystemReplacementSigns from "./sections/SystemReplacementSigns";
+import HVACProcess from "./sections/HVACProcess";
 import { ReactNode } from "react";
-import type { HeroSectionTitleDescription } from "@/lib/wordpress";
+import type {
+    HeroSectionTitleDescription,
+    WhyChooseUsFeatureItem,
+    SystemReplacementSignsItem,
+} from "@/lib/wordpress";
 
 interface ACFFlexibleContent {
     acf_fc_layout: string;
@@ -22,7 +29,8 @@ interface ACFFlexibleContent {
 interface FlexibleContentRendererProps {
     sections: ACFFlexibleContent[];
     // allow either an object map or a JSON string (string is a fallback when serialization fails)
-    sectionClassNames?: Record<string, string> | string;
+    // values can be single strings or arrays of strings for multiple occurrences of the same layout
+    sectionClassNames?: Record<string, string | string[]> | string;
 }
 
 export function FlexibleContentRenderer({
@@ -30,7 +38,7 @@ export function FlexibleContentRenderer({
     sectionClassNames = {},
 }: FlexibleContentRendererProps) {
     // Normalize sectionClassNames to an object map at runtime
-    let sectionClassMap: Record<string, string> = {};
+    let sectionClassMap: Record<string, string | string[]> = {};
     try {
         if (typeof sectionClassNames === "string") {
             sectionClassMap = JSON.parse(sectionClassNames || "{}");
@@ -38,7 +46,10 @@ export function FlexibleContentRenderer({
             typeof sectionClassNames === "object" &&
             sectionClassNames !== null
         ) {
-            sectionClassMap = sectionClassNames as Record<string, string>;
+            sectionClassMap = sectionClassNames as Record<
+                string,
+                string | string[]
+            >;
         }
     } catch (e) {
         // parsing failed — fall back to empty map
@@ -53,11 +64,40 @@ export function FlexibleContentRenderer({
         return <div className="py-12 text-center">No content available</div>;
     }
 
+    // Track occurrence index for each layout to support array-based classes
+    const layoutIndexes: Record<string, number> = {};
+
+    // Helper function to get the appropriate class for a layout
+    const getLayoutClass = (layout: string): string => {
+        const classOrArray = sectionClassMap?.[layout];
+
+        if (!classOrArray) {
+            return "";
+        }
+
+        // If it's a string, return it as-is
+        if (typeof classOrArray === "string") {
+            return classOrArray;
+        }
+
+        // If it's an array, get the class at the current index for this layout
+        if (Array.isArray(classOrArray)) {
+            const currentIndex = layoutIndexes[layout] || 0;
+            return classOrArray[currentIndex] || "";
+        }
+
+        return "";
+    };
+
     const renderSection = (
         section: ACFFlexibleContent,
         index: number
     ): ReactNode => {
         const layout = section.acf_fc_layout;
+
+        // Get the class for this occurrence and increment the index for next time
+        const className = getLayoutClass(layout);
+        layoutIndexes[layout] = (layoutIndexes[layout] || 0) + 1;
 
         switch (layout) {
             case "hero_banner":
@@ -73,7 +113,7 @@ export function FlexibleContentRenderer({
                         ctaButtons={section.cta_buttons as any}
                         primary_button={section.primary_button as any}
                         secondary_button={section.secondary_button as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
 
@@ -87,7 +127,7 @@ export function FlexibleContentRenderer({
                         }
                         backgroundImage={section.ihs_bgimg as any}
                         ctaButtons={section.ihs_cta_buttons as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
 
@@ -98,7 +138,7 @@ export function FlexibleContentRenderer({
                         section_title={section.section_title as string}
                         sectionTitle={section.service_grid_title as any}
                         cards={section.cards as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
 
@@ -112,7 +152,7 @@ export function FlexibleContentRenderer({
                         title={section.title as string}
                         description={section.description as string}
                         ctaButtons={section.section_cta_buttons as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
 
@@ -126,7 +166,7 @@ export function FlexibleContentRenderer({
                         }
                         bottomAction={section.hwba_bottom_action as string}
                         ctaButtons={section.hwba_cta_buttons as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
 
@@ -139,7 +179,7 @@ export function FlexibleContentRenderer({
                                 HeroSectionTitleDescription | undefined
                         }
                         items={section.add_system as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
 
@@ -156,7 +196,7 @@ export function FlexibleContentRenderer({
                                 string | undefined
                         }
                         image={section.add_image as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
             }
@@ -170,7 +210,7 @@ export function FlexibleContentRenderer({
                                 HeroSectionTitleDescription | undefined
                         }
                         faqs={section.faqs as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
 
@@ -184,7 +224,7 @@ export function FlexibleContentRenderer({
                         }
                         testimonials={section.testimonials as any}
                         review_platforms={section.review_platforms as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
 
@@ -192,8 +232,13 @@ export function FlexibleContentRenderer({
                 return (
                     <TrustedBrands
                         key={index}
+                        brands_title={
+                            section.brands_title as
+                                | { title?: string; short_description?: string }
+                                | undefined
+                        }
                         brand_logos={section.brand_logos as any}
-                        className={sectionClassMap?.[layout]}
+                        className={className}
                     />
                 );
 
@@ -209,7 +254,64 @@ export function FlexibleContentRenderer({
                         bottom_description={
                             section.bottom_description as string
                         }
-                        className={sectionClassMap?.[layout]}
+                        className={className}
+                    />
+                );
+
+            case "why_choose_us":
+                return (
+                    <WhyChooseUs
+                        key={index}
+                        wcu_title={
+                            section.wcu_title as
+                                HeroSectionTitleDescription | undefined
+                        }
+                        features_lists={
+                            section.features_lists as
+                                WhyChooseUsFeatureItem[] | undefined
+                        }
+                        className={className}
+                    />
+                );
+
+            case "system_replacement_signs":
+                return (
+                    <SystemReplacementSigns
+                        key={index}
+                        srs_title={
+                            section.srs_title as
+                                HeroSectionTitleDescription | undefined
+                        }
+                        replacement_lists={
+                            section.replacement_lists as
+                                SystemReplacementSignsItem[] | undefined
+                        }
+                        bottom_description={
+                            section.bottom_description as string | undefined
+                        }
+                        srs_bottom_action={
+                            section.srs_bottom_action as string | undefined
+                        }
+                        srs_cta_buttons={section.srs_cta_buttons as any}
+                        secondary_title={
+                            section.secondary_title as string | undefined
+                        }
+                        className={className}
+                    />
+                );
+
+            case "hvac_process":
+                return (
+                    <HVACProcess
+                        key={index}
+                        process_title={
+                            section.process_title as
+                                | { title?: string; short_description?: string }
+                                | undefined
+                        }
+                        process_step={section.process_step as any}
+                        process_cta={section.process_cta as any}
+                        className={className}
                     />
                 );
 

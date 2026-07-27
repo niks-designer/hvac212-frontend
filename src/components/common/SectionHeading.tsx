@@ -37,15 +37,15 @@ export default function SectionHeading({
     const secondaryButton = ctaButtons?.secondary_button;
 
     return (
-        <section className={`${className || "py-16"}`}>
+        <section className={`${className || "py-10 lg:py-16"}`}>
             <div className="container text-center">
-                <div className="mx-auto max-w-4xl space-y-4">
+                <div className="sec-ttl mx-auto max-w-4xl space-y-5">
                     {headingTitle && (
                         <h2 className="h2-title">{headingTitle}</h2>
                     )}
                     {headingDescription && (
                         <div
-                            className="prose text-19 leading-7"
+                            className="prose fs-19"
                             dangerouslySetInnerHTML={{
                                 __html: headingDescription,
                             }}

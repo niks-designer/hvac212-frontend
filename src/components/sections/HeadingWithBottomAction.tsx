@@ -33,14 +33,16 @@ export default function HeadingWithBottomAction({
     const secondaryButton = ctaButtons?.secondary_button;
 
     return (
-        <section className={`relative overflow-hidden ${className || "py-16"}`}>
+        <section
+            className={`relative overflow-hidden ${className || "py-10 lg:py-16"}`}
+        >
             <div className="container">
-                <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-8 text-center">
+                <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-5 text-center lg:gap-8">
                     {heading && <h2 className="h2-title">{heading}</h2>}
 
                     {shortDescription && (
                         <div
-                            className="prose"
+                            className="prose fs-19"
                             dangerouslySetInnerHTML={{
                                 __html: shortDescription,
                             }}
@@ -49,7 +51,7 @@ export default function HeadingWithBottomAction({
 
                     {bottomAction && (
                         <div
-                            className="action-link text-4xl font-bold"
+                            className="action-link text-2xl font-bold lg:text-4xl"
                             dangerouslySetInnerHTML={{ __html: bottomAction }}
                         />
                     )}

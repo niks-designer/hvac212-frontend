@@ -62,7 +62,7 @@ export function HeroBanner({
 
     return (
         <section
-            className={`relative flex h-96 items-center justify-center overflow-hidden md:h-[650px] ${className || ""}`}
+            className={`relative flex h-140 items-center justify-center overflow-hidden md:h-162.5 ${className || ""}`}
         >
             {/* Background Media */}
             {hasBackgroundVideo ? (
@@ -101,7 +101,7 @@ export function HeroBanner({
                     <div className="hero-overlay absolute inset-0"></div>
                 </div>
             ) : (
-                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-blue)] to-[var(--color-primary)]"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-blue to-primary"></div>
             )}
 
             {/* Content */}

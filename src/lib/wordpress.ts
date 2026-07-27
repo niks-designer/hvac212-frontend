@@ -156,6 +156,33 @@ export interface TrustedBrandsSection extends ACFFlexibleContent {
     brand_logos?: TrustedBrandLogoItem[] | null;
 }
 
+export interface WhyChooseUsFeatureItem {
+    wcuf_title?: string;
+    wcuf_description?: string;
+}
+
+export interface WhyChooseUsSection extends ACFFlexibleContent {
+    wcu_title?: HeroSectionTitleDescription | null;
+    features_lists?: WhyChooseUsFeatureItem[] | null;
+}
+
+export interface SystemReplacementSignsItem {
+    srs_title?: string;
+    srs_description?: string;
+}
+
+export interface SystemReplacementSignsSection extends ACFFlexibleContent {
+    srs_title?: HeroSectionTitleDescription | null;
+    replacement_lists?: SystemReplacementSignsItem[] | null;
+    bottom_description?: string | null;
+    srs_bottom_action?: string | null;
+    srs_cta_buttons?: {
+        primary_button?: LinkField;
+        secondary_button?: LinkField;
+    } | null;
+    secondary_title?: string | null;
+}
+
 interface WordPressPost {
     id: number;
     title: {

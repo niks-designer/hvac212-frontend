@@ -37,14 +37,14 @@ export function ServicesGrid({
     const headingDescription = sectionTitle?.short_description || "";
 
     return (
-        <section className={`relative ${className || "py-16"}`}>
+        <section className={`relative ${className || "py-10 lg:py-16"}`}>
             <div className="container">
-                {headingTitle && (
-                    <div className="mb-12 text-center">
+                {(headingTitle || headingDescription) && (
+                    <div className="sec-ttl mb-7 space-y-5 text-center lg:mb-12">
                         <h2 className="h2-title">{headingTitle}</h2>
                         {headingDescription && (
                             <div
-                                className="prose mt-5"
+                                className="prose"
                                 dangerouslySetInnerHTML={{
                                     __html: headingDescription,
                                 }}
@@ -96,7 +96,7 @@ export function ServicesGrid({
                                             {card.title}
                                         </h3>
                                         <div
-                                            className="text-19 leading-7"
+                                            className="fs-19"
                                             dangerouslySetInnerHTML={{
                                                 __html: card.description || "",
                                             }}

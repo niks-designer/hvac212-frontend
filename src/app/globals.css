@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
-/* Tailwind Theme Tokens */
+/* Dark is default, Light = html.light */
+@custom-variant dark (&:where(html:not(.light), html:not(.light) *));
 
+/* Tailwind Theme Tokens */
 @theme {
     --color-primary: var(--color-primary);
     --color-secondary: var(--color-secondary);
@@ -9,7 +11,6 @@
     --color-yellow: var(--color-yellow);
     --color-white: var(--color-white);
     --color-black: var(--color-black);
-    --text-19: 19px;
 }
 
 /* Default Theme (Dark) */
@@ -91,7 +92,10 @@ html.light body {
 html.light .bg-shapes {
     display: none;
 }
-
+html.light .light-brand {
+    filter: brightness(0) saturate(100%) invert(12%) sepia(18%) saturate(1836%)
+        hue-rotate(180deg) brightness(91%) contrast(93%);
+}
 /* Custom Utilities */
 
 @layer utilities {
@@ -112,6 +116,9 @@ html.light .bg-shapes {
     }
     .bg-ececec {
         background-color: var(--bg-ececec);
+    }
+    .bg-070F1D-60 {
+        background-color: #070f1d99;
     }
     .hamburger-line {
         background-color: var(--hamburger);
@@ -185,7 +192,6 @@ html.light .bg-shapes {
 }
 
 /* Top Highlight */
-
 .theme-toggle::before {
     content: "";
     position: absolute;
@@ -200,7 +206,6 @@ html.light .bg-shapes {
 }
 
 /* Thumb */
-
 .toggle-thumb {
     display: flex;
     align-items: center;
@@ -216,7 +221,6 @@ html.light .bg-shapes {
 }
 
 /* Light Theme*/
-
 html.light .theme-toggle,
 .light .theme-toggle {
     background: transparent;
@@ -240,49 +244,87 @@ html.light .toggle-thumb,
 .h1-title {
     font-size: clamp(3.0625rem, 1.6199rem + 3.0093vw, 3.875rem);
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1.2;
 }
 .h2-title {
     font-size: clamp(2.5rem, 1.1684rem + 2.7778vw, 3.25rem);
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.2;
 }
-.theme-btn {
-    display: inline-block;
-    padding: 1rem 2rem;
-    font-size: 1rem;
-    font-weight: 700;
-    border-radius: 999px;
-    background-color: var(--color-blue);
-    color: var(--color-secondary);
-    transition: all 0.6s;
-    cursor: pointer;
+.fs-19 {
+    font-size: 19px;
+    line-height: 1.5;
 }
-.theme-btn:hover {
-    background-color: var(--color-yellow);
-    color: var(--color-secondary);
+.fs-27 {
+    font-size: 27px;
+    line-height: 1.5;
 }
+/* Base Button */
+.theme-btn,
 .theme-btn-outline {
     display: inline-block;
-    padding: 1rem 2rem;
-    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
     font-weight: 700;
+    line-height: 1.25;
     border-radius: 999px;
+    cursor: pointer;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease;
+}
+
+/* Primary Button */
+.theme-btn {
+    background-color: var(--color-blue);
+    color: var(--color-secondary);
+    border: 2px solid var(--color-blue);
+}
+
+.theme-btn:hover {
+    background-color: var(--color-yellow);
+    border-color: var(--color-yellow);
+    color: var(--color-secondary);
+}
+
+/* Outline Button */
+.theme-btn-outline {
     background-color: transparent;
     color: var(--color-white);
     border: 2px solid var(--color-white);
-    transition: all 0.6s;
-    cursor: pointer;
 }
+
 .theme-btn-outline:hover {
     background-color: var(--color-blue);
+    border-color: var(--color-blue);
     color: var(--color-secondary);
+}
+
+/* Tablet */
+@media (min-width: 640px) {
+    .theme-btn,
+    .theme-btn-outline {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9375rem;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .theme-btn,
+    .theme-btn-outline {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+    }
 }
 .theme-btn.bgc-yellow {
     background-color: var(--color-yellow);
+    border-color: var(--color-yellow);
 }
 .theme-btn.bgc-yellow:hover {
     background-color: var(--color-blue);
+    border-color: var(--color-blue);
 }
 /* Service Box */
 html:not(.light) .ser-bx-1 :is(h3, strong, b) {
@@ -335,4 +377,9 @@ html.light .testimonial-dot-active {
 }
 .submenu-aircare .group:nth-child(4) h3 {
     margin-right: -5px;
+}
+@media (max-width: 992px) {
+    br {
+        display: none;
+    }
 }

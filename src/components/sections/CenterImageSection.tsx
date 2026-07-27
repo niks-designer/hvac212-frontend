@@ -20,12 +20,8 @@ export function CenterImageSection({
         <section className={`${className || ""}`}>
             <div className="container text-center">
                 {(title || description) && (
-                    <div className="mb-10 max-w-3xl">
-                        {title && (
-                            <h2 className="h2-title">
-                                {title}
-                            </h2>
-                        )}
+                    <div className="sec-ttl mb-7 space-y-5 text-center lg:mb-12">
+                        {title && <h2 className="h2-title">{title}</h2>}
 
                         {description && (
                             <div
@@ -39,12 +35,13 @@ export function CenterImageSection({
                 )}
 
                 {normalizedImage?.url && (
-                    <div className="overflow-hidden rounded-3xl">
+                    <div className="h-[340px] overflow-hidden rounded-lg sm:h-auto lg:rounded-3xl">
                         <Image
                             src={normalizedImage.url}
                             alt={normalizedImage.alt || ""}
                             width={normalizedImage.width}
                             height={normalizedImage.height}
+                            className="h-full w-full object-cover object-[30%_center] sm:h-auto"
                         />
                     </div>
                 )}

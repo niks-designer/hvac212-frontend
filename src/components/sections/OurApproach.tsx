@@ -30,7 +30,7 @@ export default function OurApproach({
 }: OurApproachProps) {
     const title = approach_section_title?.title?.trim() || "";
     const shortDescription = approach_section_title?.short_description || "";
-    const image = normalizeACFImage(left_image as any);
+    const image = normalizeACFImage(left_image);
 
     const items = (approach_items || [])
         .map((it) => it.item_text)
@@ -39,9 +39,9 @@ export default function OurApproach({
     return (
         <section className={`${className || ""}`}>
             <div className="container">
-                <div className="flex flex-col gap-6 px-4 sm:gap-8 sm:px-6 lg:flex-row lg:items-center lg:gap-[65px] lg:px-16">
+                <div className="flex flex-col gap-6 px-4 sm:gap-8 sm:px-6 lg:flex-row lg:items-center lg:gap-16.25 lg:px-10">
                     {/* Left image */}
-                    <div className="mx-auto w-full max-w-[445px] lg:mx-0 lg:w-[445px] lg:max-w-[445px] lg:min-w-[445px]">
+                    <div className="mx-auto w-full max-w-111.25 lg:mx-0 lg:w-111.25 lg:max-w-111.25 lg:min-w-111.25">
                         {image?.url && (
                             <div className="overflow-hidden rounded-2xl shadow-lg">
                                 <div className="w-full">
@@ -59,12 +59,12 @@ export default function OurApproach({
                     </div>
 
                     {/* Right content */}
-                    <div className="w-full space-y-6 sm:space-y-8 lg:space-y-10">
+                    <div className="mx-auto w-full max-w-112.5 min-w-0 space-y-6 sm:space-y-8 md:max-w-165 lg:max-w-none lg:space-y-10">
                         {title && <h2 className="h2-title">{title}</h2>}
 
                         {shortDescription && (
                             <div
-                                className="prose"
+                                className="prose max-w-full"
                                 dangerouslySetInnerHTML={{
                                     __html: shortDescription,
                                 }}
@@ -73,16 +73,16 @@ export default function OurApproach({
 
                         {/* Items list */}
                         {items.length > 0 && (
-                            <ul className="mt-4 grid grid-cols-1 gap-3 sm:mt-6 sm:grid-cols-2">
+                            <ul className="mt-4 grid grid-cols-1 gap-2.5 sm:mt-6 md:grid-cols-2 md:gap-3 lg:gap-3.5">
                                 {items.map((it, idx) => (
                                     <li
                                         key={idx}
-                                        className="flex items-start gap-3 sm:items-center"
+                                        className="flex items-start gap-2.5 sm:items-center md:gap-3"
                                     >
                                         <span className="shrink-0">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                className="h-7 w-7 sm:h-8 sm:w-8 lg:h-9 lg:w-9"
+                                                className="h-6 w-6 sm:h-7 sm:w-7 md:h-7 md:w-7 lg:h-9 lg:w-9"
                                                 viewBox="0 0 38 36"
                                                 fill="none"
                                             >
@@ -103,7 +103,7 @@ export default function OurApproach({
                                                 </defs>
                                             </svg>
                                         </span>
-                                        <span className="text-lg leading-snug sm:text-xl lg:text-2xl">
+                                        <span className="lg:fs-27 text-xl leading-snug wrap-break-word md:text-2xl">
                                             {it}
                                         </span>
                                     </li>
@@ -113,7 +113,7 @@ export default function OurApproach({
 
                         {bottom_description && (
                             <div
-                                className="prose sm:text-19 mt-6 max-w-2xl text-base"
+                                className="prose fs-19 max-w-full wrap-break-word"
                                 dangerouslySetInnerHTML={{
                                     __html: bottom_description,
                                 }}

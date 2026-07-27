@@ -46,7 +46,7 @@ export function InnerPageHeroBanner({
 
     return (
         <section
-            className={`relative flex h-96 items-center justify-center overflow-hidden md:h-[460px] ${className || ""}`}
+            className={`relative flex h-140 items-center justify-center overflow-hidden md:h-115 ${className || ""}`}
         >
             {normalizedImage?.url ? (
                 <div className="absolute inset-0">
@@ -60,7 +60,7 @@ export function InnerPageHeroBanner({
                     <div className="hero-overlay absolute inset-0"></div>
                 </div>
             ) : (
-                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-blue)] to-[var(--color-primary)]"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-blue to-primary"></div>
             )}
 
             <div className="relative z-10 flex max-w-3xl flex-col gap-4 px-4 text-center text-white">

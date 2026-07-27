@@ -151,7 +151,7 @@ export default function Header({ siteData }: HeaderProps) {
             </div>
 
             <nav className="bg-secondary relative">
-                <div className="mx-auto flex max-w-337.5 items-center justify-between p-4">
+                <div className="mx-auto flex max-w-337.5 items-center justify-between p-4 lg:px-3 xl:px-4">
                     {/* Logo */}
                     <Link href="/" className="order-2 lg:order-0">
                         {logo ? (
@@ -163,6 +163,7 @@ export default function Header({ siteData }: HeaderProps) {
                                 // height={logo.height || 60}
                                 width={185}
                                 height={60}
+                                className="h-auto w-46.25 lg:w-40 xl:w-46.25"
                                 priority
                             />
                         ) : (
@@ -184,7 +185,7 @@ export default function Header({ siteData }: HeaderProps) {
                                     }
                                 }}
                             >
-                                <div className="flex items-center gap-8 text-lg font-bold">
+                                <div className="flex items-center gap-4 text-[15px] font-bold xl:gap-8 xl:text-lg 2xl:gap-8 2xl:text-lg">
                                     {primaryMenu.length > 0
                                         ? primaryMenu.map((item) => {
                                               const target =
@@ -256,7 +257,9 @@ export default function Header({ siteData }: HeaderProps) {
                                                               : "false"
                                                       }
                                                   >
-                                                      <span>{item.title}</span>
+                                                      <span className="whitespace-nowrap">
+                                                          {item.title}
+                                                      </span>
                                                       {hasMega && (
                                                           <svg
                                                               className={`transition-transform duration-200 ${
@@ -401,7 +404,7 @@ export default function Header({ siteData }: HeaderProps) {
                     {/* Phone  */}
                     <a
                         href={phoneHref ? `tel:${phoneHref}` : "#"}
-                        className="text-yellow hidden text-2xl font-bold transition-colors lg:block"
+                        className="text-yellow hidden text-xl font-bold whitespace-nowrap transition-colors lg:block xl:text-2xl 2xl:text-2xl"
                     >
                         {phoneNumber}
                     </a>
@@ -433,7 +436,7 @@ export default function Header({ siteData }: HeaderProps) {
                                     }`}
                                 >
                                     <button
-                                        className="flex w-full items-center justify-between px-5 py-4 text-left"
+                                        className="flex w-full items-center justify-between px-5 py-3 text-left"
                                         onClick={() => {
                                             if (!item.has_mega_menu) {
                                                 window.location.href = item.url;

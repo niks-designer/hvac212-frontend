@@ -119,16 +119,17 @@ export default function MegaMenuCard({ item, cardRadius }: MegaMenuCardProps) {
 
                 {title ? (
                     isValidLink(titleLink) ? (
-                        <h3 className="text-blue group-hover:text-yellow mt-5 text-xl font-bold transition-colors">
+                        <h3 className="mt-5 text-xl font-bold">
                             <Link
                                 href={titleLink.url}
                                 target={titleLink.target || "_self"}
+                                className="text-blue hover:text-yellow transition-colors duration-300"
                             >
                                 {title}
                             </Link>
                         </h3>
                     ) : (
-                        <h3 className="text-blue mt-5 text-xl font-bold transition-colors">
+                        <h3 className="text-blue mt-5 text-xl font-bold">
                             {title}
                         </h3>
                     )

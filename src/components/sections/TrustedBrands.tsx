@@ -24,7 +24,13 @@ interface BrandLogoItem {
     [key: string]: unknown;
 }
 
+interface BrandsTitle {
+    title?: string;
+    short_description?: string;
+}
+
 interface TrustedBrandsProps {
+    brands_title?: BrandsTitle | null;
     brand_logos?: BrandLogoItem[] | null;
     className?: string;
 }
@@ -148,10 +154,13 @@ function normalizeBrandLogo(item: BrandLogoItem): NormalizedBrandLogo | null {
 }
 
 export default function TrustedBrands({
+    brands_title,
     brand_logos,
     className,
 }: TrustedBrandsProps) {
     const { theme } = useTheme();
+    const title = brands_title?.title?.trim() || "";
+    const shortDescription = brands_title?.short_description || "";
 
     if (!brand_logos || brand_logos.length === 0) return null;
 
@@ -167,6 +176,21 @@ export default function TrustedBrands({
     return (
         <section className={`${className || "pt-20 pb-5"}`}>
             <div className="mx-auto w-full">
+                {/* Section Header */}
+                {(title || shortDescription) && (
+                    <div className="sec-ttl mx-auto mb-8 space-y-5 text-center">
+                        {title && <h2 className="h2-title">{title}</h2>}
+                        {shortDescription && (
+                            <div
+                                className="prose fs-19"
+                                dangerouslySetInnerHTML={{
+                                    __html: shortDescription,
+                                }}
+                            />
+                        )}
+                    </div>
+                )}
+
                 <div className="overflow-hidden">
                     <div
                         className="flex items-center space-x-10 will-change-transform"
