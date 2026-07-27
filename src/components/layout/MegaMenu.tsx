@@ -15,6 +15,7 @@ interface MegaMenuProps {
     isMobile?: boolean;
     isLoading?: boolean;
     onClose?: () => void;
+    onNavigate?: () => void;
 }
 
 function toMenuSlug(value: string): string {
@@ -41,6 +42,7 @@ export default function MegaMenu({
     isMobile = false,
     isLoading = false,
     onClose,
+    onNavigate,
 }: MegaMenuProps) {
     if (isLoading) return null;
 
@@ -93,6 +95,7 @@ export default function MegaMenu({
                                             key={index}
                                             item={item}
                                             cardRadius={megaMenu.card_radius}
+                                            onNavigate={onNavigate}
                                         />
                                     ))}
                                 </div>
@@ -108,6 +111,7 @@ export default function MegaMenu({
                                                 <Link
                                                     href={link.url}
                                                     className="font-semibold text-black underline transition hover:opacity-70"
+                                                    onClick={onNavigate}
                                                 >
                                                     {link.title}
                                                 </Link>
@@ -169,6 +173,7 @@ export default function MegaMenu({
                                                 cardRadius={
                                                     megaMenu.card_radius
                                                 }
+                                                onNavigate={onNavigate}
                                             />
                                         ))}
                                     </div>
@@ -186,6 +191,7 @@ export default function MegaMenu({
                                                             key={index}
                                                             href={link.url}
                                                             className="font-medium text-black underline"
+                                                            onClick={onNavigate}
                                                         >
                                                             {link.title}
                                                         </Link>

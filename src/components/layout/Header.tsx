@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import MegaMenu from "@/components/layout/MegaMenu";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { normalizeACFImage } from "@/lib/acfNormalizers";
+import { usePathname } from "next/navigation";
 
 interface HeaderProps {
     siteData?: SiteData | null;
@@ -16,6 +17,7 @@ interface HeaderProps {
 
 export default function Header({ siteData }: HeaderProps) {
     const { theme } = useTheme();
+    const pathname = usePathname();
     const [activeMegaSlug, setActiveMegaSlug] = useState<string | null>(null);
     const [megaMenus, setMegaMenus] = useState<Record<string, MegaMenuData>>(
         {}
@@ -39,6 +41,13 @@ export default function Header({ siteData }: HeaderProps) {
     const phoneHref = phoneNumber.replace(/[^0-9+]/g, "");
     const headerCta = settings?.headerCta;
 
+    const closeAllMenus = () => {
+        setActiveMegaSlug(null);
+        setMobileAccordion(null);
+        setMobileMenuOpen(false);
+    };
+
+    const headerRef = useRef<HTMLElement | null>(null);
     const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
     const openMegaMenu = (slug: string) => {
         if (hoverTimeout.current) {
@@ -120,9 +129,43 @@ export default function Header({ siteData }: HeaderProps) {
         };
     }, [mobileMenuOpen]);
 
+    useEffect(() => {
+        closeAllMenus();
+    }, [pathname]);
+
+    useEffect(() => {
+        const updateHeaderHeight = () => {
+            if (!headerRef.current) return;
+            document.documentElement.style.setProperty(
+                "--site-header-height",
+                `${headerRef.current.offsetHeight}px`
+            );
+        };
+
+        updateHeaderHeight();
+
+        const currentHeader = headerRef.current;
+        const observer =
+            currentHeader && typeof ResizeObserver !== "undefined"
+                ? new ResizeObserver(() => updateHeaderHeight())
+                : null;
+
+        if (currentHeader && observer) {
+            observer.observe(currentHeader);
+        }
+
+        window.addEventListener("resize", updateHeaderHeight);
+
+        return () => {
+            observer?.disconnect();
+            window.removeEventListener("resize", updateHeaderHeight);
+        };
+    }, []);
+
     return (
         <header
-            className="sticky top-0 z-50 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
+            ref={headerRef}
+            className="fixed top-0 right-0 left-0 z-50 w-full shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
             onMouseLeave={() => setActiveMegaSlug(null)}
         >
             <div className="bg-top-bar">
@@ -232,6 +275,7 @@ export default function Header({ siteData }: HeaderProps) {
                                                           }
                                                       }}
                                                       onClick={(e) => {
+                                                          closeAllMenus();
                                                           if (
                                                               isMobile &&
                                                               hasMega
@@ -342,6 +386,9 @@ export default function Header({ siteData }: HeaderProps) {
                                         setActiveMegaSlug(null);
                                         setMobileMenuOpen(false);
                                     }}
+                                    onNavigate={() => {
+                                        closeAllMenus();
+                                    }}
                                 />
                             </div>
                         </div>
@@ -439,6 +486,7 @@ export default function Header({ siteData }: HeaderProps) {
                                         className="flex w-full items-center justify-between px-5 py-3 text-left"
                                         onClick={() => {
                                             if (!item.has_mega_menu) {
+                                                closeAllMenus();
                                                 window.location.href = item.url;
                                                 return;
                                             }
@@ -492,6 +540,9 @@ export default function Header({ siteData }: HeaderProps) {
                                             onClose={() => {
                                                 setMobileAccordion(null);
                                                 setActiveMegaSlug(null);
+                                            }}
+                                            onNavigate={() => {
+                                                closeAllMenus();
                                             }}
                                         />
                                     </div>

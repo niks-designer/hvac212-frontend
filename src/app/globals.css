@@ -17,6 +17,7 @@
 :root {
     --color-primary: #172237;
     --color-secondary: #070f1d;
+    --site-header-height: 122px;
 
     --color-blue: #00bfff;
     --color-yellow: #fcb116;

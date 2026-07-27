@@ -12,6 +12,7 @@ import type {
 interface MegaMenuCardProps {
     item: MegaMenuItem;
     cardRadius?: number | string;
+    onNavigate?: () => void;
 }
 
 type ValidNestedMenuItem = {
@@ -52,7 +53,11 @@ function getValidNestedItems(
         }));
 }
 
-export default function MegaMenuCard({ item, cardRadius }: MegaMenuCardProps) {
+export default function MegaMenuCard({
+    item,
+    cardRadius,
+    onNavigate,
+}: MegaMenuCardProps) {
     const radius = Number(cardRadius) || 18;
     const image =
         item.image_with_link?.image &&
@@ -90,6 +95,7 @@ export default function MegaMenuCard({ item, cardRadius }: MegaMenuCardProps) {
                             <Link
                                 href={imageLink.url}
                                 target={imageLink.target || "_self"}
+                                onClick={onNavigate}
                             >
                                 <Image
                                     src={image.url}
@@ -124,6 +130,7 @@ export default function MegaMenuCard({ item, cardRadius }: MegaMenuCardProps) {
                                 href={titleLink.url}
                                 target={titleLink.target || "_self"}
                                 className="text-blue hover:text-yellow transition-colors duration-300"
+                                onClick={onNavigate}
                             >
                                 {title}
                             </Link>
@@ -146,6 +153,7 @@ export default function MegaMenuCard({ item, cardRadius }: MegaMenuCardProps) {
                                             menuItem.menu_link.target || "_self"
                                         }
                                         className="hover:text-blue text-[17px] leading-5 transition"
+                                        onClick={onNavigate}
                                     >
                                         {menuItem.menu_title}
                                     </Link>

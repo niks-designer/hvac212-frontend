@@ -26,11 +26,16 @@ export default async function RootLayout({
 
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`flex min-h-full flex-col`}>
+            <body className={`min-h-full`}>
                 <ThemeProvider>
                     <ContactPopupProvider>
                         <Header siteData={siteData} />
-                        <main className="grow">{children}</main>
+                        <main
+                            className="grow"
+                            style={{ paddingTop: "var(--site-header-height)" }}
+                        >
+                            {children}
+                        </main>
                         <Footer siteData={siteData} />
                     </ContactPopupProvider>
                 </ThemeProvider>
