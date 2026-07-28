@@ -32,6 +32,7 @@ interface HeroBannerProps {
     heroSectionTitle?: HeroSectionTitleDescription | null;
     backgroundImage?: ACFImage | any;
     backgroundVideo?: ACFImage | any;
+    select_bg_video?: ACFImage | any;
     ctaButtons?: HeroCTAButtons | null;
     primary_button?: CTAButton | any;
     secondary_button?: CTAButton | any;
@@ -42,19 +43,25 @@ export function HeroBanner({
     heroSectionTitle,
     backgroundImage,
     backgroundVideo,
+    select_bg_video,
     ctaButtons,
     primary_button,
     secondary_button,
     className,
 }: HeroBannerProps) {
     const normalizedImage = normalizeACFImage(backgroundImage);
-    const normalizedVideo = normalizeACFImage(backgroundVideo);
+    const videoSource = select_bg_video || backgroundVideo;
+    const normalizedVideo = normalizeACFImage(videoSource);
     const title = heroSectionTitle?.title?.trim() || "";
     const description = heroSectionTitle?.short_description?.trim() || "";
     const primaryButton = ctaButtons?.primary_button || primary_button;
     const secondaryButton = ctaButtons?.secondary_button || secondary_button;
-    const hasBackgroundVideo = Boolean(normalizedVideo?.url);
-    const isVideoFile = backgroundVideo?.mime_type?.startsWith("video/");
+    const hasVideoUrl = Boolean(normalizedVideo?.url);
+    const isVideoFile = Boolean(
+        videoSource?.mime_type?.startsWith("video/") ||
+        /\.(mp4|webm|ogg)(\?.*)?$/i.test(normalizedVideo?.url || "")
+    );
+    const hasBackgroundVideo = hasVideoUrl && isVideoFile;
 
     //   console.log("HeroBanner - backgroundImage prop:", backgroundImage);
     //   console.log("HeroBanner - normalizedImage:", normalizedImage);
@@ -67,26 +74,18 @@ export function HeroBanner({
             {/* Background Media */}
             {hasBackgroundVideo ? (
                 <div className="absolute inset-0">
-                    {isVideoFile ? (
-                        <video
-                            className="h-full w-full object-cover"
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                        >
-                            <source
-                                src={normalizedVideo?.url}
-                                type={backgroundVideo?.mime_type}
-                            />
-                        </video>
-                    ) : (
-                        <img
+                    <video
+                        className="h-full w-full object-cover"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                    >
+                        <source
                             src={normalizedVideo?.url}
-                            alt={normalizedVideo?.alt || "Hero background"}
-                            className="h-full w-full object-cover"
+                            type={videoSource?.mime_type || "video/mp4"}
                         />
-                    )}
+                    </video>
                     <div className="hero-overlay absolute inset-0"></div>
                 </div>
             ) : normalizedImage?.url ? (
@@ -101,7 +100,7 @@ export function HeroBanner({
                     <div className="hero-overlay absolute inset-0"></div>
                 </div>
             ) : (
-                <div className="absolute inset-0 bg-linear-to-r from-blue to-primary"></div>
+                <div className="from-blue to-primary absolute inset-0 bg-linear-to-r"></div>
             )}
 
             {/* Content */}

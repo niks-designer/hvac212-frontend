@@ -107,7 +107,7 @@ export interface ACFImage {
 export interface HeroBannerSection extends ACFFlexibleContent {
     hero_section_title?: HeroSectionTitleDescription | null;
     background_image?: ACFImage | null;
-    select_bg_video_?: ACFImage | null;
+    select_bg_video?: ACFImage | null;
     add_image?: ACFImage | null;
     primary_button?: LinkField | null;
     secondary_button?: LinkField | null;

@@ -14,61 +14,12 @@ export default async function Home() {
     const flexibleContent = await getPageContentBySlug("home");
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
-            <div className="bg-shapes">
-                {/* Blue Background */}
-                <div
-                    className="pointer-events-none absolute top-95.75 left-1/2 -z-10 h-375 w-[1582px] -translate-x-1/2"
-                    style={{
-                        background:
-                            "radial-gradient(50% 50% at 50% 50%, rgba(0, 191, 255, 0.36) 0%, rgba(7, 15, 29, 0.36) 100%)",
-                    }}
-                    aria-hidden="true"
-                />
-
-                {/* Yellow Background */}
-                <div
-                    className="pointer-events-none absolute -z-10"
-                    style={{
-                        width: "1916px",
-                        height: "1816px",
-                        left: "calc(50% - 958px - 389px)",
-                        top: "1853px",
-                        background:
-                            "radial-gradient(50% 50% at 50% 50%, rgba(228, 187, 76, 0.36) 0%, rgba(7, 15, 29, 0) 100%)",
-                    }}
-                    aria-hidden="true"
-                />
-
-                {/* Background Gradient */}
-                <div
-                    className="pointer-events-none absolute -z-10"
-                    style={{
-                        width: "2354px",
-                        height: "2232px",
-                        left: "calc(50% - 1177px - 593px)",
-                        top: "3817px",
-                        background:
-                            "radial-gradient(50% 50% at 50% 50%, rgba(228, 187, 76, 0.36) 0%, rgba(7, 15, 29, 0) 100%)",
-                    }}
-                    aria-hidden="true"
-                />
-
-                {/* Background Gradient */}
-                <div
-                    className="pointer-events-none absolute -z-10"
-                    style={{
-                        width: "1582px",
-                        height: "1500px",
-                        left: "calc(50% - 791px + 555px)",
-                        top: "75%",
-                        background:
-                            "radial-gradient(50% 50% at 50% 50%, rgba(0, 191, 255, 0.36) 0%, rgba(7, 15, 29, 0) 100%)",
-                    }}
-                    aria-hidden="true"
-                />
-            </div>
-
+        <div
+            className="relative min-h-screen overflow-hidden bg-cover bg-center bg-no-repeat"
+            style={{
+                backgroundImage: "url('/images/home-bg.webp')",
+            }}
+        >
             {/* ACF Flexible Content Sections */}
             {flexibleContent.length > 0 && (
                 <FlexibleContentRenderer

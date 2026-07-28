@@ -109,7 +109,7 @@ export function FlexibleContentRenderer({
                                 HeroSectionTitleDescription | undefined
                         }
                         backgroundImage={section.background_image as any}
-                        backgroundVideo={section.select_bg_video_ as any}
+                        backgroundVideo={section.select_bg_video as any}
                         ctaButtons={section.cta_buttons as any}
                         primary_button={section.primary_button as any}
                         secondary_button={section.secondary_button as any}
