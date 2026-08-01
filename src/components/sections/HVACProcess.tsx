@@ -26,6 +26,60 @@ interface ProcessTitle {
     short_description?: string;
 }
 
+interface ProcessStepDefaults {
+    process_title: string;
+    process_description: string;
+    process_img: ACFImage;
+}
+
+const DEFAULT_PROCESS_TITLE = "The Process";
+const DEFAULT_PROCESS_DESCRIPTION =
+    "Precision-led installation from initial assessment to final commissioning.";
+const DEFAULT_PROCESS_STEPS: ProcessStepDefaults[] = [
+    {
+        process_title: "Schedule Your Appointment",
+        process_description: "",
+        process_img: {
+            id: 1,
+            url: "/images/process/schedule-your-appointment.webp",
+            alt: "Schedule your appointment",
+            title: "Schedule Your Appointment",
+            width: 506,
+            height: 356,
+        },
+    },
+    {
+        process_title: "Get Your<br> Quote",
+        process_description: "",
+        process_img: {
+            id: 2,
+            url: "/images/process/get-your-quote.webp",
+            alt: "Get your quote",
+            title: "Get Your Quote",
+            width: 507,
+            height: 356,
+        },
+    },
+    {
+        process_title: "Installation<br> Day",
+        process_description: "",
+        process_img: {
+            id: 3,
+            url: "/images/process/installation-day.webp",
+            alt: "Installation day",
+            title: "Installation Day",
+            width: 504,
+            height: 356,
+        },
+    },
+];
+
+const DEFAULT_PRIMARY_CTA = {
+    title: "Schedule Your Appointment",
+    url: "/contact-us/",
+    target: "_self",
+};
+
 interface HVACProcessProps {
     process_title?: ProcessTitle | null;
     process_step?: ProcessStep[] | null;
@@ -39,10 +93,27 @@ export default function HVACProcess({
     process_cta,
     className,
 }: HVACProcessProps) {
-    const title = process_title?.title?.trim() || "Our Process";
-    const shortDescription = process_title?.short_description || "";
-    const steps = process_step || [];
-    const primaryButton = process_cta?.primary_button;
+    const title = process_title?.title?.trim() || DEFAULT_PROCESS_TITLE;
+    const shortDescription =
+        process_title?.short_description || DEFAULT_PROCESS_DESCRIPTION;
+    const steps = Array.from(
+        {
+            length: Math.max(
+                process_step?.length || 0,
+                DEFAULT_PROCESS_STEPS.length
+            ),
+        },
+        (_, index) => process_step?.[index] || {}
+    );
+    const primaryButton = {
+        title:
+            process_cta?.primary_button?.title?.trim() ||
+            DEFAULT_PRIMARY_CTA.title,
+        url:
+            process_cta?.primary_button?.url?.trim() || DEFAULT_PRIMARY_CTA.url,
+        target:
+            process_cta?.primary_button?.target || DEFAULT_PRIMARY_CTA.target,
+    };
     const secondaryButton = process_cta?.secondary_button;
 
     return (
@@ -66,9 +137,21 @@ export default function HVACProcess({
                     {steps.length > 0 && (
                         <div className="mb-10 grid gap-8 sm:gap-8 md:grid-cols-2 lg:mb-16 lg:grid-cols-3 lg:gap-8">
                             {steps.map((step, index) => {
+                                const defaultStep =
+                                    DEFAULT_PROCESS_STEPS[index];
                                 const processImage = normalizeACFImage(
-                                    step.process_img || null
+                                    step.process_img ||
+                                        defaultStep?.process_img ||
+                                        null
                                 );
+                                const stepTitle =
+                                    step.process_title?.trim() ||
+                                    defaultStep?.process_title ||
+                                    "";
+                                const stepDescription =
+                                    step.process_description?.trim() ||
+                                    defaultStep?.process_description ||
+                                    "";
 
                                 return (
                                     <div
@@ -102,21 +185,24 @@ export default function HVACProcess({
                                             Step {index + 1}:
                                         </p>
                                         {/* Step Title */}
-                                        {step.process_title && (
+                                        {stepTitle && (
                                             <h3
                                                 className="text-xl leading-tight font-bold sm:text-2xl lg:text-[28px]"
                                                 dangerouslySetInnerHTML={{
-                                                    __html: step.process_title,
+                                                    __html: stepTitle,
                                                 }}
                                             />
                                         )}
 
                                         {/* Step Description */}
-                                        {step.process_description && (
+                                        {stepDescription && (
                                             <div className="flex-1">
-                                                <p className="text-base leading-relaxed text-gray-300">
-                                                    {step.process_description}
-                                                </p>
+                                                <p
+                                                    className="text-base leading-relaxed"
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: stepDescription,
+                                                    }}
+                                                />
                                             </div>
                                         )}
                                     </div>
@@ -126,47 +212,44 @@ export default function HVACProcess({
                     )}
 
                     {/* CTA Buttons */}
-                    {(primaryButton?.url || secondaryButton?.url) && (
-                        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                            {primaryButton?.url && (
-                                <a
-                                    href={primaryButton.url}
-                                    target={
-                                        primaryButton.target === "_blank"
-                                            ? "_blank"
-                                            : "_self"
-                                    }
-                                    rel={
-                                        primaryButton.target === "_blank"
-                                            ? "noopener noreferrer"
-                                            : undefined
-                                    }
-                                    className="theme-btn bgc-yellow"
-                                >
-                                    {primaryButton.title ||
-                                        "Schedule Your Appointment"}
-                                </a>
-                            )}
-                            {secondaryButton?.url && (
-                                <a
-                                    href={secondaryButton.url}
-                                    target={
-                                        secondaryButton.target === "_blank"
-                                            ? "_blank"
-                                            : "_self"
-                                    }
-                                    rel={
-                                        secondaryButton.target === "_blank"
-                                            ? "noopener noreferrer"
-                                            : undefined
-                                    }
-                                    className="theme-btn theme-btn-outline"
-                                >
-                                    {secondaryButton.title || "Learn More"}
-                                </a>
-                            )}
-                        </div>
-                    )}
+                    <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                        {primaryButton.url && (
+                            <a
+                                href={primaryButton.url}
+                                target={
+                                    primaryButton.target === "_blank"
+                                        ? "_blank"
+                                        : "_self"
+                                }
+                                rel={
+                                    primaryButton.target === "_blank"
+                                        ? "noopener noreferrer"
+                                        : undefined
+                                }
+                                className="theme-btn bgc-yellow"
+                            >
+                                {primaryButton.title}
+                            </a>
+                        )}
+                        {secondaryButton?.url && (
+                            <a
+                                href={secondaryButton.url}
+                                target={
+                                    secondaryButton.target === "_blank"
+                                        ? "_blank"
+                                        : "_self"
+                                }
+                                rel={
+                                    secondaryButton.target === "_blank"
+                                        ? "noopener noreferrer"
+                                        : undefined
+                                }
+                                className="theme-btn theme-btn-outline"
+                            >
+                                {secondaryButton.title}
+                            </a>
+                        )}
+                    </div>
                 </div>
             </div>
         </section>

@@ -31,7 +31,6 @@ interface HeroCTAButtons {
 interface HeroBannerProps {
     heroSectionTitle?: HeroSectionTitleDescription | null;
     backgroundImage?: ACFImage | any;
-    backgroundVideo?: ACFImage | any;
     select_bg_video?: ACFImage | any;
     ctaButtons?: HeroCTAButtons | null;
     primary_button?: CTAButton | any;
@@ -42,7 +41,6 @@ interface HeroBannerProps {
 export function HeroBanner({
     heroSectionTitle,
     backgroundImage,
-    backgroundVideo,
     select_bg_video,
     ctaButtons,
     primary_button,
@@ -50,18 +48,21 @@ export function HeroBanner({
     className,
 }: HeroBannerProps) {
     const normalizedImage = normalizeACFImage(backgroundImage);
-    const videoSource = select_bg_video || backgroundVideo;
+    const videoSource = select_bg_video;
     const normalizedVideo = normalizeACFImage(videoSource);
+    const videoUrl =
+        normalizedVideo?.url ||
+        (typeof videoSource === "string" ? videoSource : "");
     const title = heroSectionTitle?.title?.trim() || "";
     const description = heroSectionTitle?.short_description?.trim() || "";
     const primaryButton = ctaButtons?.primary_button || primary_button;
     const secondaryButton = ctaButtons?.secondary_button || secondary_button;
-    const hasVideoUrl = Boolean(normalizedVideo?.url);
-    const isVideoFile = Boolean(
-        videoSource?.mime_type?.startsWith("video/") ||
-        /\.(mp4|webm|ogg)(\?.*)?$/i.test(normalizedVideo?.url || "")
+    const hasVideoUrl = Boolean(videoUrl);
+    const isImageFile = Boolean(
+        videoSource?.mime_type?.startsWith("image/") ||
+        /\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(videoUrl)
     );
-    const hasBackgroundVideo = hasVideoUrl && isVideoFile;
+    const hasBackgroundVideo = hasVideoUrl && !isImageFile;
 
     //   console.log("HeroBanner - backgroundImage prop:", backgroundImage);
     //   console.log("HeroBanner - normalizedImage:", normalizedImage);
@@ -82,7 +83,7 @@ export function HeroBanner({
                         playsInline
                     >
                         <source
-                            src={normalizedVideo?.url}
+                            src={videoUrl}
                             type={videoSource?.mime_type || "video/mp4"}
                         />
                     </video>

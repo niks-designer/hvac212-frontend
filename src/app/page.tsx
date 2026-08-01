@@ -14,12 +14,7 @@ export default async function Home() {
     const flexibleContent = await getPageContentBySlug("home");
 
     return (
-        <div
-            className="relative min-h-screen overflow-hidden bg-cover bg-center bg-no-repeat"
-            style={{
-                backgroundImage: "url('/images/home-bg.webp')",
-            }}
-        >
+        <div className="relative min-h-screen overflow-hidden bg-[url(/images/home-bg.webp)] bg-cover bg-center bg-no-repeat in-[.light]:bg-none">
             {/* ACF Flexible Content Sections */}
             {flexibleContent.length > 0 && (
                 <FlexibleContentRenderer

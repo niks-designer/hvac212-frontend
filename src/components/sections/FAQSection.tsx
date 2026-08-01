@@ -40,7 +40,7 @@ export function FAQSection({
                     {title && <h2 className="h2-title">{title}</h2>}
                     {description && (
                         <div
-                            className="prose"
+                            className="fs-19"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
                     )}

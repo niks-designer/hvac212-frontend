@@ -14,6 +14,11 @@ import SelectHVACSystem from "./sections/SelectHVACSystem";
 import WhyChooseUs from "./sections/WhyChooseUs";
 import SystemReplacementSigns from "./sections/SystemReplacementSigns";
 import HVACProcess from "./sections/HVACProcess";
+import TroubleshootingGuide from "./sections/TroubleshootingGuide";
+import MaintenancePlans from "./sections/MaintenancePlans";
+import MaintenanceTerms from "./sections/MaintenanceTerms";
+import SafetyPerformanceProtocol from "./sections/SafetyPerformanceProtocol";
+import LicensesAndInsurance from "./sections/LicensesAndInsurance";
 import { ReactNode } from "react";
 import type {
     HeroSectionTitleDescription,
@@ -109,7 +114,7 @@ export function FlexibleContentRenderer({
                                 HeroSectionTitleDescription | undefined
                         }
                         backgroundImage={section.background_image as any}
-                        backgroundVideo={section.select_bg_video as any}
+                        select_bg_video={section.select_bg_video as any}
                         ctaButtons={section.cta_buttons as any}
                         primary_button={section.primary_button as any}
                         secondary_button={section.secondary_button as any}
@@ -312,6 +317,89 @@ export function FlexibleContentRenderer({
                         process_step={section.process_step as any}
                         process_cta={section.process_cta as any}
                         className={className}
+                    />
+                );
+
+            case "troubleshooting_guide":
+                return (
+                    <TroubleshootingGuide
+                        key={index}
+                        trouble_title={
+                            section.trouble_title as
+                                HeroSectionTitleDescription | undefined
+                        }
+                        safe_checks={section.safe_checks as any}
+                        warning_signs={section.warning_signs as any}
+                        trouble_btm_description={
+                            section.trouble_btm_description as
+                                string | undefined
+                        }
+                        trouble_btm_action={
+                            section.trouble_btm_action as string | undefined
+                        }
+                        trouble_cta_buttons={section.trouble_cta_buttons as any}
+                        className={className}
+                    />
+                );
+
+            case "maintenance_plans":
+                return (
+                    <MaintenancePlans
+                        key={index}
+                        plans_title={
+                            section.plans_title as
+                                HeroSectionTitleDescription | undefined
+                        }
+                        plans={section.plans as any}
+                        className={className}
+                    />
+                );
+
+            case "safety_performance_protocol":
+                return (
+                    <SafetyPerformanceProtocol
+                        key={index}
+                        safety_title={
+                            section.safety_title as
+                                HeroSectionTitleDescription | undefined
+                        }
+                        safety_categories={section.safety_categories as any}
+                        className={className}
+                    />
+                );
+
+            case "licenses_and_insurance":
+                return (
+                    <LicensesAndInsurance
+                        key={index}
+                        licenses_item={section.licenses_item as any}
+                        className={className}
+                    />
+                );
+
+            case "maintenance_terms":
+                return (
+                    <MaintenanceTerms
+                        key={index}
+                        layout={
+                            (section.layout as {
+                                mt_link_text?: string;
+                                mt_description?: string;
+                            }) ?? undefined
+                        }
+                        mt_link_text={
+                            section.mt_link_text as string | undefined
+                        }
+                        mt_description={
+                            section.mt_description as string | undefined
+                        }
+                        termsPopupTitle={
+                            section.termsPopupTitle as string | undefined
+                        }
+                        termsPopupContent={
+                            section.termsPopupContent as string | undefined
+                        }
+                        enroll_button={section.enroll_button as any}
                     />
                 );
 

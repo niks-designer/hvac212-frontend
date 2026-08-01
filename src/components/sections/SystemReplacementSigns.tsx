@@ -66,7 +66,7 @@ export default function SystemReplacementSigns({
                         )}
 
                         {items.length > 0 && (
-                            <div className="mx-auto mt-10 w-fit space-y-5">
+                            <div className="mx-auto mt-10 w-fit max-w-190 space-y-5">
                                 {items.map((item, index) => (
                                     <div
                                         key={index}
@@ -111,7 +111,7 @@ export default function SystemReplacementSigns({
 
                                             {item.srs_description && (
                                                 <div
-                                                    className="prose mt-1 max-w-none text-sm sm:mt-2 sm:text-base lg:text-[21px]"
+                                                    className="prose mt-1 max-w-none text-base sm:mt-2 lg:text-[21px]"
                                                     dangerouslySetInnerHTML={{
                                                         __html: item.srs_description,
                                                     }}
@@ -125,7 +125,7 @@ export default function SystemReplacementSigns({
 
                         {bottom_description && (
                             <div
-                                className="prose fs-19 mt-8 text-center"
+                                className="prose fs-19 mt-10 text-center"
                                 dangerouslySetInnerHTML={{
                                     __html: bottom_description,
                                 }}
@@ -134,7 +134,7 @@ export default function SystemReplacementSigns({
 
                         {srs_bottom_action && (
                             <div
-                                className="action-link mt-10 text-center text-4xl font-bold"
+                                className="action-link mt-10 text-center text-2xl font-bold lg:text-4xl"
                                 dangerouslySetInnerHTML={{
                                     __html: srs_bottom_action,
                                 }}

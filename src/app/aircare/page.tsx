@@ -62,7 +62,7 @@ export default async function AirCarePage() {
                 <FlexibleContentRenderer
                     sections={flexibleContent}
                     sectionClassNames={{
-                        services_grid: "",
+                        heading_with_bottom_action: ["", "pt-10 lg:pt-16"],
                     }}
                 />
             ) : (

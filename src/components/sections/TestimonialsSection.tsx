@@ -23,6 +23,74 @@ interface ReviewPlatform {
     button?: LinkField | null;
 }
 
+const DEFAULT_REVIEW_PLATFORMS: ReviewPlatform[] = [
+    {
+        logo: {
+            id: 1,
+            url: "/images/testimonials-logo/google-logo.png",
+            alt: "Google",
+            title: "Google",
+        },
+        button: {
+            title: "Read More",
+            url: "https://google.com/maps/place//data=!4m2!3m1!1s0x89c2595f953a325f:0xa7a86039d5636fdd?source=g.page.m.we",
+            target: "_blank",
+        },
+    },
+    {
+        logo: {
+            id: 2,
+            url: "/images/testimonials-logo/yelp-logo.png",
+            alt: "Yelp",
+            title: "Yelp",
+        },
+        button: {
+            title: "Read More",
+            url: "https://www.yelp.com/biz/212-hvac-brooklyn-2",
+            target: "_blank",
+        },
+    },
+    {
+        logo: {
+            id: 3,
+            url: "/images/testimonials-logo/angi-logo.png",
+            alt: "Angi",
+            title: "Angi",
+        },
+        button: {
+            title: "Read More",
+            url: "https://www.angi.com/companylist/us/ny/brooklyn/212-hvac-reviews-8590492.htm",
+            target: "_blank",
+        },
+    },
+    {
+        logo: {
+            id: 4,
+            url: "/images/testimonials-logo/bbb-logo.png",
+            alt: "BBB",
+            title: "BBB",
+        },
+        button: {
+            title: "Read More",
+            url: "https://www.bbb.org/us/ny/brooklyn/profile/air-conditioning-repair/212-hvac-llc-0121-168110#sealclick",
+            target: "_blank",
+        },
+    },
+    {
+        logo: {
+            id: 5,
+            url: "/images/testimonials-logo/expertise-logo.png",
+            alt: "Expertise",
+            title: "Expertise",
+        },
+        button: {
+            title: "Read More",
+            url: "https://www.expertise.com/home-improvement/ac-repair/new-york/nyc#212HVAC",
+            target: "_blank",
+        },
+    },
+];
+
 interface TestimonialsSectionProps {
     testimonial_section_title?: HeroSectionTitleDescription | null;
     testimonials?: Testimonial[];
@@ -46,6 +114,10 @@ export function TestimonialsSection({
     const title = testimonial_section_title?.title?.trim() || "Testimonials";
     const description =
         testimonial_section_title?.short_description?.trim() || "";
+    const reviewPlatformsItems =
+        review_platforms && review_platforms.length > 0
+            ? review_platforms
+            : DEFAULT_REVIEW_PLATFORMS;
 
     const onSelect = useCallback(() => {
         if (!emblaApi) return;
@@ -166,7 +238,7 @@ export function TestimonialsSection({
                                                         {/* Author Section */}
                                                         <div className="flex items-center justify-center gap-3 sm:gap-4">
                                                             {/* Author Avatar */}
-                                                            <div className="bg-blue flex h-12 w-12 items-center justify-center rounded-full sm:h-13 sm:w-13">
+                                                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0097a7] sm:h-13 sm:w-13">
                                                                 {authorImage?.url ? (
                                                                     <Image
                                                                         src={
@@ -281,73 +353,78 @@ export function TestimonialsSection({
                         </div>
 
                         {/* Review Platforms */}
-                        {review_platforms && review_platforms.length > 0 && (
+                        {reviewPlatformsItems.length > 0 && (
                             <div className="mt-10 sm:mt-12">
                                 <div className="flex flex-wrap items-end justify-center gap-5 sm:gap-6 md:gap-8">
-                                    {review_platforms.map((platform, index) => {
-                                        const logoImage = normalizeACFImage(
-                                            platform.logo
-                                        );
+                                    {reviewPlatformsItems.map(
+                                        (platform, index) => {
+                                            const logoImage = normalizeACFImage(
+                                                platform.logo
+                                            );
 
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="flex w-[calc(50%-0.75rem)] flex-col items-center gap-4 sm:w-auto sm:gap-6"
-                                            >
-                                                {/* Logo */}
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    className="flex w-[calc(50%-0.75rem)] flex-col items-center gap-4 sm:w-auto sm:gap-6"
+                                                >
+                                                    {/* Logo */}
 
-                                                {logoImage?.url && (
-                                                    <div className="relative max-w-40 sm:max-w-none">
-                                                        <Image
-                                                            src={logoImage.url}
-                                                            alt={
-                                                                logoImage.alt ||
-                                                                "Review platform"
-                                                            }
-                                                            width={
-                                                                logoImage.width ||
-                                                                100
-                                                            }
-                                                            height={
-                                                                logoImage.height ||
-                                                                50
-                                                            }
-                                                            className="light-brand"
-                                                            unoptimized
-                                                        />
-                                                    </div>
-                                                )}
+                                                    {logoImage?.url && (
+                                                        <div className="relative max-w-40 sm:max-w-none">
+                                                            <Image
+                                                                src={
+                                                                    logoImage.url
+                                                                }
+                                                                alt={
+                                                                    logoImage.alt ||
+                                                                    "Review platform"
+                                                                }
+                                                                width={
+                                                                    logoImage.width ||
+                                                                    100
+                                                                }
+                                                                height={
+                                                                    logoImage.height ||
+                                                                    50
+                                                                }
+                                                                className="light-brand h-auto w-auto"
+                                                                unoptimized
+                                                            />
+                                                        </div>
+                                                    )}
 
-                                                {/* Button */}
-                                                {platform.button?.url && (
-                                                    <a
-                                                        href={
-                                                            platform.button.url
-                                                        }
-                                                        target={
-                                                            platform.button
-                                                                .target ===
-                                                            "_blank"
-                                                                ? "_blank"
-                                                                : "_self"
-                                                        }
-                                                        rel={
-                                                            platform.button
-                                                                .target ===
-                                                            "_blank"
-                                                                ? "noopener noreferrer"
-                                                                : undefined
-                                                        }
-                                                        className="bg-yellow text-primary text-md hover:bg-blue inline-block rounded-full px-6 py-3 font-semibold transition-colors sm:px-7 sm:py-4"
-                                                    >
-                                                        {platform.button
-                                                            .title ||
-                                                            "Read More"}
-                                                    </a>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
+                                                    {/* Button */}
+                                                    {platform.button?.url && (
+                                                        <a
+                                                            href={
+                                                                platform.button
+                                                                    .url
+                                                            }
+                                                            target={
+                                                                platform.button
+                                                                    .target ===
+                                                                "_blank"
+                                                                    ? "_blank"
+                                                                    : "_self"
+                                                            }
+                                                            rel={
+                                                                platform.button
+                                                                    .target ===
+                                                                "_blank"
+                                                                    ? "noopener noreferrer"
+                                                                    : undefined
+                                                            }
+                                                            className="bg-yellow text-primary text-md hover:bg-blue inline-block rounded-full px-6 py-3 font-semibold transition-colors sm:px-7 sm:py-4"
+                                                        >
+                                                            {platform.button
+                                                                .title ||
+                                                                "Read More"}
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            );
+                                        }
+                                    )}
                                 </div>
                             </div>
                         )}

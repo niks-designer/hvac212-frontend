@@ -3,6 +3,7 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ContactPopupProvider } from "@/components/contactpopup";
+import { SiteSettingsProvider } from "@/components/providers/SiteSettingsProvider";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { getSiteData, SiteData } from "@/lib/wordpress";
@@ -28,16 +29,22 @@ export default async function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <body className={`min-h-full`}>
                 <ThemeProvider>
-                    <ContactPopupProvider>
-                        <Header siteData={siteData} />
-                        <main
-                            className="grow"
-                            style={{ paddingTop: "var(--site-header-height)" }}
-                        >
-                            {children}
-                        </main>
-                        <Footer siteData={siteData} />
-                    </ContactPopupProvider>
+                    <SiteSettingsProvider
+                        siteSettings={siteData?.settings ?? null}
+                    >
+                        <ContactPopupProvider>
+                            <Header siteData={siteData} />
+                            <main
+                                className="grow"
+                                style={{
+                                    paddingTop: "var(--site-header-height)",
+                                }}
+                            >
+                                {children}
+                            </main>
+                            <Footer siteData={siteData} />
+                        </ContactPopupProvider>
+                    </SiteSettingsProvider>
                 </ThemeProvider>
             </body>
         </html>

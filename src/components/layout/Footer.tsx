@@ -55,6 +55,8 @@ export default function Footer({ siteData }: FooterProps) {
     );
     const email = footerSettings.email;
     const officeAddress = footerSettings.officeAddress;
+    const phone = footerSettings.phoneNumber;
+    const phoneHref = phone ? `tel:${phone.replace(/[^0-9+]/g, "")}` : "";
     const manhattanLink = footerSettings.manhattanLink;
     const copyright =
         footerSettings.copyright ||
@@ -268,6 +270,17 @@ export default function Footer({ siteData }: FooterProps) {
                                         Office &amp; Warehouse:
                                     </span>{" "}
                                     {officeAddress}
+                                    {phone ? (
+                                        <>
+                                            {" | "}
+                                            <a
+                                                href={phoneHref}
+                                                className="hover:text-blue transition-colors"
+                                            >
+                                                {phone}
+                                            </a>
+                                        </>
+                                    ) : null}
                                 </p>
                             ) : null}
                             {manhattanLink?.title && manhattanLink?.url ? (

@@ -29,7 +29,7 @@ export default function WhyChooseUs({
     return (
         <section className={`${className || "py-10 lg:py-16"}`}>
             <div className="container">
-                <div className="mx-auto max-w-4xl">
+                <div className="mx-auto max-w-5xl">
                     {(title || description) && (
                         <div className="sec-ttl mb-6 space-y-4 text-center lg:mb-10 lg:space-y-5">
                             {title && <h2 className="h2-title">{title}</h2>}
@@ -90,7 +90,7 @@ export default function WhyChooseUs({
 
                                         {feature.wcuf_description && (
                                             <div
-                                                className="prose mt-1 max-w-none text-sm sm:mt-2 sm:text-base lg:text-[21px]"
+                                                className="prose mt-1 max-w-none text-base sm:mt-2 lg:text-[21px]"
                                                 dangerouslySetInnerHTML={{
                                                     __html: feature.wcuf_description,
                                                 }}

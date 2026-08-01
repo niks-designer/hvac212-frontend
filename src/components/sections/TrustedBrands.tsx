@@ -54,6 +54,225 @@ interface NormalizedBrandLogo {
     };
 }
 
+const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/trane-logo.png",
+            alt: "Trane",
+            title: "Trane",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/trane-light-logo.png",
+            alt: "Trane",
+            title: "Trane",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/mitsubishi-logo.png",
+            alt: "Mitsubishi",
+            title: "Mitsubishi",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/mitsubishi-light-logo.png",
+            alt: "Mitsubishi",
+            title: "Mitsubishi",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/fujitsu-logo.png",
+            alt: "Fujitsu",
+            title: "Fujitsu",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/fujitsu-light-logo.png",
+            alt: "Fujitsu",
+            title: "Fujitsu",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/york-logo.png",
+            alt: "York",
+            title: "York",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/york-light-logo.png",
+            alt: "York",
+            title: "York",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/carrier-logo.png",
+            alt: "Carrier",
+            title: "Carrier",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/carrier-light-logo.png",
+            alt: "Carrier",
+            title: "Carrier",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/goodman-logo.png",
+            alt: "Goodman",
+            title: "Goodman",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/goodman-light-logo.png",
+            alt: "Goodman",
+            title: "Goodman",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/lennox-logo.png",
+            alt: "Lennox",
+            title: "Lennox",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/lennox-light-logo.png",
+            alt: "Lennox",
+            title: "Lennox",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/daikin-logo.png",
+            alt: "Daikin",
+            title: "Daikin",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/daikin-light-logo.png",
+            alt: "Daikin",
+            title: "Daikin",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/american-standard-logo.png",
+            alt: "American Standard",
+            title: "American Standard",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/american-standard-light-logo.png",
+            alt: "American Standard",
+            title: "American Standard",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/rheem-logo.png",
+            alt: "Rheem",
+            title: "Rheem",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/rheem-light-logo.png",
+            alt: "Rheem",
+            title: "Rheem",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/luxaire-logo.png",
+            alt: "Luxaire",
+            title: "Luxaire",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/luxaire-light-logo.png",
+            alt: "Luxaire",
+            title: "Luxaire",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+    {
+        darkLogo: {
+            url: "/images/trusted-brands/samsung-logo.png",
+            alt: "Samsung",
+            title: "Samsung",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+        lightLogo: {
+            url: "/images/trusted-brands/samsung-light-logo.png",
+            alt: "Samsung",
+            title: "Samsung",
+            width: 160,
+            height: 48,
+            unoptimized: false,
+        },
+    },
+];
+
 function toPositiveNumber(value: unknown): number | null {
     if (typeof value === "number" && Number.isFinite(value) && value > 0) {
         return value;
@@ -162,11 +381,15 @@ export default function TrustedBrands({
     const title = brands_title?.title?.trim() || "";
     const shortDescription = brands_title?.short_description || "";
 
-    if (!brand_logos || brand_logos.length === 0) return null;
-
-    const logos = brand_logos
-        .map((item) => normalizeBrandLogo(item))
-        .filter((logo): logo is NormalizedBrandLogo => !!logo?.darkLogo?.url);
+    const logos =
+        brand_logos && brand_logos.length > 0
+            ? brand_logos
+                  .map((item) => normalizeBrandLogo(item))
+                  .filter(
+                      (logo): logo is NormalizedBrandLogo =>
+                          !!logo?.darkLogo?.url
+                  )
+            : DEFAULT_BRAND_LOGOS;
 
     if (logos.length === 0) return null;
 

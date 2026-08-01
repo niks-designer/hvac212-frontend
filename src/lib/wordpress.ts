@@ -64,6 +64,7 @@ export interface FooterSettings {
     phoneNumber?: string;
     email?: string;
     officeAddress?: string;
+    mapEmbedUrl?: string;
     siteLogo?: string;
     darkLogo?: string;
     footerLogo?: string;
@@ -77,6 +78,8 @@ export interface FooterSettings {
     twitter?: string;
     linkedin?: string;
     youtube?: string;
+    termsPopupTitle?: string;
+    termsPopupContent?: string;
 }
 
 export interface SiteMenus {

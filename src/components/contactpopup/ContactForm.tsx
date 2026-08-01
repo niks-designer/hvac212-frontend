@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 
 export default function ContactForm() {
+    const photoInputId = useId();
+
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -224,7 +226,10 @@ export default function ContactForm() {
                     )}
                 </div>
 
-                <label htmlFor="photo" className="cursor-pointer underline">
+                <label
+                    htmlFor={photoInputId}
+                    className="cursor-pointer underline"
+                >
                     <span className="flex items-center gap-2 text-sm text-[#002D3E]">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -241,7 +246,7 @@ export default function ContactForm() {
                         Upload unit photo
                     </span>
                     <input
-                        id="photo"
+                        id={photoInputId}
                         name="your-photo"
                         type="file"
                         hidden
