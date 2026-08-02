@@ -34,13 +34,13 @@ export default function LicensesAndInsurance({
                                 className="flex flex-col items-center gap-5 md:w-fit md:flex-row md:gap-9"
                             >
                                 {img?.url && (
-                                    <div className="min-w-[325px] text-center">
+                                    <div className="min-w-81.25 text-center">
                                         <Image
                                             src={img.url}
                                             alt={img.alt || img.title || ""}
                                             width={img.width || 160}
                                             height={img.height || 80}
-                                            className={`mx-auto w-auto${index === 0 || index === 3 ? " light-brand" : ""}`}
+                                            className={`mx-auto ${index === 0 || index === 3 ? "light-brand" : ""}`}
                                         />
                                     </div>
                                 )}
