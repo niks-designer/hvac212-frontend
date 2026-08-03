@@ -5,11 +5,13 @@ import { getPageContentBySlug } from "@/lib/wordpress";
 import { generatePageMetadata } from "@/lib/seo";
 
 export async function generateMetadata() {
-    return generatePageMetadata("furnace-installation");
+    return generatePageMetadata("ductless-mini-split-installation");
 }
 
-export default async function FurnaceInstallationPage() {
-    const flexibleContent = await getPageContentBySlug("furnace-installation");
+export default async function DuctlessMiniSplitInstallationPage() {
+    const flexibleContent = await getPageContentBySlug(
+        "ductless-mini-split-installation"
+    );
 
     return (
         <div className="relative min-h-screen overflow-hidden">
@@ -54,14 +56,20 @@ export default async function FurnaceInstallationPage() {
                 <FlexibleContentRenderer
                     sections={flexibleContent}
                     sectionClassNames={{
-                        section_heading: ["pb-10 lg:pb-16"],
+                        section_heading: ["pb-10 lg:pb-16", ""],
+                        why_choose_us: {
+                            contentClassName: "max-w-226",
+                        },
+                        system_replacement_signs: {
+                            contentClassName: "max-w-208.75",
+                        },
                     }}
                 />
             ) : (
                 <section className="px-4 py-24 text-center md:px-8 lg:px-16">
                     <div className="bg-secondary mx-auto max-w-3xl rounded-2xl border border-white/10 p-12">
                         <h1 className="text-3xl font-bold">
-                            Furnace Installation
+                            Ductless Mini Split Installation
                         </h1>
                         <p className="mt-4">
                             Content for this page will appear here once it is

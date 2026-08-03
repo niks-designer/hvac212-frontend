@@ -31,11 +31,18 @@ interface ACFFlexibleContent {
     [key: string]: unknown;
 }
 
+interface SectionClassConfig {
+    className?: string;
+    contentClassName?: string;
+}
+
+type SectionClassValue = string | string[] | SectionClassConfig;
+
 interface FlexibleContentRendererProps {
     sections: ACFFlexibleContent[];
     // allow either an object map or a JSON string (string is a fallback when serialization fails)
     // values can be single strings or arrays of strings for multiple occurrences of the same layout
-    sectionClassNames?: Record<string, string | string[]> | string;
+    sectionClassNames?: Record<string, SectionClassValue> | string;
 }
 
 export function FlexibleContentRenderer({
@@ -43,7 +50,7 @@ export function FlexibleContentRenderer({
     sectionClassNames = {},
 }: FlexibleContentRendererProps) {
     // Normalize sectionClassNames to an object map at runtime
-    let sectionClassMap: Record<string, string | string[]> = {};
+    let sectionClassMap: Record<string, SectionClassValue> = {};
     try {
         if (typeof sectionClassNames === "string") {
             sectionClassMap = JSON.parse(sectionClassNames || "{}");
@@ -53,7 +60,7 @@ export function FlexibleContentRenderer({
         ) {
             sectionClassMap = sectionClassNames as Record<
                 string,
-                string | string[]
+                SectionClassValue
             >;
         }
     } catch (e) {
@@ -73,25 +80,25 @@ export function FlexibleContentRenderer({
     const layoutIndexes: Record<string, number> = {};
 
     // Helper function to get the appropriate class for a layout
-    const getLayoutClass = (layout: string): string => {
-        const classOrArray = sectionClassMap?.[layout];
+    const getLayoutConfig = (layout: string): SectionClassConfig => {
+        const classValue = sectionClassMap?.[layout];
 
-        if (!classOrArray) {
-            return "";
+        if (!classValue) {
+            return {};
         }
 
-        // If it's a string, return it as-is
-        if (typeof classOrArray === "string") {
-            return classOrArray;
+        // If it's a plain string, use it as the outer class name
+        if (typeof classValue === "string") {
+            return { className: classValue };
         }
 
         // If it's an array, get the class at the current index for this layout
-        if (Array.isArray(classOrArray)) {
+        if (Array.isArray(classValue)) {
             const currentIndex = layoutIndexes[layout] || 0;
-            return classOrArray[currentIndex] || "";
+            return { className: classValue[currentIndex] || "" };
         }
 
-        return "";
+        return classValue;
     };
 
     const renderSection = (
@@ -101,7 +108,7 @@ export function FlexibleContentRenderer({
         const layout = section.acf_fc_layout;
 
         // Get the class for this occurrence and increment the index for next time
-        const className = getLayoutClass(layout);
+        const { className, contentClassName } = getLayoutConfig(layout);
         layoutIndexes[layout] = (layoutIndexes[layout] || 0) + 1;
 
         switch (layout) {
@@ -275,7 +282,11 @@ export function FlexibleContentRenderer({
                             section.features_lists as
                                 WhyChooseUsFeatureItem[] | undefined
                         }
+                        wcu_bottom_action={
+                            section.wcu_bottom_action as string | undefined
+                        }
                         className={className}
+                        contentClassName={contentClassName}
                     />
                 );
 
@@ -302,6 +313,7 @@ export function FlexibleContentRenderer({
                             section.secondary_title as string | undefined
                         }
                         className={className}
+                        contentClassName={contentClassName}
                     />
                 );
 
@@ -339,6 +351,7 @@ export function FlexibleContentRenderer({
                         }
                         trouble_cta_buttons={section.trouble_cta_buttons as any}
                         className={className}
+                        contentClassName={contentClassName}
                     />
                 );
 

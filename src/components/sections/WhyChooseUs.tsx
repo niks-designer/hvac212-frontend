@@ -10,43 +10,80 @@ interface WhyChooseUsFeatureItem {
 interface WhyChooseUsProps {
     wcu_title?: HeroSectionTitleDescription | null;
     features_lists?: WhyChooseUsFeatureItem[] | null;
+    wcu_bottom_action?: string | null;
     className?: string;
+    contentClassName?: string;
 }
+
+const DEFAULT_TITLE = "The 212 HVAC Standard";
+
+const DEFAULT_FEATURES: WhyChooseUsFeatureItem[] = [
+    {
+        wcuf_title: "A+ Rated Service",
+        wcuf_description: "Proudly recognized by the Better Business Bureau",
+    },
+    {
+        wcuf_title: "Complete Diagnostics",
+        wcuf_description:
+            "Thorough evaluations for heating and cooling systems",
+    },
+    {
+        wcuf_title: "Detailed Safety Inspections",
+        wcuf_description: "Identifying leaks cracks and air flow issues",
+    },
+    {
+        wcuf_title: "Preventive Maintenance",
+        wcuf_description: "Essential system tuning to prevent future repairs",
+    },
+    {
+        wcuf_title: "Certified Expertise",
+        wcuf_description:
+            "All repairs performed by licensed and insured technicians",
+    },
+];
 
 export default function WhyChooseUs({
     wcu_title,
     features_lists,
+    wcu_bottom_action,
     className,
+    contentClassName,
 }: WhyChooseUsProps) {
     const title = wcu_title?.title?.trim() || "";
     const description = wcu_title?.short_description?.trim() || "";
     const features = Array.isArray(features_lists) ? features_lists : [];
-
-    if (!title && !description && features.length === 0) {
-        return null;
-    }
+    const bottomAction = wcu_bottom_action?.trim() || "";
+    const displayTitle = title || DEFAULT_TITLE;
+    const displayDescription = description;
+    const displayFeatures = features.length > 0 ? features : DEFAULT_FEATURES;
 
     return (
         <section className={`${className || "py-10 lg:py-16"}`}>
             <div className="container">
                 <div className="mx-auto max-w-5xl">
-                    {(title || description) && (
+                    {(displayTitle || displayDescription) && (
                         <div className="sec-ttl mb-6 space-y-4 text-center lg:mb-10 lg:space-y-5">
-                            {title && <h2 className="h2-title">{title}</h2>}
-                            {description && (
+                            {displayTitle && (
+                                <h2 className="h2-title">{displayTitle}</h2>
+                            )}
+                            {displayDescription && (
                                 <div
                                     className="prose fs-19"
                                     dangerouslySetInnerHTML={{
-                                        __html: description,
+                                        __html: displayDescription,
                                     }}
                                 />
                             )}
                         </div>
                     )}
 
-                    {features.length > 0 && (
-                        <div className="mx-auto w-fit max-w-175 space-y-5">
-                            {features.map((feature, index) => (
+                    {displayFeatures.length > 0 && (
+                        <div
+                            className={`mx-auto w-fit space-y-5 ${
+                                contentClassName || "max-w-175"
+                            }`}
+                        >
+                            {displayFeatures.map((feature, index) => (
                                 <div
                                     key={index}
                                     className="flex items-start gap-3 sm:gap-4 lg:gap-5"
@@ -100,6 +137,15 @@ export default function WhyChooseUs({
                                 </div>
                             ))}
                         </div>
+                    )}
+
+                    {bottomAction && (
+                        <div
+                            className="action-link mt-6 text-center text-2xl font-bold lg:mt-10 lg:text-4xl"
+                            dangerouslySetInnerHTML={{
+                                __html: bottomAction,
+                            }}
+                        />
                     )}
                 </div>
             </div>

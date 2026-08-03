@@ -16,6 +16,15 @@ interface MaintenanceTermsProps {
     enroll_button?: LinkField | null;
 }
 
+const DEFAULT_LINK_TEXT = "See Terms & Conditions";
+const DEFAULT_TERMS_DESCRIPTION =
+    "Memberships apply to equipment in good working condition at the initial visit. Troubleshooting and repairs for <br>malfunctioning units will be quoted separately.";
+const DEFAULT_ENROLL_BUTTON: Required<LinkField> = {
+    title: "Enroll Today",
+    url: "https://app.kickserv.com/212hvac/portal",
+    target: "_blank",
+};
+
 export default function MaintenanceTerms({
     layout,
     mt_link_text,
@@ -72,34 +81,31 @@ export default function MaintenanceTerms({
 
     const linkText =
         (mt_link_text ?? layout?.mt_link_text ?? "").trim() ||
-        "Terms & Conditions";
+        DEFAULT_LINK_TEXT;
     const description =
-        (mt_description ?? layout?.mt_description ?? "").trim() || "";
+        (mt_description ?? layout?.mt_description ?? "").trim() ||
+        DEFAULT_TERMS_DESCRIPTION;
     const popupTitle =
         (termsPopupTitle ?? globalSettings?.termsPopupTitle ?? "").trim() ||
         "Terms & Conditions";
     const popupContent =
         (termsPopupContent ?? globalSettings?.termsPopupContent ?? "").trim() ||
         "";
-    const enrollButtonText = (enroll_button?.title ?? "").trim();
-    const enrollButtonUrl = (enroll_button?.url ?? "").trim();
-    const enrollButtonTarget =
-        (enroll_button?.target ?? "").trim() || undefined;
-    const hasEnrollButton = Boolean(enrollButtonText && enrollButtonUrl);
 
-    if (
-        !linkText &&
-        !description &&
-        !popupTitle &&
-        !popupContent &&
-        !hasEnrollButton
-    ) {
-        return null;
-    }
+    const enrollButtonText = (
+        enroll_button?.title ?? DEFAULT_ENROLL_BUTTON.title
+    ).trim();
+    const enrollButtonUrl = (
+        enroll_button?.url ?? DEFAULT_ENROLL_BUTTON.url
+    ).trim();
+    const enrollButtonTarget =
+        (enroll_button?.target ?? DEFAULT_ENROLL_BUTTON.target).trim() ||
+        undefined;
+    const hasEnrollButton = Boolean(enrollButtonText && enrollButtonUrl);
 
     return (
         <>
-            <div className="w-full px-4 py-8 text-center">
+            <div className="w-full px-4 py-10 text-center lg:py-15">
                 {hasEnrollButton ? (
                     <div className="mb-4 lg:mb-8">
                         <a

@@ -35,8 +35,15 @@ export default function HeadingWithBottomAction({
     return (
         <section className={`${className || "py-10 lg:py-16"}`}>
             <div className="container">
-                <div className="relative z-10 mx-auto flex max-w-5xl flex-col gap-5 text-center lg:gap-8">
-                    {heading && <h2 className="h2-title">{heading}</h2>}
+                <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-5 text-center lg:gap-8">
+                    {heading && (
+                        <h2
+                            className="h2-title"
+                            dangerouslySetInnerHTML={{
+                                __html: heading,
+                            }}
+                        />
+                    )}
 
                     {shortDescription && (
                         <div

@@ -23,6 +23,7 @@ interface TroubleshootingGuideProps {
         secondary_button?: LinkField | null;
     } | null;
     className?: string;
+    contentClassName?: string;
 }
 
 function StatusIcon({ variant }: { variant: "check" | "cross" }) {
@@ -84,6 +85,7 @@ export default function TroubleshootingGuide({
     trouble_btm_action,
     trouble_cta_buttons,
     className,
+    contentClassName,
 }: TroubleshootingGuideProps) {
     const title = trouble_title?.title?.trim() || "";
     const description = trouble_title?.short_description?.trim() || "";
@@ -108,7 +110,7 @@ export default function TroubleshootingGuide({
             <div className="container px-0! md:px-4!">
                 <div className="bg-[#ececec] px-6 py-10 sm:px-8 sm:py-12 md:rounded-3xl lg:px-12 lg:py-14 dark:bg-[#070F1D99]">
                     {(title || description) && (
-                        <div className="sec-ttl mx-auto max-w-4xl space-y-5 text-center">
+                        <div className="sec-ttl mx-auto space-y-5 text-center">
                             {title && (
                                 <h2
                                     className="h2-title"
@@ -129,7 +131,11 @@ export default function TroubleshootingGuide({
                     )}
 
                     {(safeChecks.length > 0 || warningSigns.length > 0) && (
-                        <div className="mt-14 grid gap-13 md:px-10 lg:grid-cols-2">
+                        <div
+                            className={`mt-14 grid gap-13 ${
+                                contentClassName || "md:px-10"
+                            } lg:grid-cols-2`}
+                        >
                             {safeChecks.length > 0 && (
                                 <div>
                                     <div className="mx-auto w-fit max-w-175 space-y-5">

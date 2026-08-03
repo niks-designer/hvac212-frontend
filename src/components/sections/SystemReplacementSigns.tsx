@@ -18,6 +18,7 @@ interface SystemReplacementSignsProps {
     } | null;
     secondary_title?: string | null;
     className?: string;
+    contentClassName?: string;
 }
 
 export default function SystemReplacementSigns({
@@ -28,6 +29,7 @@ export default function SystemReplacementSigns({
     srs_cta_buttons,
     secondary_title,
     className,
+    contentClassName,
 }: SystemReplacementSignsProps) {
     const title = srs_title?.title?.trim() || "";
     const description = srs_title?.short_description?.trim() || "";
@@ -53,7 +55,14 @@ export default function SystemReplacementSigns({
                     <div className="mx-auto">
                         {(title || description) && (
                             <div className="sec-ttl mx-auto space-y-5 text-center">
-                                {title && <h2 className="h2-title">{title}</h2>}
+                                {title && (
+                                    <h2
+                                        className="h2-title"
+                                        dangerouslySetInnerHTML={{
+                                            __html: title,
+                                        }}
+                                    />
+                                )}
                                 {description && (
                                     <div
                                         className="prose fs-19"
@@ -66,7 +75,11 @@ export default function SystemReplacementSigns({
                         )}
 
                         {items.length > 0 && (
-                            <div className="mx-auto mt-10 w-fit max-w-190 space-y-5">
+                            <div
+                                className={`mx-auto mt-10 w-fit space-y-5 ${
+                                    contentClassName || "max-w-190"
+                                }`}
+                            >
                                 {items.map((item, index) => (
                                     <div
                                         key={index}
@@ -203,7 +216,7 @@ export default function SystemReplacementSigns({
                         {secondary_title && (
                             <div className="text-center">
                                 <h3
-                                    className="mx-auto text-3xl leading-tight font-semibold lg:text-[35px]"
+                                    className="mx-auto text-[20px] leading-6 lg:leading-9 font-semibold lg:text-[26px]"
                                     dangerouslySetInnerHTML={{
                                         __html: secondary_title,
                                     }}

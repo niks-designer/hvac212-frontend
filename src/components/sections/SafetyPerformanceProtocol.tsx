@@ -29,7 +29,7 @@ const DEFAULT_SAFETY_CATEGORIES: SafetyCategory[] = [
         safety_checklist: [
             {
                 checklist_text:
-                    "<b>Test</b> compressor operating voltage and amperage",
+                    "<b>Test</b> compressor operating voltage <br>and amperage",
             },
             { checklist_text: "<b>Inspect</b> electrical disconnect switch" },
             { checklist_text: "<b>Verify</b> all electrical connections" },
@@ -52,7 +52,7 @@ const DEFAULT_SAFETY_CATEGORIES: SafetyCategory[] = [
             { checklist_text: "<b>Review</b> blower wheel and bearings" },
             {
                 checklist_text:
-                    "<b>Monitor</b> indoor evaporator discharge temperature",
+                    "<b>Monitor</b> indoor evaporator <br>discharge temperature",
             },
         ],
     },
@@ -61,14 +61,14 @@ const DEFAULT_SAFETY_CATEGORIES: SafetyCategory[] = [
         safety_checklist: [
             {
                 checklist_text:
-                    "<b>Clean or Replace</b> air filters (filters not included)",
+                    "<b>Clean or Replace</b> air filters (filters <br>not included)",
             },
             { checklist_text: "<b>Inspect and Clean</b> evaporator coil" },
             { checklist_text: "<b>Inspect and Clean</b> condenser coil" },
             { checklist_text: "<b>Flush and Drain</b> condensate pump" },
             {
                 checklist_text:
-                    "<b>Verify</b> refrigerant charge and operating pressures",
+                    "<b>Verify</b> refrigerant charge and <br>operating pressures",
             },
         ],
     },

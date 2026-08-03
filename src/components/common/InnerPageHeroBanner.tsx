@@ -60,10 +60,10 @@ export function InnerPageHeroBanner({
                     <div className="hero-overlay absolute inset-0"></div>
                 </div>
             ) : (
-                <div className="absolute inset-0 bg-linear-to-r from-blue to-primary"></div>
+                <div className="from-blue to-primary absolute inset-0 bg-linear-to-r"></div>
             )}
 
-            <div className="relative z-10 flex max-w-3xl flex-col gap-4 px-4 text-center text-white">
+            <div className="relative z-10 flex flex-col gap-4 px-4 text-center text-white">
                 {heading && <h1 className="h1-title">{heading}</h1>}
                 {description && (
                     <div
