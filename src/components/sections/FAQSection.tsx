@@ -100,7 +100,7 @@ function AccordionItem({
     };
 
     return (
-        <div className="bg-testimonial flex h-full flex-col items-center justify-center rounded-2xl px-3 py-8 text-center transition-colors duration-300">
+        <div className="bg-testimonial flex h-full flex-col items-center justify-center rounded-2xl p-5 text-center transition-colors duration-300 lg:p-8">
             <div className="mb-4 text-6xl font-bold lg:mb-6">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

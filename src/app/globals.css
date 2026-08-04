@@ -139,7 +139,7 @@ html.light .light-brand {
             transform 0.3s ease;
     }
     .prose p:not(:last-child) {
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
     }
     .prose ul,
     .prose ol {

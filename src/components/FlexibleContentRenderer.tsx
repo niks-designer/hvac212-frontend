@@ -32,7 +32,7 @@ interface ACFFlexibleContent {
 }
 
 interface SectionClassConfig {
-    className?: string;
+    className?: string | string[];
     contentClassName?: string;
 }
 
@@ -80,7 +80,12 @@ export function FlexibleContentRenderer({
     const layoutIndexes: Record<string, number> = {};
 
     // Helper function to get the appropriate class for a layout
-    const getLayoutConfig = (layout: string): SectionClassConfig => {
+    const getLayoutConfig = (
+        layout: string
+    ): {
+        className?: string;
+        contentClassName?: string;
+    } => {
         const classValue = sectionClassMap?.[layout];
 
         if (!classValue) {
@@ -98,7 +103,15 @@ export function FlexibleContentRenderer({
             return { className: classValue[currentIndex] || "" };
         }
 
-        return classValue;
+        const currentIndex = layoutIndexes[layout] || 0;
+        const resolvedClassName = Array.isArray(classValue.className)
+            ? classValue.className[currentIndex] || ""
+            : classValue.className;
+
+        return {
+            className: resolvedClassName,
+            contentClassName: classValue.contentClassName,
+        };
     };
 
     const renderSection = (
