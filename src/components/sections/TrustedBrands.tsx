@@ -54,23 +54,30 @@ interface NormalizedBrandLogo {
     };
 }
 
-const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
+interface DefaultBrandAsset {
+    darkLogo: {
+        url: string;
+        alt: string;
+        title: string;
+    };
+    lightLogo: {
+        url: string;
+        alt: string;
+        title: string;
+    };
+}
+
+const DEFAULT_BRAND_LOGOS: DefaultBrandAsset[] = [
     {
         darkLogo: {
             url: "/images/trusted-brands/trane-logo.png",
             alt: "Trane",
             title: "Trane",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/trane-light-logo.png",
             alt: "Trane",
             title: "Trane",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -78,17 +85,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/mitsubishi-logo.png",
             alt: "Mitsubishi",
             title: "Mitsubishi",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/mitsubishi-light-logo.png",
             alt: "Mitsubishi",
             title: "Mitsubishi",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -96,17 +97,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/fujitsu-logo.png",
             alt: "Fujitsu",
             title: "Fujitsu",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/fujitsu-light-logo.png",
             alt: "Fujitsu",
             title: "Fujitsu",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -114,17 +109,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/york-logo.png",
             alt: "York",
             title: "York",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/york-light-logo.png",
             alt: "York",
             title: "York",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -132,17 +121,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/carrier-logo.png",
             alt: "Carrier",
             title: "Carrier",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/carrier-light-logo.png",
             alt: "Carrier",
             title: "Carrier",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -150,17 +133,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/goodman-logo.png",
             alt: "Goodman",
             title: "Goodman",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/goodman-light-logo.png",
             alt: "Goodman",
             title: "Goodman",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -168,17 +145,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/bryant-logo.png",
             alt: "Bryant",
             title: "Bryant",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/bryant-light-logo.png",
             alt: "Bryant",
             title: "Bryant",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -186,17 +157,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/lg-logo.png",
             alt: "LG",
             title: "LG",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/lg-light-logo.png",
             alt: "LG",
             title: "LG",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -204,17 +169,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/lennox-logo.png",
             alt: "Lennox",
             title: "Lennox",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/lennox-light-logo.png",
             alt: "Lennox",
             title: "Lennox",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -222,17 +181,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/daikin-logo.png",
             alt: "Daikin",
             title: "Daikin",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/daikin-light-logo.png",
             alt: "Daikin",
             title: "Daikin",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -240,17 +193,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/american-standard-logo.png",
             alt: "American Standard",
             title: "American Standard",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/american-standard-light-logo.png",
             alt: "American Standard",
             title: "American Standard",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -258,17 +205,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/rheem-logo.png",
             alt: "Rheem",
             title: "Rheem",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/rheem-light-logo.png",
             alt: "Rheem",
             title: "Rheem",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -276,17 +217,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/luxaire-logo.png",
             alt: "Luxaire",
             title: "Luxaire",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/luxaire-light-logo.png",
             alt: "Luxaire",
             title: "Luxaire",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
     {
@@ -294,17 +229,11 @@ const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
             url: "/images/trusted-brands/samsung-logo.png",
             alt: "Samsung",
             title: "Samsung",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
         lightLogo: {
             url: "/images/trusted-brands/samsung-light-logo.png",
             alt: "Samsung",
             title: "Samsung",
-            width: 160,
-            height: 48,
-            unoptimized: false,
         },
     },
 ];
@@ -462,21 +391,49 @@ export default function TrustedBrands({
                                 theme === "light"
                                     ? logo.lightLogo
                                     : logo.darkLogo;
+                            const hasIntrinsicDimensions =
+                                "width" in activeLogo && "height" in activeLogo;
 
                             return (
                                 <div
                                     key={`${logo.darkLogo.url}-${logo.lightLogo.url}-${i}`}
                                     className="flex shrink-0 items-center justify-center"
                                 >
-                                    <Image
-                                        src={activeLogo.url}
-                                        alt={activeLogo.alt}
-                                        width={activeLogo.width}
-                                        height={activeLogo.height}
-                                        className="w-auto object-contain"
-                                        title={activeLogo.title || undefined}
-                                        unoptimized={activeLogo.unoptimized}
-                                    />
+                                    {hasIntrinsicDimensions ? (
+                                        (() => {
+                                            const wpLogo =
+                                                activeLogo as NormalizedBrandLogo[
+                                                    "darkLogo" | "lightLogo"];
+
+                                            return (
+                                                <Image
+                                                    src={wpLogo.url}
+                                                    alt={wpLogo.alt}
+                                                    width={wpLogo.width}
+                                                    height={wpLogo.height}
+                                                    className="h-auto w-auto max-w-full object-contain"
+                                                    title={
+                                                        wpLogo.title ||
+                                                        undefined
+                                                    }
+                                                    unoptimized={
+                                                        wpLogo.unoptimized
+                                                    }
+                                                />
+                                            );
+                                        })()
+                                    ) : (
+                                        <img
+                                            src={activeLogo.url}
+                                            alt={activeLogo.alt}
+                                            title={
+                                                activeLogo.title || undefined
+                                            }
+                                            className="h-auto object-contain"
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                    )}
                                 </div>
                             );
                         })}
