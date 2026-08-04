@@ -8,6 +8,7 @@ import { CenterImageSection } from "./sections/CenterImageSection";
 import { FAQSection } from "./sections/FAQSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
 import TrustedBrands from "./sections/TrustedBrands";
+import CompatibleHVACBrands from "./sections/CompatibleHVACBrands";
 import OurApproach from "./sections/OurApproach";
 import HeadingWithBottomAction from "./sections/HeadingWithBottomAction";
 import SelectHVACSystem from "./sections/SelectHVACSystem";
@@ -263,6 +264,20 @@ export function FlexibleContentRenderer({
                                 | undefined
                         }
                         brand_logos={section.brand_logos as any}
+                        className={className}
+                    />
+                );
+
+            case "compatible_hvac_brands":
+                return (
+                    <CompatibleHVACBrands
+                        key={index}
+                        chs_title={
+                            section.chs_title as
+                                | { title?: string; short_description?: string }
+                                | undefined
+                        }
+                        chs_logos={section.chs_logos as any}
                         className={className}
                     />
                 );

@@ -159,6 +159,11 @@ export interface TrustedBrandsSection extends ACFFlexibleContent {
     brand_logos?: TrustedBrandLogoItem[] | null;
 }
 
+export interface CompatibleHvacBrandsSection extends ACFFlexibleContent {
+    chs_title?: HeroSectionTitleDescription | null;
+    chs_logos?: TrustedBrandLogoItem[] | null;
+}
+
 export interface WhyChooseUsFeatureItem {
     wcuf_title?: string;
     wcuf_description?: string;

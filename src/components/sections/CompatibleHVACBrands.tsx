@@ -14,28 +14,28 @@ interface ACFImageLike {
     mime_type?: string;
 }
 
-interface BrandLogoFields {
+interface CompatibleLogoFields {
     select_dark_logo?: ACFImageLike | null;
     select_light_logo?: ACFImageLike | null;
 }
 
-interface BrandLogoItem {
-    add_logo?: BrandLogoFields | null;
+interface CompatibleLogoItem {
+    add_logo?: CompatibleLogoFields | null;
     [key: string]: unknown;
 }
 
-interface BrandsTitle {
+interface CompatibleTitle {
     title?: string;
     short_description?: string;
 }
 
-interface TrustedBrandsProps {
-    brands_title?: BrandsTitle | null;
-    brand_logos?: BrandLogoItem[] | null;
+interface CompatibleHVACBrandsProps {
+    chs_title?: CompatibleTitle | null;
+    chs_logos?: CompatibleLogoItem[] | null;
     className?: string;
 }
 
-interface NormalizedBrandLogo {
+interface NormalizedLogo {
     darkLogo: {
         url: string;
         alt: string;
@@ -54,7 +54,7 @@ interface NormalizedBrandLogo {
     };
 }
 
-const DEFAULT_BRAND_LOGOS: NormalizedBrandLogo[] = [
+const DEFAULT_COMPATIBLE_BRAND_LOGOS: NormalizedLogo[] = [
     {
         darkLogo: {
             url: "/images/trusted-brands/trane-logo.png",
@@ -344,7 +344,9 @@ function isSvgImage(image: ACFImageLike | null): boolean {
     return image.url.toLowerCase().endsWith(".svg");
 }
 
-function normalizeBrandLogo(item: BrandLogoItem): NormalizedBrandLogo | null {
+function normalizeCompatibleLogo(
+    item: CompatibleLogoItem
+): NormalizedLogo | null {
     const parent = asRecord(item);
     if (!parent) return null;
 
@@ -366,19 +368,19 @@ function normalizeBrandLogo(item: BrandLogoItem): NormalizedBrandLogo | null {
     const darkWidth =
         toPositiveNumber(darkLogo.width) ??
         toPositiveNumber(darkMediaDetails?.width) ??
-        160;
+        200;
     const darkHeight =
         toPositiveNumber(darkLogo.height) ??
         toPositiveNumber(darkMediaDetails?.height) ??
-        48;
+        72;
     const lightWidth =
         toPositiveNumber(lightLogo.width) ??
         toPositiveNumber(lightMediaDetails?.width) ??
-        160;
+        200;
     const lightHeight =
         toPositiveNumber(lightLogo.height) ??
         toPositiveNumber(lightMediaDetails?.height) ??
-        48;
+        72;
 
     const darkImageWithMime = darkRaw as ACFImageLike | null;
     const lightImageWithMime = lightRaw as ACFImageLike | null;
@@ -386,7 +388,7 @@ function normalizeBrandLogo(item: BrandLogoItem): NormalizedBrandLogo | null {
     return {
         darkLogo: {
             url: darkLogo.url,
-            alt: darkLogo.alt || darkLogo.title || "brand logo",
+            alt: darkLogo.alt || darkLogo.title || "Compatible brand logo",
             title: darkLogo.title || "",
             width: darkWidth,
             height: darkHeight,
@@ -399,7 +401,7 @@ function normalizeBrandLogo(item: BrandLogoItem): NormalizedBrandLogo | null {
                 lightLogo.title ||
                 darkLogo.alt ||
                 darkLogo.title ||
-                "brand logo",
+                "Compatible brand logo",
             title: lightLogo.title || "",
             width: lightWidth,
             height: lightHeight,
@@ -408,37 +410,35 @@ function normalizeBrandLogo(item: BrandLogoItem): NormalizedBrandLogo | null {
     };
 }
 
-export default function TrustedBrands({
-    brands_title,
-    brand_logos,
+export default function CompatibleHVACBrands({
+    chs_title,
+    chs_logos,
     className,
-}: TrustedBrandsProps) {
+}: CompatibleHVACBrandsProps) {
     const { theme } = useTheme();
-    const title = brands_title?.title?.trim() || "";
-    const shortDescription = brands_title?.short_description || "";
+
+    const title = chs_title?.title?.trim() || "";
+    const shortDescription = chs_title?.short_description || "";
 
     const logos =
-        brand_logos && brand_logos.length > 0
-            ? brand_logos
-                  .map((item) => normalizeBrandLogo(item))
-                  .filter(
-                      (logo): logo is NormalizedBrandLogo =>
-                          !!logo?.darkLogo?.url
-                  )
-            : DEFAULT_BRAND_LOGOS;
+        chs_logos && chs_logos.length > 0
+            ? chs_logos
+                  .map((item) => normalizeCompatibleLogo(item))
+                  .filter((logo): logo is NormalizedLogo => !!logo)
+            : DEFAULT_COMPATIBLE_BRAND_LOGOS;
 
-    if (logos.length === 0) return null;
-
-    // Duplicate the logos to create a seamless marquee
-    const loopLogos = [...logos, ...logos];
+    if (!title && logos.length === 0) {
+        return null;
+    }
 
     return (
-        <section className={`${className || "pt-20 pb-5"}`}>
-            <div className="mx-auto w-full">
-                {/* Section Header */}
+        <section className={`${className || "pt-12 pb-5 lg:pt-20"}`}>
+            <div className="container">
                 {(title || shortDescription) && (
-                    <div className="sec-ttl mx-auto mb-8 space-y-5 text-center">
-                        {title && <h2 className="h2-title">{title}</h2>}
+                    <div className="sec-ttl mb-8 space-y-5 text-center lg:mb-15">
+                        {title && (
+                            <h2 className="h2-title">{title}</h2>
+                        )}
                         {shortDescription && (
                             <div
                                 className="prose fs-19"
@@ -450,14 +450,9 @@ export default function TrustedBrands({
                     </div>
                 )}
 
-                <div className="overflow-hidden">
-                    <div
-                        className="flex items-center space-x-10 will-change-transform"
-                        style={{
-                            animation: `marquee 28s linear infinite`,
-                        }}
-                    >
-                        {loopLogos.map((logo, i) => {
+                {logos.length > 0 && (
+                    <div className="grid grid-cols-2 items-center gap-8 sm:grid-cols-3 md:grid-cols-4 md:gap-8 xl:gap-12 lg:grid-cols-5">
+                        {logos.map((logo, index) => {
                             const activeLogo =
                                 theme === "light"
                                     ? logo.lightLogo
@@ -465,8 +460,8 @@ export default function TrustedBrands({
 
                             return (
                                 <div
-                                    key={`${logo.darkLogo.url}-${logo.lightLogo.url}-${i}`}
-                                    className="flex shrink-0 items-center justify-center"
+                                    key={`${activeLogo.url}-${index}`}
+                                    className="flex min-h-14 items-center justify-center"
                                 >
                                     <Image
                                         src={activeLogo.url}
@@ -481,24 +476,8 @@ export default function TrustedBrands({
                             );
                         })}
                     </div>
-                </div>
+                )}
             </div>
-
-            <style jsx>{`
-                @keyframes marquee {
-                    0% {
-                        transform: translateX(0);
-                    }
-                    100% {
-                        transform: translateX(-50%);
-                    }
-                }
-
-                /* Ensure the inner track is wide enough for a smooth loop */
-                .will-change-transform {
-                    min-width: 200%;
-                }
-            `}</style>
         </section>
     );
 }

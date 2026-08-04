@@ -18,7 +18,7 @@ export default async function ThermostatPage() {
                     sections={flexibleContent}
                     sectionClassNames={{
                         why_choose_us: {
-                            className: "pb-5 lg:pb-8",
+                            className: "p-0",
                             contentClassName: "max-w-190",
                         },
                     }}
