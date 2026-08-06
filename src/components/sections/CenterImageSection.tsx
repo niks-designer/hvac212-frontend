@@ -35,7 +35,7 @@ export function CenterImageSection({
                 )}
 
                 {normalizedImage?.url && (
-                    <div className="h-[340px] overflow-hidden rounded-lg sm:h-auto lg:rounded-3xl">
+                    <div className="h-85 overflow-hidden rounded-lg sm:h-auto lg:rounded-3xl">
                         <Image
                             src={normalizedImage.url}
                             alt={normalizedImage.alt || ""}

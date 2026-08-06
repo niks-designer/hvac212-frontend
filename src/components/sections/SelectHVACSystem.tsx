@@ -44,11 +44,11 @@ export default function SelectHVACSystem({
             } ${className || "py-10 lg:py-16"}`}
         >
             <div className="container">
-                <div className="mx-auto max-w-4xl text-center">
+                <div className="sec-ttl space-y-5 text-center mx-auto">
                     {heading && <h2 className="h2-title">{heading}</h2>}
                     {description && (
                         <div
-                            className="prose mt-3 lg:mt-5"
+                            className="prose fs-19"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
                     )}

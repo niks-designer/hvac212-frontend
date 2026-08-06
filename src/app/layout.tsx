@@ -27,7 +27,7 @@ export default async function RootLayout({
 
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`min-h-full`}>
+            <body className={`relative min-h-full`}>
                 <ThemeProvider>
                     <SiteSettingsProvider
                         siteSettings={siteData?.settings ?? null}
