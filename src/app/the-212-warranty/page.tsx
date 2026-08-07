@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-
+import Image from "next/image";
 import { FlexibleContentRenderer } from "@/components/FlexibleContentRenderer";
 import { getPageContentBySlug } from "@/lib/wordpress";
 import { generatePageMetadata } from "@/lib/seo";
@@ -13,11 +13,24 @@ export default async function The212WarrantyPage() {
 
     return (
         <div className="min-h-screen">
+            <div className="absolute inset-0 -z-50 blur-[50px] in-[.light]:hidden">
+                <Image
+                    src="/images/page-bg/warranty-bg.webp"
+                    alt="The 212 Warranty"
+                    fill
+                    priority
+                    className="object-cover object-center"
+                />
+            </div>
             {flexibleContent.length > 0 ? (
                 <FlexibleContentRenderer
                     sections={flexibleContent}
                     sectionClassNames={{
-                        services_grid: "",
+                        system_replacement_signs: {
+                            contentClassName: "max-w-185",
+                        },
+                        heading_with_bottom_action: ["", "pt-10 lg:pt-16"],
+                        section_heading: ["pb-10 lg:pb-16"],
                     }}
                 />
             ) : (

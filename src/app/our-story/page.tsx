@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import Image from "next/image";
 import { FlexibleContentRenderer } from "@/components/FlexibleContentRenderer";
 import { getPageContentBySlug } from "@/lib/wordpress";
 import { generatePageMetadata } from "@/lib/seo";
@@ -13,11 +14,21 @@ export default async function OurStoryPage() {
 
     return (
         <div className="min-h-screen">
+            <div className="absolute inset-0 -z-50 blur-[50px] in-[.light]:hidden">
+                <Image
+                    src="/images/page-bg/our-story-bg.webp"
+                    alt="Our Story"
+                    fill
+                    priority
+                    className="object-cover object-center"
+                />
+            </div>
             {flexibleContent.length > 0 ? (
                 <FlexibleContentRenderer
                     sections={flexibleContent}
                     sectionClassNames={{
-                        services_grid: "",
+                        system_replacement_signs: "pt-10 lg:pt-18",
+                        heading_with_bottom_action: ["", "pt-10 lg:pt-16"],
                     }}
                 />
             ) : (
