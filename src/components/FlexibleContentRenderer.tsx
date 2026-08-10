@@ -34,7 +34,7 @@ interface ACFFlexibleContent {
 
 interface SectionClassConfig {
     className?: string | string[];
-    contentClassName?: string;
+    contentClassName?: string | string[];
 }
 
 type SectionClassValue = string | string[] | SectionClassConfig;
@@ -108,10 +108,15 @@ export function FlexibleContentRenderer({
         const resolvedClassName = Array.isArray(classValue.className)
             ? classValue.className[currentIndex] || ""
             : classValue.className;
+        const resolvedContentClassName = Array.isArray(
+            classValue.contentClassName
+        )
+            ? classValue.contentClassName[currentIndex] || ""
+            : classValue.contentClassName;
 
         return {
             className: resolvedClassName,
-            contentClassName: classValue.contentClassName,
+            contentClassName: resolvedContentClassName,
         };
     };
 
