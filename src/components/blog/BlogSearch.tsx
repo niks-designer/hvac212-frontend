@@ -37,7 +37,7 @@ export default function BlogSearch({
     return (
         <form
             onSubmit={handleSubmit}
-            className="mx-auto mt-7 mb-18 max-w-145.5"
+            className="relative mx-auto mt-7 mb-18 max-w-145.5"
         >
             <div className="in-[.light]:border-primary in-[.light]:placeholder:text-primary relative w-full rounded-2xl border border-white text-center">
                 <input
@@ -111,7 +111,9 @@ export default function BlogSearch({
                 </button>
             </div>
             {validationError && (
-                <p className="mt-2 text-sm text-amber-300">{validationError}</p>
+                <p className="text-yellow absolute inset-x-0 mt-2 text-center text-sm">
+                    {validationError}
+                </p>
             )}
         </form>
     );

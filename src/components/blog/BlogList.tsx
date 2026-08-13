@@ -188,7 +188,7 @@ export default function BlogList() {
     const showLoadMore = visibleCount < posts.length && !isAnyLoading;
 
     return (
-        <section className="py-14 lg:px-18">
+        <section className="pt-14 pb-20 lg:pt-18 lg:pb-28">
             <div className="container">
                 <div className="text-center">
                     <h2 className="h2-title mb-3 text-3xl font-bold md:text-4xl">
