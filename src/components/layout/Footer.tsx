@@ -301,8 +301,8 @@ export default function Footer({ siteData }: FooterProps) {
                             ) : null}
                         </div>
                     </div>
-                    <div className="px-4 py-4 text-center text-sm sm:px-6 sm:text-base">
-                        {copyright}
+                    <div className="px-4 py-4 text-center text-sm italic sm:px-6 sm:text-base">
+                        <p dangerouslySetInnerHTML={{ __html: copyright }}></p>
                     </div>
                 </div>
             </footer>

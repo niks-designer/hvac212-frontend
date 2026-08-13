@@ -300,7 +300,7 @@ export default function ContactPageForm() {
                     )}
                 </button>
                 {success && (
-                    <p className="mt-2 text-[14px] leading-5 text-slate-100">
+                    <p className="mt-2 text-[14px] leading-5">
                         Thank you! We will reach out to you shortly.
                     </p>
                 )}

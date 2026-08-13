@@ -191,7 +191,7 @@ export interface SystemReplacementSignsSection extends ACFFlexibleContent {
     secondary_title?: string | null;
 }
 
-interface WordPressPost {
+export interface WordPressPost {
     id: number;
     title: {
         rendered: string;

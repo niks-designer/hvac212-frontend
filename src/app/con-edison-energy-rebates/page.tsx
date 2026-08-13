@@ -30,7 +30,11 @@ export default async function ConEdisonEnergyRebatesPage() {
                     sectionClassNames={{
                         system_replacement_signs: {
                             className: ["", "py-12 lg:py-17"],
-                            contentClassName: ["max-w-180", "max-w-165", "max-w-165"],
+                            contentClassName: [
+                                "max-w-180",
+                                "max-w-165",
+                                "max-w-165",
+                            ],
                         },
                     }}
                 />
