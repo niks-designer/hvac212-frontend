@@ -29,41 +29,65 @@ export default function CareerForm() {
     const [error, setError] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const API_URL =
-        process.env.NEXT_PUBLIC_WORDPRESS_API_URL ||
-        "https://nextjs212hvac.wpenginepowered.com/wp-json";
+    const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL!;
     const CAREER_FORM_ID = "759";
     const CAREER_FORM_ENDPOINT = `${API_URL}/contact-form-7/v1/contact-forms/${CAREER_FORM_ID}/feedback`;
+
+    const isValidEmail = (value: string) => {
+        return /^[^\s@]+@([^\s@]+\.)+[^\s@]{2,}$/i.test(value.trim());
+    };
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: value });
+
+        if (errors[name]) {
+            const nextErrors = { ...errors };
+            delete nextErrors[name];
+            setErrors(nextErrors);
+        }
     };
 
     const validateForm = () => {
         const nextErrors: Record<string, string> = {};
 
         if (!form.fullName.trim()) {
-            nextErrors["full-name"] = "First and Last Name is required.";
+            nextErrors.fullName = "First and Last Name is required.";
         }
+
         if (!form.email.trim()) {
             nextErrors.email = "Email is required.";
+        } else if (!isValidEmail(form.email)) {
+            nextErrors.email = "Please enter a valid email address.";
         }
-        if (!form.phone.trim()) {
+
+        const phone = form.phone.trim();
+        const phoneDigits = phone.replace(/\D/g, "");
+
+        if (!phone) {
             nextErrors.phone = "Phone Number is required.";
+        } else if (!/^[0-9+\-().\s]+$/.test(phone)) {
+            nextErrors.phone = "Please enter a valid phone number.";
+        } else if (phoneDigits.length < 10) {
+            nextErrors.phone = "Please enter at least 10 digits.";
         }
+
         if (!form.position.trim()) {
             nextErrors.position = "Position is required.";
         }
+
         if (!form.summary.trim()) {
             nextErrors.summary = "A brief summary is required.";
         }
+
         if (!form.resume) {
             nextErrors.resume = "Please attach your resume.";
         }
 
         setErrors(nextErrors);
+
         return Object.keys(nextErrors).length === 0;
     };
 
@@ -124,12 +148,17 @@ export default function CareerForm() {
                 const fieldErrors: Record<string, string> = {};
                 if (Array.isArray(result.invalid_fields)) {
                     for (const f of result.invalid_fields) {
-                        const key = (f.field || "").replace(
+                        const rawKey = (f.field || "").replace(
                             /^wpcf7-f\d+-o1-/,
                             ""
                         );
-                        if (key)
+
+                        const key =
+                            rawKey === "full-name" ? "fullName" : rawKey;
+
+                        if (key) {
                             fieldErrors[key] = f.message || "Invalid value.";
+                        }
                     }
                 }
                 setErrors(fieldErrors);
@@ -162,9 +191,9 @@ export default function CareerForm() {
                         placeholder="First and Last Name"
                         className="in-[.light]:border-primary in-[.light]:placeholder:text-primary w-full rounded-2xl border border-white px-5 py-4 text-center placeholder:text-white focus-visible:outline-none"
                     />
-                    {errors["full-name"] && (
+                    {errors.fullName && (
                         <p className="mt-1 text-center text-sm text-red-400">
-                            {errors["full-name"]}
+                            {errors.fullName}
                         </p>
                     )}
                 </div>
@@ -321,29 +350,33 @@ export default function CareerForm() {
                     className="theme-btn bgc-yellow w-40"
                 >
                     {loading ? (
-                        <span className="inline-flex items-center justify-center gap-2">
-                            <svg
-                                className="h-4 w-4 animate-spin"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
-                            >
-                                <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                />
-                                <path
-                                    className="opacity-90"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                />
-                            </svg>
-                            Sending...
+                        <span className="relative inline-flex items-center justify-center">
+                            <span className="invisible">Submit</span>
+
+                            <span className="absolute inset-0 flex items-center justify-center">
+                                <svg
+                                    className="h-6 w-6 animate-spin"
+                                    viewBox="0 0 40 40"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <circle
+                                        cx="20"
+                                        cy="20"
+                                        r="17"
+                                        stroke="#E5E7EB"
+                                        strokeWidth="3"
+                                    />
+
+                                    <path
+                                        d="M20 3C13.1 3 7.2 7.1 4.6 13"
+                                        stroke="#00BFFF"
+                                        strokeWidth="3"
+                                        strokeLinecap="round"
+                                    />
+                                </svg>
+                            </span>
+                            <span className="sr-only">Sending...</span>
                         </span>
                     ) : (
                         "Submit"

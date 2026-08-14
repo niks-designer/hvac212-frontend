@@ -50,7 +50,7 @@ export default function BlogSearch({
                     }}
                     type="search"
                     placeholder="Search"
-                    className="w-full rounded-full border-none bg-transparent px-6 py-4 pr-14 text-center text-lg outline-none placeholder:text-white focus-visible:outline-none"
+                    className="in-[.light]:placeholder:text-primary w-full rounded-full border-none bg-transparent px-6 py-4 pr-14 text-center text-lg outline-none placeholder:text-white focus-visible:outline-none"
                 />
                 <button
                     type="submit"

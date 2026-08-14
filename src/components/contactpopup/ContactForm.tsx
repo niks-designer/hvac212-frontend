@@ -20,56 +20,144 @@ export default function ContactForm() {
     const [error, setError] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const API_URL =
-        process.env.NEXT_PUBLIC_WORDPRESS_API_URL ||
-        "https://nextjs212hvac.wpenginepowered.com/wp-json";
-    const CONTACT_FORM_ID = process.env.NEXT_PUBLIC_CONTACT_FORM_ID || "231";
-    const CONTACT_FORM_ENDPOINT = `${API_URL}/hvac/v1/contact`;
+    const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL!;
+    const CONTACT_FORM_ID = "231";
+    const CONTACT_FORM_ENDPOINT = `${API_URL}/contact-form-7/v1/contact-forms/${CONTACT_FORM_ID}/feedback`;
+
+    const isValidEmail = (email: string) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+    };
 
     const toggleService = (service: string) => {
-        setForm((prev) => ({
-            ...prev,
-            services: prev.services.includes(service)
+        setForm((prev) => {
+            const services = prev.services.includes(service)
                 ? prev.services.filter((s) => s !== service)
-                : [...prev.services, service],
-        }));
+                : [...prev.services, service];
+
+            return {
+                ...prev,
+                services,
+            };
+        });
+
+        if (errors.services) {
+            setErrors((prev) => {
+                const next = { ...prev };
+                delete next.services;
+                return next;
+            });
+        }
     };
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+
+        if (errors[name]) {
+            setErrors((prev) => {
+                const next = { ...prev };
+                delete next[name];
+                return next;
+            });
+        }
+    };
+
+    const validateForm = () => {
+        const nextErrors: Record<string, string> = {};
+
+        if (!form.name.trim()) {
+            nextErrors.name = "Name is required.";
+        }
+
+        if (!form.email.trim()) {
+            nextErrors.email = "Email is required.";
+        } else if (!isValidEmail(form.email)) {
+            nextErrors.email = "Please enter a valid email address.";
+        }
+
+        const phone = form.phone.trim();
+        const phoneDigits = phone.replace(/\D/g, "");
+
+        if (!phone) {
+            nextErrors.phone = "Phone Number is required.";
+        } else if (!/^[0-9+\-().\s]+$/.test(phone)) {
+            nextErrors.phone = "Please enter a valid phone number.";
+        } else if (phoneDigits.length < 10) {
+            nextErrors.phone = "Please enter at least 10 digits.";
+        }
+
+        if (!form.zip.trim()) {
+            nextErrors.zip = "Zip is required.";
+        }
+
+        if (!form.message.trim()) {
+            nextErrors.message = "Message is required.";
+        }
+
+        if (form.services.length === 0) {
+            nextErrors.services = "Please select at least one service.";
+        }
+
+        setErrors(nextErrors);
+
+        return Object.keys(nextErrors).length === 0;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        setLoading(true);
         setSuccess("");
         setError("");
         setErrors({});
 
+        // Client-side validation using the same custom validation approach
+        // as the CareerForm / ContactPageForm.
+        if (!validateForm()) {
+            return;
+        }
+
+        setLoading(true);
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
         const data = new FormData();
 
-        data.append("name", form.name);
-        data.append("email", form.email);
-        data.append("phone", form.phone);
-        data.append("zip", form.zip);
-        data.append("message", form.message);
+        data.append("_wpcf7", CONTACT_FORM_ID);
+        data.append("_wpcf7_version", "5");
+        data.append("_wpcf7_locale", "en_US");
+        data.append("_wpcf7_unit_tag", `wpcf7-f${CONTACT_FORM_ID}-p0-o1`);
+        data.append("_wpcf7_container_post", "0");
 
+        data.append("your-name", form.name);
+        data.append("your-email", form.email);
+        data.append("your-phone", form.phone);
+        data.append("your-zip", form.zip);
+        data.append("your-message", form.message);
+
+        // CF7 checkbox field must match:
+        // [checkbox* services use_label_element
+        // "Emergency Repair"
+        // "Installation"
+        // "Maintenance"]
+        //
+        // Append the same field name for every selected value.
         form.services.forEach((service) => {
-            data.append("services", service);
+            data.append("services[]", service);
         });
 
         if (form.photo) {
-            data.append("photo", form.photo, form.photo.name);
+            data.append("your-photo", form.photo, form.photo.name);
         }
 
-        try {
-            for (const pair of data.entries()) {
-                console.log(pair[0], pair[1]);
-            }
+        const startTime = Date.now();
 
+        try {
             const response = await fetch(CONTACT_FORM_ENDPOINT, {
                 method: "POST",
                 body: data,
@@ -77,9 +165,14 @@ export default function ContactForm() {
 
             const result = await response.json();
 
-            if (result.success) {
-                setSuccess(result.message);
+            if (result.status === "mail_sent") {
+                setSuccess(
+                    result.message ||
+                        "Thank you! We will reach out to you shortly."
+                );
+
                 setErrors({});
+                setError("");
 
                 setForm({
                     name: "",
@@ -91,17 +184,65 @@ export default function ContactForm() {
                     photo: null,
                 });
             } else {
-                setError(result.message || "");
-                setErrors(result.errors || {});
+                const fieldErrors: Record<string, string> = {};
+
+                if (Array.isArray(result.invalid_fields)) {
+                    for (const f of result.invalid_fields) {
+                        const rawField = (f.field || "").replace(
+                            /^wpcf7-f\d+-o1-/,
+                            ""
+                        );
+
+                        const keyMap: Record<string, string> = {
+                            "your-name": "name",
+                            "your-email": "email",
+                            "your-phone": "phone",
+                            "your-zip": "zip",
+                            "your-message": "message",
+                            services: "services",
+                            "your-photo": "photo",
+                        };
+
+                        const key = keyMap[rawField] || rawField;
+
+                        if (key) {
+                            fieldErrors[key] = f.message || "Invalid value.";
+                        }
+                    }
+                }
+
+                if (Object.keys(fieldErrors).length > 0) {
+                    setErrors(fieldErrors);
+                    setError("");
+                } else {
+                    // Never show CF7's generic validation message.
+                    setError(
+                        /one or more fields have an error/i.test(
+                            result.message || ""
+                        )
+                            ? ""
+                            : result.message || "Something went wrong."
+                    );
+                }
             }
         } catch (err) {
             console.error("Contact form submission failed:", err);
+
             setError(
                 err instanceof Error ? err.message : "Something went wrong."
             );
-        }
+        } finally {
+            const elapsed = Date.now() - startTime;
+            const minDisplay = 250;
 
-        setLoading(false);
+            if (elapsed < minDisplay) {
+                await new Promise((resolve) =>
+                    setTimeout(resolve, minDisplay - elapsed)
+                );
+            }
+
+            setLoading(false);
+        }
     };
 
     return (
@@ -115,12 +256,14 @@ export default function ContactForm() {
                         placeholder="Name"
                         className="text-primary w-full rounded-full bg-white px-4 py-1 text-center text-sm focus-visible:outline-none"
                     />
+
                     {errors.name && (
                         <p className="text-[11px] text-[#9F1D20]">
                             {errors.name}
                         </p>
                     )}
                 </div>
+
                 <div className="relative">
                     <input
                         name="email"
@@ -129,6 +272,7 @@ export default function ContactForm() {
                         placeholder="Email"
                         className="text-primary w-full rounded-full bg-white px-4 py-1 text-center text-sm focus-visible:outline-none"
                     />
+
                     {errors.email && (
                         <p className="text-[11px] text-[#9F1D20]">
                             {errors.email}
@@ -145,12 +289,14 @@ export default function ContactForm() {
                             placeholder="Phone"
                             className="text-primary w-full rounded-full bg-white px-4 py-1 text-center text-sm focus-visible:outline-none"
                         />
+
                         {errors.phone && (
                             <p className="text-[11px] text-[#9F1D20]">
                                 {errors.phone}
                             </p>
                         )}
                     </div>
+
                     <div className="relative">
                         <input
                             name="zip"
@@ -159,6 +305,7 @@ export default function ContactForm() {
                             placeholder="Zip"
                             className="text-primary w-full rounded-full bg-white px-4 py-1 text-center text-sm focus-visible:outline-none"
                         />
+
                         {errors.zip && (
                             <p className="text-[11px] text-[#9F1D20]">
                                 {errors.zip}
@@ -166,6 +313,7 @@ export default function ContactForm() {
                         )}
                     </div>
                 </div>
+
                 <div className="space-y-3">
                     {["Emergency Repair", "Installation", "Maintenance"].map(
                         (service) => {
@@ -204,6 +352,7 @@ export default function ContactForm() {
                             );
                         }
                     )}
+
                     {errors.services && (
                         <p className="-mt-2 text-[11px] text-[#9F1D20]">
                             {errors.services}
@@ -219,6 +368,7 @@ export default function ContactForm() {
                         placeholder="Additional Information"
                         className="text-primary h-15 w-full resize-none rounded-2xl bg-white px-4 py-3 text-center text-sm focus-visible:outline-none"
                     />
+
                     {errors.message && (
                         <p className="-mt-1 text-[11px] text-[#9F1D20]">
                             {errors.message}
@@ -245,20 +395,30 @@ export default function ContactForm() {
                         </svg>{" "}
                         Upload unit photo
                     </span>
+
                     <input
                         id={photoInputId}
                         name="your-photo"
                         type="file"
                         hidden
                         accept=".jpg,.jpeg,.png,.webp,.pdf"
-                        onChange={(e) =>
+                        onChange={(e) => {
                             setForm((prev) => ({
                                 ...prev,
                                 photo: e.target.files?.[0] ?? null,
-                            }))
-                        }
+                            }));
+
+                            if (errors.photo) {
+                                setErrors((prev) => {
+                                    const next = { ...prev };
+                                    delete next.photo;
+                                    return next;
+                                });
+                            }
+                        }}
                     />
                 </label>
+
                 {form.photo && (
                     <p className="-mt-1 text-[11px] text-[#002D3E]">
                         File: {form.photo.name}
@@ -274,26 +434,27 @@ export default function ContactForm() {
                         {loading ? (
                             <span className="relative inline-flex items-center justify-center">
                                 <span className="invisible">Submit</span>
+
                                 <span className="absolute inset-0 flex items-center justify-center">
                                     <svg
-                                        className="h-4 w-4 animate-spin"
-                                        viewBox="0 0 24 24"
+                                        className="h-6 w-6 animate-spin"
+                                        viewBox="0 0 40 40"
                                         fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
-                                        aria-hidden
                                     >
                                         <circle
-                                            className="opacity-25"
-                                            cx="12"
-                                            cy="12"
-                                            r="10"
-                                            stroke="currentColor"
-                                            strokeWidth="4"
+                                            cx="20"
+                                            cy="20"
+                                            r="17"
+                                            stroke="#E5E7EB"
+                                            strokeWidth="3"
                                         />
+
                                         <path
-                                            className="opacity-90"
-                                            fill="currentColor"
-                                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                            d="M20 3C13.1 3 7.2 7.1 4.6 13"
+                                            stroke="#00BFFF"
+                                            strokeWidth="3"
+                                            strokeLinecap="round"
                                         />
                                     </svg>
                                 </span>
@@ -303,9 +464,7 @@ export default function ContactForm() {
                             "Submit"
                         )}
                     </button>
-                    {/* {success && (
-                        <p className="text-center text-green-600">{success}</p>
-                    )} */}
+
                     {success && (
                         <p className="mt-2 text-center text-[14px] leading-5 text-[#002D3E]">
                             Thank you! We will reach out to you shortly.

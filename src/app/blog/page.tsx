@@ -27,7 +27,6 @@ export default async function BlogPage() {
             {flexibleContent.length > 0 && (
                 <FlexibleContentRenderer sections={flexibleContent} />
             )}
-
             <BlogList />
         </div>
     );
