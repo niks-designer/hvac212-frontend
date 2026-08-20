@@ -179,6 +179,14 @@ export interface SystemReplacementSignsItem {
     srs_description?: string;
 }
 
+export interface ErrorCodeButtonItem {
+    code_button?: LinkField | null;
+}
+
+export interface ErrorCodeButtonsSection extends ACFFlexibleContent {
+    error_code_pages_list?: ErrorCodeButtonItem[] | null;
+}
+
 export interface SystemReplacementSignsSection extends ACFFlexibleContent {
     srs_title?: HeroSectionTitleDescription | null;
     replacement_lists?: SystemReplacementSignsItem[] | null;

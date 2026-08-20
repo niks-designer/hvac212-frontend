@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-
+import Image from "next/image";
 import { getPageContentBySlug, getPosts } from "@/lib/wordpress";
 import { PostCard } from "@/components/common/PostCard";
 import { FlexibleContentRenderer } from "@/components/FlexibleContentRenderer";
@@ -14,7 +14,16 @@ export default async function Home() {
     const flexibleContent = await getPageContentBySlug("home");
 
     return (
-        <div className="relative min-h-screen overflow-hidden bg-[url(/images/home-bg.webp)] bg-cover bg-center bg-no-repeat in-[.light]:bg-none">
+        <div className="min-h-screen">
+            <div className="pointer-events-none absolute inset-0 -z-50 blur-[50px] in-[.light]:hidden">
+                <Image
+                    src="/images/page-bg/home-bg.webp"
+                    alt="AirCare"
+                    fill
+                    priority
+                    className="object-cover object-top"
+                />
+            </div>
             {/* ACF Flexible Content Sections */}
             {flexibleContent.length > 0 && (
                 <FlexibleContentRenderer

@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+import Image from "next/image";
 
 import { FlexibleContentRenderer } from "@/components/FlexibleContentRenderer";
 import { getPageContentBySlug } from "@/lib/wordpress";
@@ -12,7 +13,16 @@ export default async function DuctworkVentilationPage() {
     const flexibleContent = await getPageContentBySlug("ductwork-ventilation");
 
     return (
-        <div className="relative min-h-screen overflow-hidden bg-[url(/images/central-air-bg.webp)] bg-cover bg-position-[center_40%] bg-no-repeat in-[.light]:bg-none">
+        <div className="min-h-screen">
+            <div className="pointer-events-none absolute inset-0 -z-50 blur-[50px] in-[.light]:hidden">
+                <Image
+                    src="/images/page-bg/central-air-bg.webp"
+                    alt="AirCare"
+                    fill
+                    priority
+                    className="object-cover object-top"
+                />
+            </div>
             {flexibleContent.length > 0 ? (
                 <FlexibleContentRenderer
                     sections={flexibleContent}

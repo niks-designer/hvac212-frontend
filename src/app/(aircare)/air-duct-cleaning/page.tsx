@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-
+import Image from "next/image";
 import { FlexibleContentRenderer } from "@/components/FlexibleContentRenderer";
 import { getPageContentBySlug } from "@/lib/wordpress";
 import { generatePageMetadata } from "@/lib/seo";
@@ -12,39 +12,15 @@ export default async function AirDuctCleaningPage() {
     const flexibleContent = await getPageContentBySlug("air-duct-cleaning");
 
     return (
-        <div className="relative min-h-screen overflow-hidden bg-[url(/images/central-air-bg.webp)] bg-cover bg-position-[center_40%] bg-no-repeat in-[.light]:bg-none">
-            <div className="bg-shapes hidden">
-                <div className="bg-shapes">
-                    {/* Gradient Shape 1 */}
-                    <div
-                        className="pointer-events-none absolute top-95.75 -left-17.75 -z-10 h-375 w-[1582px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(252,177,22,0.36)_0%,rgba(7,15,29,0)_100%)]"
-                        aria-hidden="true"
-                    />
-
-                    {/* Gradient Shape 2 */}
-                    <div
-                        className="pointer-events-none absolute top-146.25 -left-107 -z-10 h-[2232px] w-[2354px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(228,187,76,0.36)_0%,rgba(7,15,29,0)_100%)]"
-                        aria-hidden="true"
-                    />
-
-                    {/* Gradient Shape 3 */}
-                    <div
-                        className="pointer-events-none absolute top-374.5 -left-62.5 -z-10 h-[1816px] w-[1916px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(228,187,76,0.36)_0%,rgba(7,15,29,0)_100%)]"
-                        aria-hidden="true"
-                    />
-
-                    {/* Gradient Shape 4 */}
-                    <div
-                        className="pointer-events-none absolute top-550.5 -left-157.25 -z-10 h-375 w-[1582px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(0,191,255,0.36)_0%,rgba(7,15,29,0)_100%)]"
-                        aria-hidden="true"
-                    />
-
-                    {/* Gradient Shape 5 */}
-                    <div
-                        className="pointer-events-none absolute top-573 -left-3 -z-10 h-375 w-[1582px] bg-[radial-gradient(50%_50%_at_50%_50%,rgba(255,255,255,0.27)_0%,rgba(7,15,29,0.27)_100%)]"
-                        aria-hidden="true"
-                    />
-                </div>
+        <div className="min-h-screen">
+            <div className="pointer-events-none absolute inset-0 -z-50 blur-[50px] in-[.light]:hidden">
+                <Image
+                    src="/images/page-bg/central-air-bg.webp"
+                    alt="AirCare"
+                    fill
+                    priority
+                    className="object-cover object-top"
+                />
             </div>
             {flexibleContent.length > 0 ? (
                 <FlexibleContentRenderer

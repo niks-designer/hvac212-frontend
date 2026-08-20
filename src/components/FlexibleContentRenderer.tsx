@@ -20,6 +20,7 @@ import MaintenancePlans from "./sections/MaintenancePlans";
 import MaintenanceTerms from "./sections/MaintenanceTerms";
 import SafetyPerformanceProtocol from "./sections/SafetyPerformanceProtocol";
 import LicensesAndInsurance from "./sections/LicensesAndInsurance";
+import { ErrorCodeButtons } from "./sections/ErrorCodeButtons";
 import { ReactNode } from "react";
 import type {
     HeroSectionTitleDescription,
@@ -446,6 +447,17 @@ export function FlexibleContentRenderer({
                             section.termsPopupContent as string | undefined
                         }
                         enroll_button={section.enroll_button as any}
+                    />
+                );
+
+            case "error_code_buttons":
+                return (
+                    <ErrorCodeButtons
+                        key={index}
+                        error_code_pages_list={
+                            section.error_code_pages_list as any
+                        }
+                        className={className}
                     />
                 );
 
