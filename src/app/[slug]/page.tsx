@@ -90,14 +90,14 @@ export default async function PostPage({ params }: PostPageProps) {
                             />
                         </div>
                     ) : null}
-                    <div className="sec-ttl mb-8">
+                    {/* <div className="sec-ttl mb-8">
                         <h1 className="text-4xl font-bold">
                             {post.title.rendered}
                         </h1>
                         <div className="mt-4 flex items-center gap-4">
                             <time dateTime={post.date}>{date}</time>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="post-content">
                         <div
