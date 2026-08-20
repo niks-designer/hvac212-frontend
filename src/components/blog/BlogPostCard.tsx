@@ -31,10 +31,7 @@ export function BlogPostCard({ post }: { post: BlogPost }) {
                 className="font-19 line-clamp-3 leading-7"
                 dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
             />
-            <Link
-                href={`/posts/${post.slug}`}
-                className="theme-btn mt-3 w-48"
-            >
+            <Link href={`/${post.slug}/`} className="theme-btn mt-3 w-48">
                 Read More
             </Link>
         </article>

@@ -4,6 +4,7 @@ import { FlexibleContentRenderer } from "@/components/FlexibleContentRenderer";
 import ContactPageForm from "@/components/contactpopup/ContactPageForm";
 import { getPageContentBySlug, getSiteData } from "@/lib/wordpress";
 import { generatePageMetadata } from "@/lib/seo";
+import Link from "next/link";
 
 export async function generateMetadata() {
     return generatePageMetadata("contact-us");
@@ -97,18 +98,18 @@ export default async function ContactUsPage() {
                                     </p>
                                     <div className="mt-5 flex flex-col gap-1 text-sm sm:text-base lg:text-lg">
                                         <p>{address}</p>
-                                        <a
+                                        <Link
                                             href={phoneHref}
                                             className="hover:text-blue transition-colors"
                                         >
                                             {phone}
-                                        </a>
-                                        <a
+                                        </Link>
+                                        <Link
                                             href={`mailto:${email}`}
                                             className="hover:text-blue underline underline-offset-4 transition-colors"
                                         >
                                             {email}
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

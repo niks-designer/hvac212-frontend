@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { normalizeACFImage } from "@/lib/acfNormalizers";
+import Link from "next/link";
 
 interface ACFImage {
     ID?: number;
@@ -116,7 +117,7 @@ export function HeroBanner({
                 {(primaryButton?.url || secondaryButton?.url) && (
                     <div className="btn-wrap mt-2 flex flex-col items-center justify-center gap-4 sm:flex-row">
                         {primaryButton?.url && (
-                            <a
+                            <Link
                                 href={primaryButton.url}
                                 target={
                                     primaryButton.target === "_blank"
@@ -131,11 +132,11 @@ export function HeroBanner({
                                 className="theme-btn"
                             >
                                 {primaryButton.title || "Learn More"}
-                            </a>
+                            </Link>
                         )}
 
                         {secondaryButton?.url && (
-                            <a
+                            <Link
                                 href={secondaryButton.url}
                                 target={
                                     secondaryButton.target === "_blank"
@@ -150,7 +151,7 @@ export function HeroBanner({
                                 className="theme-btn theme-btn-outline"
                             >
                                 {secondaryButton.title || "Get Started"}
-                            </a>
+                            </Link>
                         )}
                     </div>
                 )}

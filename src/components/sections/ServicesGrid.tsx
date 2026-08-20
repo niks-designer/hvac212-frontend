@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+
 import { normalizeACFImage } from "@/lib/acfNormalizers";
 import { useTheme } from "@/components/providers/ThemeProvider";
 
@@ -104,7 +106,7 @@ export function ServicesGrid({
 
                                         {/* Card Link */}
                                         {card.link?.url && (
-                                            <a
+                                            <Link
                                                 href={card.link.url}
                                                 target={
                                                     card.link.target ===
@@ -123,7 +125,7 @@ export function ServicesGrid({
                                                 {card.link.title ||
                                                     "Learn More"}{" "}
                                                 →
-                                            </a>
+                                            </Link>
                                         )}
                                     </div>
                                 </div>

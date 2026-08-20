@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const ChevronIcon = ({ isOpen }: { isOpen: boolean }) => (
     <svg
@@ -247,12 +248,12 @@ export default function GoodmanPage() {
                             </p>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                            <a
+                            <Link
                                 className="theme-btn bgc-yellow"
                                 href="/air-conditioner-error-code-search/"
                             >
                                 Back To Air Conditionar Brand
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -403,9 +404,9 @@ export default function GoodmanPage() {
                         <CodeSection codes={goodmanAirConditioningCodes} />
 
                         <div className="mt-10 flex justify-center">
-                            <a className="theme-btn" href="/contact-us/">
+                            <Link className="theme-btn" href="/contact-us/">
                                 Get a Free Quote
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

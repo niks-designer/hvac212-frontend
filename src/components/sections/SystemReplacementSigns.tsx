@@ -1,6 +1,7 @@
 "use client";
 
 import type { HeroSectionTitleDescription, LinkField } from "@/lib/wordpress";
+import Link from "next/link";
 
 interface SystemReplacementSignsItem {
     srs_title?: string;
@@ -160,7 +161,7 @@ export default function SystemReplacementSigns({
                                 <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center lg:gap-6">
                                     {srs_cta_buttons.primary_button &&
                                         srs_cta_buttons.primary_button.url && (
-                                            <a
+                                            <Link
                                                 href={
                                                     srs_cta_buttons
                                                         .primary_button.url
@@ -181,12 +182,12 @@ export default function SystemReplacementSigns({
                                             >
                                                 {srs_cta_buttons.primary_button
                                                     .title || "Learn More"}
-                                            </a>
+                                            </Link>
                                         )}
                                     {srs_cta_buttons.secondary_button &&
                                         srs_cta_buttons.secondary_button
                                             .url && (
-                                            <a
+                                            <Link
                                                 href={
                                                     srs_cta_buttons
                                                         .secondary_button.url
@@ -208,7 +209,7 @@ export default function SystemReplacementSigns({
                                                 {srs_cta_buttons
                                                     .secondary_button.title ||
                                                     "More Info"}
-                                            </a>
+                                            </Link>
                                         )}
                                 </div>
                             )}
@@ -216,7 +217,7 @@ export default function SystemReplacementSigns({
                         {secondary_title && (
                             <div className="text-center">
                                 <h3
-                                    className="mx-auto text-[20px] leading-6 lg:leading-9 font-semibold lg:text-[26px]"
+                                    className="mx-auto text-[20px] leading-6 font-semibold lg:text-[26px] lg:leading-9"
                                     dangerouslySetInnerHTML={{
                                         __html: secondary_title,
                                     }}

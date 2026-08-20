@@ -1,4 +1,5 @@
 import type { LinkField } from "@/lib/wordpress";
+import Link from "next/link";
 
 interface ErrorCodeButtonItem {
     code_button?: LinkField | null;
@@ -39,7 +40,7 @@ export function ErrorCodeButtons({
                         }
 
                         return (
-                            <a
+                            <Link
                                 key={`${label}-${index}`}
                                 href={href}
                                 target={target}
@@ -51,7 +52,7 @@ export function ErrorCodeButtons({
                                 className="theme-btn flex h-full min-h-14 items-center justify-center text-center"
                             >
                                 {label}
-                            </a>
+                            </Link>
                         );
                     })}
                 </div>

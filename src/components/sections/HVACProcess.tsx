@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { normalizeACFImage } from "@/lib/acfNormalizers";
 import type { ACFImage } from "@/lib/acfNormalizers";
 
@@ -214,7 +215,7 @@ export default function HVACProcess({
                     {/* CTA Buttons */}
                     <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                         {primaryButton.url && (
-                            <a
+                            <Link
                                 href={primaryButton.url}
                                 target={
                                     primaryButton.target === "_blank"
@@ -229,10 +230,10 @@ export default function HVACProcess({
                                 className="theme-btn bgc-yellow"
                             >
                                 {primaryButton.title}
-                            </a>
+                            </Link>
                         )}
                         {secondaryButton?.url && (
-                            <a
+                            <Link
                                 href={secondaryButton.url}
                                 target={
                                     secondaryButton.target === "_blank"
@@ -247,7 +248,7 @@ export default function HVACProcess({
                                 className="theme-btn theme-btn-outline"
                             >
                                 {secondaryButton.title}
-                            </a>
+                            </Link>
                         )}
                     </div>
                 </div>

@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+
 import useEmblaCarousel from "embla-carousel-react";
 import { normalizeACFImage } from "@/lib/acfNormalizers";
 import type {
@@ -395,7 +397,7 @@ export function TestimonialsSection({
 
                                                     {/* Button */}
                                                     {platform.button?.url && (
-                                                        <a
+                                                        <Link
                                                             href={
                                                                 platform.button
                                                                     .url
@@ -419,7 +421,7 @@ export function TestimonialsSection({
                                                             {platform.button
                                                                 .title ||
                                                                 "Read More"}
-                                                        </a>
+                                                        </Link>
                                                     )}
                                                 </div>
                                             );

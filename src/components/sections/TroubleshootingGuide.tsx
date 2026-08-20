@@ -1,6 +1,7 @@
 "use client";
 
 import type { HeroSectionTitleDescription, LinkField } from "@/lib/wordpress";
+import Link from "next/link";
 
 interface SafeCheckItem {
     safe_title?: string;
@@ -230,7 +231,7 @@ export default function TroubleshootingGuide({
                             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center lg:gap-6">
                                 {trouble_cta_buttons.primary_button &&
                                     trouble_cta_buttons.primary_button.url && (
-                                        <a
+                                        <Link
                                             href={
                                                 trouble_cta_buttons
                                                     .primary_button.url
@@ -251,12 +252,12 @@ export default function TroubleshootingGuide({
                                         >
                                             {trouble_cta_buttons.primary_button
                                                 .title || "Learn More"}
-                                        </a>
+                                        </Link>
                                     )}
                                 {trouble_cta_buttons.secondary_button &&
                                     trouble_cta_buttons.secondary_button
                                         .url && (
-                                        <a
+                                        <Link
                                             href={
                                                 trouble_cta_buttons
                                                     .secondary_button.url
@@ -278,7 +279,7 @@ export default function TroubleshootingGuide({
                                             {trouble_cta_buttons
                                                 .secondary_button.title ||
                                                 "More Info"}
-                                        </a>
+                                        </Link>
                                     )}
                             </div>
                         )}

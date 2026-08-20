@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 type ErrorCode = {
     id: string;
@@ -780,12 +781,12 @@ export default function DaikinPage() {
                             </p>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                            <a
+                            <Link
                                 className="theme-btn bgc-yellow"
                                 href="/air-conditioner-error-code-search/"
                             >
                                 Back To Air Conditionar Brand
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -926,12 +927,12 @@ export default function DaikinPage() {
 
                                     {ctaPositions.has(index + 1) && (
                                         <div className="mt-10 flex justify-center">
-                                            <a
+                                            <Link
                                                 href="/contact-us/"
                                                 className="theme-btn"
                                             >
                                                 Get a Free Quote
-                                            </a>
+                                            </Link>
                                         </div>
                                     )}
                                 </div>

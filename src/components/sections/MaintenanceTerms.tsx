@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+
 import { useSiteSettings } from "@/components/providers/SiteSettingsProvider";
 import type { LinkField } from "@/lib/wordpress";
 
@@ -108,7 +110,7 @@ export default function MaintenanceTerms({
             <div className="w-full px-4 py-10 text-center lg:py-15">
                 {hasEnrollButton ? (
                     <div className="mb-4 lg:mb-8">
-                        <a
+                        <Link
                             href={enrollButtonUrl}
                             target={enrollButtonTarget}
                             rel={
@@ -119,7 +121,7 @@ export default function MaintenanceTerms({
                             className="theme-btn bgc-yellow"
                         >
                             {enrollButtonText}
-                        </a>
+                        </Link>
                     </div>
                 ) : null}
                 <button

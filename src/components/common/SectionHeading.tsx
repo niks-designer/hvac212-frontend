@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface SectionTitleDescription {
     title?: string;
     short_description?: string;
@@ -54,7 +56,7 @@ export default function SectionHeading({
                     {(primaryButton?.url || secondaryButton?.url) && (
                         <div className="btn-wrap mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
                             {primaryButton?.url && (
-                                <a
+                                <Link
                                     href={primaryButton.url}
                                     target={
                                         primaryButton.target === "_blank"
@@ -69,11 +71,11 @@ export default function SectionHeading({
                                     className="theme-btn"
                                 >
                                     {primaryButton.title || "Learn More"}
-                                </a>
+                                </Link>
                             )}
 
                             {secondaryButton?.url && (
-                                <a
+                                <Link
                                     href={secondaryButton.url}
                                     target={
                                         secondaryButton.target === "_blank"
@@ -88,7 +90,7 @@ export default function SectionHeading({
                                     className="theme-btn theme-btn-outline"
                                 >
                                     {secondaryButton.title || "Get Started"}
-                                </a>
+                                </Link>
                             )}
                         </div>
                     )}
