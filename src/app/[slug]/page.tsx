@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { getPostBySlug, getPosts } from "@/lib/wordpress";
-import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -59,44 +59,52 @@ export default async function PostPage({ params }: PostPageProps) {
         month: "long",
         day: "numeric",
     });
+    const featuredMedia = post._embedded?.["wp:featuredmedia"]?.[0];
+    const featuredImageUrl = featuredMedia?.source_url;
 
     return (
-        <div className="relative min-h-screen">
+        <div className="min-h-screen">
+            <div className="absolute inset-0 -z-50 blur-[50px] in-[.light]:hidden">
+                <Image
+                    src="/images/page-bg/con-edison-bg.webp"
+                    alt="Con Edison Energy Rebates"
+                    fill
+                    priority
+                    className="object-cover object-center"
+                />
+            </div>
             <section className="px-4 py-12 md:px-8 lg:px-16">
-                <div className="mx-auto max-w-4xl">
-                    <Link
-                        href="/blog"
-                        className="hover:text-blue mb-8 inline-flex items-center font-semibold transition-colors"
-                    >
-                        ← Back to Blog
-                    </Link>
-
-                    <article>
-                        <header className="mb-8">
-                            <h1 className="text-4xl font-bold">
-                                {post.title.rendered}
-                            </h1>
-                            <div className="mt-4 flex items-center gap-4 text-gray-600">
-                                <time dateTime={post.date}>{date}</time>
-                            </div>
-                        </header>
-
-                        <div className="prose prose-lg max-w-none">
-                            <div
-                                dangerouslySetInnerHTML={{
-                                    __html: post.content.rendered,
-                                }}
+                <div className="container">
+                    {featuredImageUrl ? (
+                        <div className="featured-img mb-10 overflow-hidden rounded-2xl">
+                            <Image
+                                src={featuredImageUrl}
+                                alt={
+                                    featuredMedia?.alt_text ||
+                                    post.title.rendered
+                                }
+                                width={1200}
+                                height={675}
+                                priority
+                                className="h-auto w-full object-cover"
                             />
                         </div>
-                    </article>
+                    ) : null}
+                    <div className="sec-ttl mb-8">
+                        <h1 className="text-4xl font-bold">
+                            {post.title.rendered}
+                        </h1>
+                        <div className="mt-4 flex items-center gap-4">
+                            <time dateTime={post.date}>{date}</time>
+                        </div>
+                    </div>
 
-                    <div className="mt-12 border-t border-gray-200 pt-8">
-                        <Link
-                            href="/blog"
-                            className="hover:text-blue inline-flex items-center font-semibold transition-colors"
-                        >
-                            ← Back to Blog
-                        </Link>
+                    <div className="post-content">
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html: post.content.rendered,
+                            }}
+                        />
                     </div>
                 </div>
             </section>

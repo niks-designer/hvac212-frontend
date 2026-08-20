@@ -213,6 +213,21 @@ export interface WordPressPost {
     featured_media?: number;
     date: string;
     slug: string;
+    _embedded?: {
+        "wp:featuredmedia"?: Array<{
+            source_url?: string;
+            alt_text?: string;
+            media_details?: {
+                widths?: number;
+                height?: number;
+                file?: string;
+                sizes?: Record<
+                    string,
+                    { source_url?: string; width?: number; height?: number }
+                >;
+            };
+        }>;
+    };
 }
 
 export interface ACFFlexibleContent {
