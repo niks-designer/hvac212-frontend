@@ -80,6 +80,37 @@ export interface FooterSettings {
     youtube?: string;
     termsPopupTitle?: string;
     termsPopupContent?: string;
+    head_code?: string | null;
+    body_start_code?: string | null;
+    body_end_code?: string | null;
+}
+
+export function decodeWordPressHtml(value?: string | null): string {
+    if (!value || typeof value !== "string") {
+        return "";
+    }
+
+    const normalized = value
+        .replace(/\\u003C/gi, "<")
+        .replace(/\\u003E/gi, ">")
+        .replace(/\\u0026/gi, "&")
+        .replace(/&lt;/gi, "<")
+        .replace(/&gt;/gi, ">")
+        .replace(/&amp;/gi, "&")
+        .replace(/&nbsp;/gi, " ")
+        .replace(/&#038;/gi, "&")
+        .replace(/&#39;/gi, "'")
+        .replace(/&#34;/gi, '"');
+
+    return normalized
+        .replace(/^(?:\s*<p>\s*)+/i, "")
+        .replace(/(?:\s*<\/p>\s*)+$/i, "")
+        .replace(/<p>\s*(?:<br\s*\/?>\s*)*<\/p>/gi, "")
+        .replace(/<p>\s*/gi, "")
+        .replace(/\s*<\/p>/gi, "")
+        .replace(/<br\s*\/>/gi, "")
+        .replace(/<br>/gi, "")
+        .trim();
 }
 
 export interface SiteMenus {

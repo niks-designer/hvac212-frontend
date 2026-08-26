@@ -17,7 +17,7 @@ export function ThemeToggle() {
     const isDark = theme === "dark";
 
     if (!mounted) {
-        return <div className="theme-toggle" aria-hidden="true" />;
+        return null;
     }
 
     return (
@@ -30,7 +30,7 @@ export function ThemeToggle() {
         >
             <div
                 className={`toggle-thumb transition-all duration-300 ease-in-out will-change-transform ${
-                    isDark ? "translate-x-0" : "translate-x-[22px]"
+                    isDark ? "translate-x-0" : "translate-x-5.5"
                 }`}
             >
                 {isDark ? (

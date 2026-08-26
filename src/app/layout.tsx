@@ -6,7 +6,8 @@ import { ContactPopupProvider } from "@/components/contactpopup";
 import { SiteSettingsProvider } from "@/components/providers/SiteSettingsProvider";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { getSiteData, SiteData } from "@/lib/wordpress";
+import CustomCodeInjector from "@/components/layout/CustomCodeInjector";
+import { decodeWordPressHtml, getSiteData, SiteData } from "@/lib/wordpress";
 
 export const dynamic = "force-dynamic";
 
@@ -24,10 +25,20 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     const siteData: SiteData | null = await getSiteData();
+    const headCode = decodeWordPressHtml(siteData?.settings?.head_code);
+    const bodyStartCode = decodeWordPressHtml(
+        siteData?.settings?.body_start_code
+    );
+    const bodyEndCode = decodeWordPressHtml(siteData?.settings?.body_end_code);
 
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={`relative min-h-full`}>
+                <CustomCodeInjector
+                    headCode={headCode}
+                    bodyStartCode={bodyStartCode}
+                    bodyEndCode={bodyEndCode}
+                />
                 <ThemeProvider>
                     <SiteSettingsProvider
                         siteSettings={siteData?.settings ?? null}
