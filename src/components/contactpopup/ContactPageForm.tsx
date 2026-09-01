@@ -427,7 +427,7 @@ export default function ContactPageForm() {
                 )}
             </div>
 
-            <p className="mx-auto mt-5 max-w-180 text-center text-[15px] leading-5">
+            <p className="mx-auto mt-5 mb-1 max-w-180 text-center text-[15px] leading-5">
                 By submitting, you agree to receive emails and texts from 212
                 HVAC LLC. Message & data rates may apply. Frequency varies.
                 Reply STOP to opt out of texts. Unsubscribe links included in
