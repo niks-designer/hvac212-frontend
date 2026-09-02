@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useId, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ContactForm() {
+    const router = useRouter();
     const photoInputId = useId();
 
     const [form, setForm] = useState({
@@ -183,6 +185,8 @@ export default function ContactForm() {
                     services: [],
                     photo: null,
                 });
+                router.push("/thank-you/");
+                return;
             } else {
                 const fieldErrors: Record<string, string> = {};
 
@@ -366,7 +370,7 @@ export default function ContactForm() {
                         value={form.message}
                         onChange={handleChange}
                         placeholder="Additional Information"
-                        className="text-primary h-15 w-full resize-none rounded-2xl bg-white px-4 py-3 text-center text-sm focus-visible:outline-none"
+                        className="text-primary h-20 w-full resize-none rounded-xl bg-white px-4 py-3 text-center text-sm focus-visible:outline-none"
                     />
 
                     {errors.message && (
@@ -380,7 +384,7 @@ export default function ContactForm() {
                     htmlFor={photoInputId}
                     className="cursor-pointer underline"
                 >
-                    <span className="flex items-center gap-2 text-sm text-[#002D3E]">
+                    <span className="flex items-center justify-center gap-2 text-sm text-[#002D3E]">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="9"

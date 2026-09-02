@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useId, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ContactPageForm() {
+    const router = useRouter();
     const photoInputId = useId();
 
     const [form, setForm] = useState({
@@ -161,6 +163,8 @@ export default function ContactPageForm() {
                     services: [],
                     photo: null,
                 });
+                router.push("/thank-you/");
+                return;
             } else {
                 const fieldErrors: Record<string, string> = {};
                 if (Array.isArray(result.invalid_fields)) {

@@ -39,7 +39,10 @@ export function ServicesGrid({
     const headingDescription = sectionTitle?.short_description || "";
 
     return (
-        <section className={`relative ${className || "py-10 lg:py-16"}`}>
+        <section
+            id="ser-grid"
+            className={`relative ${className || "scroll-mt-30 py-10 lg:py-16"}`}
+        >
             <div className="container">
                 {(headingTitle || headingDescription) && (
                     <div className="sec-ttl mb-7 space-y-5 text-center lg:mb-12">
@@ -62,9 +65,8 @@ export function ServicesGrid({
                                 card.image
                             );
 
-                            return (
+                            const cardContent = (
                                 <div
-                                    key={index}
                                     className={`ser-bx-${index + 1} overflow-hidden rounded-3xl p-12 text-center transition-shadow ${
                                         theme === "light"
                                             ? "bg-testimonial"
@@ -103,32 +105,30 @@ export function ServicesGrid({
                                                 __html: card.description || "",
                                             }}
                                         />
-
-                                        {/* Card Link */}
-                                        {card.link?.url && (
-                                            <Link
-                                                href={card.link.url}
-                                                target={
-                                                    card.link.target ===
-                                                    "_blank"
-                                                        ? "_blank"
-                                                        : "_self"
-                                                }
-                                                rel={
-                                                    card.link.target ===
-                                                    "_blank"
-                                                        ? "noopener noreferrer"
-                                                        : undefined
-                                                }
-                                                className="text-blue hidden font-semibold transition-colors"
-                                            >
-                                                {card.link.title ||
-                                                    "Learn More"}{" "}
-                                                →
-                                            </Link>
-                                        )}
                                     </div>
                                 </div>
+                            );
+
+                            return card.link?.url ? (
+                                <Link
+                                    key={index}
+                                    href={card.link.url}
+                                    target={
+                                        card.link.target === "_blank"
+                                            ? "_blank"
+                                            : "_self"
+                                    }
+                                    rel={
+                                        card.link.target === "_blank"
+                                            ? "noopener noreferrer"
+                                            : undefined
+                                    }
+                                    className="block"
+                                >
+                                    {cardContent}
+                                </Link>
+                            ) : (
+                                <div key={index}>{cardContent}</div>
                             );
                         })}
                 </div>

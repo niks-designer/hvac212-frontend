@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import Image from "next/image";
+import Script from "next/script";
 import { getPageContentBySlug, getPosts } from "@/lib/wordpress";
 import { FlexibleContentRenderer } from "@/components/FlexibleContentRenderer";
 import { generatePageMetadata } from "@/lib/seo";
@@ -33,6 +34,19 @@ export default async function Home() {
                     })}
                 />
             )}
+            <Script id="smooth-anchor">
+                {`
+                document.addEventListener("click",e=>{
+                const a=e.target.closest("a[href^='#']");
+                if(!a)return;
+                const el=document.querySelector(a.getAttribute("href"));
+                if(!el)return;
+                e.preventDefault();
+                el.scrollIntoView({behavior:"smooth"});
+                history.replaceState(null,"",location.pathname+location.search);
+                });
+                `}
+            </Script>
         </div>
     );
 }

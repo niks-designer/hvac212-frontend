@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useId, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type CareerFormState = {
     fullName: string;
@@ -21,6 +22,7 @@ const initialForm: CareerFormState = {
 };
 
 export default function CareerForm() {
+    const router = useRouter();
     const resumeInputId = useId();
 
     const [form, setForm] = useState<CareerFormState>(initialForm);
@@ -140,8 +142,11 @@ export default function CareerForm() {
                     result.message ||
                         "Thank you! Your application has been sent."
                 );
-                setForm(initialForm);
                 setErrors({});
+                setError("");
+                setForm(initialForm);
+                router.push("/thank-you/");
+                return;
             } else {
                 setError(result.message || "Something went wrong.");
                 // map CF7 invalid_fields array to a flat errors object

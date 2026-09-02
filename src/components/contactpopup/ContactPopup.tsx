@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import StickyContactButton from "@/components/contactpopup/StickyContactButton";
 import ContactForm from "./ContactForm";
 
@@ -29,6 +30,11 @@ export function ContactPopupProvider({
     children: React.ReactNode;
 }) {
     const [open, setOpen] = useState(false);
+    const pathname = usePathname();
+
+    useEffect(() => {
+        setOpen(false);
+    }, [pathname]);
 
     useEffect(() => {
         if (open) {
@@ -96,7 +102,7 @@ function ContactPopup({
         willChange: "transform, opacity",
         position: "fixed",
         zIndex: 60,
-        width: "min(250px, calc(100% - 48px))",
+        width: "min(400px, calc(100% - 30px))",
     };
 
     return (

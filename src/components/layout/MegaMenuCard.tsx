@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+
 import type {
     MegaMenuItem,
     MegaMenuLink,
@@ -59,24 +60,52 @@ export default function MegaMenuCard({
     onNavigate,
 }: MegaMenuCardProps) {
     const radius = Number(cardRadius) || 18;
+
+    const fullBoxLink = item.full_box_link;
+
     const image =
         item.image_with_link?.image &&
         typeof item.image_with_link.image === "object"
             ? item.image_with_link.image
             : null;
+
     const imageLink = item.image_with_link?.image_link;
+
     const title =
         typeof item.title_with_link?.title === "string"
             ? item.title_with_link.title.trim()
             : "";
+
     const titleLink = item.title_with_link?.title_link;
+
     const nestedItems = getValidNestedItems(item.menu_items);
+
     const hasDescription =
         typeof item.description === "string" &&
         item.description.trim().length > 0;
 
+    const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!isValidLink(fullBoxLink)) return;
+
+        // Keep existing image/title/submenu links working normally
+        if ((e.target as HTMLElement).closest("a")) return;
+
+        if (fullBoxLink.target === "_blank") {
+            window.open(fullBoxLink.url, "_blank", "noopener,noreferrer");
+        } else {
+            window.location.href = fullBoxLink.url;
+        }
+    };
+
     return (
-        <div className="group mx-auto block w-fit">
+        <div
+            className={`group mx-auto block w-fit ${
+                isValidLink(fullBoxLink) ? "cursor-pointer" : ""
+            }`}
+            onClick={
+                isValidLink(fullBoxLink) ? handleCardClick : undefined
+            }
+        >
             <div
                 className="flex h-full flex-col rounded-2xl transition-all duration-300"
                 style={{
@@ -100,7 +129,9 @@ export default function MegaMenuCard({
                                 <Image
                                     src={image.url}
                                     alt={
-                                        image.alt || title || "Mega menu image"
+                                        image.alt ||
+                                        title ||
+                                        "Mega menu image"
                                     }
                                     width={image.width || 620}
                                     height={image.height || 390}
@@ -111,7 +142,11 @@ export default function MegaMenuCard({
                         ) : (
                             <Image
                                 src={image.url}
-                                alt={image.alt || title || "Mega menu image"}
+                                alt={
+                                    image.alt ||
+                                    title ||
+                                    "Mega menu image"
+                                }
                                 width={image.width || 620}
                                 height={image.height || 390}
                                 className="w-full object-cover transition-transform duration-300"
@@ -143,14 +178,17 @@ export default function MegaMenuCard({
                 ) : null}
 
                 {nestedItems.length > 0 && (
-                    <ul className="mt-4 space-y-1">
+                    <ul className="mt-4 space-y-4 lg:space-y-2">
                         {nestedItems.map((menuItem, index) => (
-                            <li key={`${menuItem.menu_title}-${index}`}>
+                            <li
+                                key={`${menuItem.menu_title}-${index}`}
+                            >
                                 {menuItem.menu_link ? (
                                     <Link
                                         href={menuItem.menu_link.url}
                                         target={
-                                            menuItem.menu_link.target || "_self"
+                                            menuItem.menu_link.target ||
+                                            "_self"
                                         }
                                         className="hover:text-blue text-[17px] leading-5 transition"
                                         onClick={onNavigate}

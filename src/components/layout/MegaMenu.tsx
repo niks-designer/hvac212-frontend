@@ -165,7 +165,7 @@ export default function MegaMenu({
                                         </div>
                                     )}
 
-                                    <div className="grid grid-cols-2 gap-5">
+                                    <div className="grid grid-cols-2 gap-x-5 gap-y-8 lg:gap-5">
                                         {menuItems.map((item, index) => (
                                             <MegaMenuCard
                                                 key={index}

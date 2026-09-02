@@ -239,6 +239,100 @@ export default function Header({ siteData }: HeaderProps) {
                                                       : undefined;
                                               const hasMega =
                                                   item.has_mega_menu;
+                                              const isJavaScriptPlaceholderUrl =
+                                                  item.url ===
+                                                  "javascript:void(0)";
+
+                                              if (isJavaScriptPlaceholderUrl) {
+                                                  return (
+                                                      <button
+                                                          key={item.id}
+                                                          type="button"
+                                                          onMouseEnter={() => {
+                                                              if (!isMobile) {
+                                                                  if (hasMega) {
+                                                                      setActiveMegaSlug(
+                                                                          item.slug ??
+                                                                              null
+                                                                      );
+                                                                  } else {
+                                                                      setActiveMegaSlug(
+                                                                          null
+                                                                      );
+                                                                  }
+                                                              }
+                                                          }}
+                                                          onFocus={() => {
+                                                              if (!isMobile) {
+                                                                  if (hasMega) {
+                                                                      setActiveMegaSlug(
+                                                                          item.slug ??
+                                                                              null
+                                                                      );
+                                                                  } else {
+                                                                      setActiveMegaSlug(
+                                                                          null
+                                                                      );
+                                                                  }
+                                                              }
+                                                          }}
+                                                          onClick={(e) => {
+                                                              closeAllMenus();
+                                                              if (
+                                                                  isMobile &&
+                                                                  hasMega
+                                                              ) {
+                                                                  e.preventDefault();
+                                                                  setActiveMegaSlug(
+                                                                      item.slug ??
+                                                                          null
+                                                                  );
+                                                              }
+                                                          }}
+                                                          className="inline-flex cursor-pointer items-center gap-2 transition-colors"
+                                                          aria-haspopup={
+                                                              hasMega
+                                                                  ? "menu"
+                                                                  : undefined
+                                                          }
+                                                          aria-expanded={
+                                                              hasMega &&
+                                                              activeMegaSlug ===
+                                                                  item.slug
+                                                                  ? "true"
+                                                                  : "false"
+                                                          }
+                                                      >
+                                                          <span className="whitespace-nowrap">
+                                                              {item.title}
+                                                          </span>
+                                                          {hasMega && (
+                                                              <svg
+                                                                  className={`transition-transform duration-200 ${
+                                                                      activeMegaSlug ===
+                                                                      item.slug
+                                                                          ? "rotate-180"
+                                                                          : ""
+                                                                  }`}
+                                                                  width="13"
+                                                                  height="9"
+                                                                  viewBox="0 0 10 6"
+                                                                  fill="none"
+                                                                  xmlns="http://www.w3.org/2000/svg"
+                                                                  aria-hidden
+                                                              >
+                                                                  <path
+                                                                      d="M1 1L5 5L9 1"
+                                                                      stroke="currentColor"
+                                                                      strokeWidth="1.5"
+                                                                      strokeLinecap="round"
+                                                                      strokeLinejoin="round"
+                                                                  />
+                                                              </svg>
+                                                          )}
+                                                      </button>
+                                                  );
+                                              }
 
                                               return (
                                                   <a

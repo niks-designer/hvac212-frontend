@@ -45,6 +45,7 @@ export interface MegaMenuItem {
     title_with_link?: MegaMenuTitleWithLink;
     menu_items?: MegaMenuNestedItem[] | null;
     description?: string;
+    full_box_link?: MegaMenuMaybeLink;
 }
 
 export interface MegaMenuBottomLink {

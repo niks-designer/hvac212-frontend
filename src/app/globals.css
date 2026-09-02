@@ -831,7 +831,12 @@ html.light .accordion-content::-webkit-scrollbar-thumb {
     border-radius: 16px;
     margin: 25px 0;
 }
-
+.submenu-services h3 a {
+    color: var(--color-white);
+}
+html.light .submenu-services h3 a {
+    color: var(--color-primary);
+}
 /* Mobile */
 @media (max-width: 767px) {
     .post-content {
