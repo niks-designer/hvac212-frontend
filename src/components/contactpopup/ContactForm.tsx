@@ -424,7 +424,7 @@ export default function ContactForm() {
                 </label>
 
                 {form.photo && (
-                    <p className="-mt-1 text-[11px] text-[#002D3E]">
+                    <p className="-mt-1 text-center text-[11px] text-[#002D3E]">
                         File: {form.photo.name}
                     </p>
                 )}
