@@ -525,6 +525,11 @@ html.light .code-header:hover {
 html.light .accordion-content::-webkit-scrollbar-thumb {
     background: rgba(7, 20, 31, 0.35);
 }
+@media (max-width: 1024px) {
+    .h1-title.inner-h1 {
+        font-size: 35px;
+    }
+}
 @media (max-width: 992px) {
     br {
         display: none;
@@ -719,6 +724,9 @@ html.light .accordion-content::-webkit-scrollbar-thumb {
 
     .post-content ol {
         padding-left: 25px;
+    }
+    .h1-title.inner-h1 {
+        font-size: 25px;
     }
 }
 /* Blog Detail Content */

@@ -47,10 +47,10 @@ export function InnerPageHeroBanner({
 
     return (
         <section
-            className={`relative flex h-140 items-center justify-center overflow-hidden md:h-115 ${className || ""}`}
+            className={`relative flex h-auto items-center justify-center overflow-hidden lg:h-115 ${className || ""}`}
         >
             {normalizedImage?.url ? (
-                <div className="absolute inset-0">
+                <div className="relative lg:absolute lg:inset-0">
                     <Image
                         src={normalizedImage.url}
                         alt={normalizedImage.alt || "Hero background"}
@@ -64,8 +64,8 @@ export function InnerPageHeroBanner({
                 <div className="from-blue to-primary absolute inset-0 bg-linear-to-r"></div>
             )}
 
-            <div className="relative z-10 flex flex-col gap-4 px-4 text-center text-white">
-                {heading && <h1 className="h1-title">{heading}</h1>}
+            <div className="absolute z-10 flex flex-col gap-4 px-4 text-center text-white lg:relative">
+                {heading && <h1 className="h1-title inner-h1">{heading}</h1>}
                 {description && (
                     <div
                         className="prose text-2xl"
