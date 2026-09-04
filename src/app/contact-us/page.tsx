@@ -16,17 +16,11 @@ export default async function ContactUsPage() {
     const settings = siteData?.settings;
     const address = settings?.officeAddress?.trim() || "Brooklyn, NY";
     const phone = settings?.phoneNumber?.trim() || "(917) 633-5959";
-    const email = settings?.email?.trim() || "info@trianglesph.com";
-    const mapAddress = encodeURIComponent(address);
-    const mapEmbedUrl =
-        (
-            settings as { mapEmbedUrl?: string } | undefined
-        )?.mapEmbedUrl?.trim() || "";
-    const mapSrc = mapEmbedUrl
-        ? mapEmbedUrl
-        : `https://maps.google.com/maps?q=${mapAddress}&output=embed`;
+    const email = settings?.email?.trim() || "info@212hvac.com";
     const phoneHref = `tel:${phone.replace(/[^0-9+]/g, "")}`;
-    const mapSearchHref = `https://www.google.com/maps/search/?api=1&query=${mapAddress}`;
+    const mapIframe =
+        (settings as { mapiframe?: string } | undefined)?.mapiframe?.trim() ||
+        "";
 
     return (
         <div className="relative min-h-screen overflow-hidden">
@@ -74,15 +68,13 @@ export default async function ContactUsPage() {
                 <div className="container">
                     <div className="grid gap-8 rounded-3xl bg-[#ececec] p-6 sm:p-8 lg:gap-10.5 lg:p-12 xl:grid-cols-[minmax(0,1fr)_512px] xl:items-center xl:p-16 dark:bg-[#070F1D99]">
                         <div className="min-w-0">
-                            <div className="flex items-start gap-5">
-                                <div className="">
+                            <div className="flex items-start gap-2 lg:gap-5">
+                                <div>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        width="71"
-                                        height="102"
                                         viewBox="0 0 71 102"
                                         fill="none"
-                                        className="h-16 w-11 sm:h-20 sm:w-14 lg:h-25.5 lg:w-17.75"
+                                        className="w-9 sm:w-14 lg:w-12"
                                     >
                                         <path
                                             d="M35.4804 0C15.8759 0 -0.168118 16.2339 0.00133001 36.258C0.172923 58.0128 25.8905 90.4588 33.4406 100.931C34.4487 102.355 36.5078 102.355 37.5374 100.931C45.0875 90.4588 70.9766 53.3464 70.9766 36.258C70.9788 16.2339 55.0849 0 35.4804 0ZM35.4804 55.8439C24.8845 55.8439 16.3048 47.0806 16.3048 36.258C16.3048 25.4354 24.8845 16.6502 35.4804 16.6502C46.0763 16.6502 54.6774 25.4135 54.6774 36.258C54.6774 47.1025 46.0977 55.8439 35.4804 55.8439Z"
@@ -91,11 +83,7 @@ export default async function ContactUsPage() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <p className="h2-title">
-                                        Our
-                                        <br />
-                                        Location
-                                    </p>
+                                    <p className="h2-title">Our Location</p>
                                     <div className="mt-5 flex flex-col gap-1 text-sm sm:text-base lg:text-lg">
                                         <p>{address}</p>
                                         <Link
@@ -116,12 +104,9 @@ export default async function ContactUsPage() {
                         </div>
 
                         <div className="overflow-hidden rounded-[20px] xl:w-lg">
-                            <iframe
-                                title="Company location map"
-                                src={mapSrc}
-                                className="h-72 w-full border-0"
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
+                            <div
+                                className="h-72 w-full [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
+                                dangerouslySetInnerHTML={{ __html: mapIframe }}
                             />
                         </div>
                     </div>

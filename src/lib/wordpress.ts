@@ -64,7 +64,7 @@ export interface FooterSettings {
     phoneNumber?: string;
     email?: string;
     officeAddress?: string;
-    mapEmbedUrl?: string;
+    mapiframe?: string;
     siteLogo?: string;
     darkLogo?: string;
     footerLogo?: string;

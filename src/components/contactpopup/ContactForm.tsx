@@ -482,7 +482,7 @@ export default function ContactForm() {
                     )}
                 </div>
 
-                <p className="mt-2 text-center text-[9px] leading-3 text-[#002D3E]">
+                <p className="mt-2 text-center text-[10px] leading-3 text-[#002D3E]">
                     By submitting, you agree to receive emails and texts from
                     212 HVAC LLC. Message & data rates may apply. Frequency
                     varies. Reply STOP to opt out of texts. Unsubscribe links

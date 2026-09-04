@@ -298,8 +298,8 @@ export default function ContactPageForm() {
                 )}
             </div>
 
-            <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="flex flex-wrap items-center gap-6">
+            <div className="relative flex flex-col items-center gap-4 md:flex-row md:justify-between">
+                <div className="flex items-center gap-2 md:gap-6">
                     {["Emergency Repair", "Installation", "Maintenance"].map(
                         (service) => {
                             const checked = form.services.includes(service);
@@ -307,7 +307,7 @@ export default function ContactPageForm() {
                             return (
                                 <label
                                     key={service}
-                                    className="flex cursor-pointer items-center gap-3 select-none"
+                                    className="flex cursor-pointer items-center gap-2 select-none md:gap-3"
                                 >
                                     <input
                                         type="checkbox"
@@ -317,20 +317,20 @@ export default function ContactPageForm() {
                                     />
 
                                     <span
-                                        className={`in-[.light]:border-primary relative h-6 w-12 rounded-full border border-white transition-colors duration-300 ${
+                                        className={`in-[.light]:border-primary relative h-3 w-5 rounded-full border border-white transition-colors duration-300 md:h-6 md:w-12 ${
                                             checked ? "" : ""
                                         }`}
                                     >
                                         <span
-                                            className={`absolute top-0 h-6 w-6 rounded-full transition-all duration-300 ${
+                                            className={`absolute -top-px h-3 w-3 rounded-full transition-all duration-300 md:h-6 md:w-6 ${
                                                 checked
-                                                    ? "bg-blue left-6"
+                                                    ? "bg-blue left-3 md:left-6"
                                                     : "in-[.light]:bg-primary -left-0.5 bg-white"
                                             }`}
                                         />
                                     </span>
 
-                                    <span className="text-md lg:text-[19px]">
+                                    <span className="text-[10px] md:text-[16px] lg:text-[19px]">
                                         {service}
                                     </span>
                                 </label>
