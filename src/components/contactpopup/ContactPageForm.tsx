@@ -324,13 +324,13 @@ export default function ContactPageForm() {
                                         <span
                                             className={`absolute -top-px h-3 w-3 rounded-full transition-all duration-300 md:h-6 md:w-6 ${
                                                 checked
-                                                    ? "bg-blue left-3 md:left-6"
+                                                    ? "bg-blue left-2 md:left-6"
                                                     : "in-[.light]:bg-primary -left-0.5 bg-white"
                                             }`}
                                         />
                                     </span>
 
-                                    <span className="text-[10px] md:text-[16px] lg:text-[19px]">
+                                    <span className="text-[10.5px] md:text-[16px] lg:text-[19px]">
                                         {service}
                                     </span>
                                 </label>
@@ -346,7 +346,7 @@ export default function ContactPageForm() {
 
                 <label
                     htmlFor={photoInputId}
-                    className="text-md hover:text-blue flex cursor-pointer items-center gap-3 transition lg:text-[19px]"
+                    className="text-md hover:text-blue flex cursor-pointer items-center gap-2 transition md:gap-3 lg:text-[19px]"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -354,6 +354,7 @@ export default function ContactPageForm() {
                         height="35"
                         viewBox="0 0 9 21"
                         fill="none"
+                        className="h-6 w-6 md:h-auto md:w-auto"
                     >
                         <path
                             d="M7.83 6.61499V16.8647C7.83 18.55 6.33402 19.9212 4.5 19.9212C2.66598 19.9212 1.17 18.55 1.17 16.8647V3.2363C1.17 2.04666 2.2154 1.07877 3.51 1.07877C4.80461 1.07877 5.85 2.04666 5.85 3.2363V14.2037C5.85 14.8977 5.25519 15.4623 4.5 15.4623C3.74481 15.4623 3.15 14.8977 3.15 14.2037V6.61499H1.98V14.2037C1.98 15.4893 3.10109 16.5411 4.5 16.5411C5.89892 16.5411 7.02 15.4893 7.02 14.2037V3.2363C7.02 1.45635 5.44694 0 3.51 0C1.57307 0 0 1.45635 0 3.2363V16.8647C0 19.1391 2.025 21 4.5 21C6.975 21 9 19.1391 9 16.8647V6.61499H7.83Z"
