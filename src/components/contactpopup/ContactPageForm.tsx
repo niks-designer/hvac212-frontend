@@ -51,12 +51,115 @@ export default function ContactPageForm() {
         return /^[^\s@]+@([^\s@]+\.)+[^\s@]{2,}$/i.test(value.trim());
     };
 
+    /**
+     * Optimize uploaded images before sending them to WordPress/CF7.
+     *
+     * - JPG/JPEG/PNG/WebP -> resized and compressed
+     * - Maximum dimension -> 1600px
+     * - Target file size -> under ~900KB when possible
+     * - PDF -> unchanged
+     */
+    const optimizeImage = async (file: File): Promise<File> => {
+        if (!file.type.startsWith("image/")) {
+            return file;
+        }
+
+        const MAX_DIMENSION = 1600;
+        const TARGET_SIZE = 900 * 1024;
+        const START_QUALITY = 0.82;
+        const MIN_QUALITY = 0.45;
+        const QUALITY_STEP = 0.07;
+
+        const objectUrl = URL.createObjectURL(file);
+
+        try {
+            const image = await new Promise<HTMLImageElement>(
+                (resolve, reject) => {
+                    const img = new Image();
+
+                    img.onload = () => resolve(img);
+                    img.onerror = () =>
+                        reject(new Error("Unable to process the image."));
+
+                    img.src = objectUrl;
+                }
+            );
+
+            let width = image.naturalWidth;
+            let height = image.naturalHeight;
+
+            if (!width || !height) {
+                throw new Error("Unable to read the image dimensions.");
+            }
+
+            if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+                const scale = Math.min(
+                    MAX_DIMENSION / width,
+                    MAX_DIMENSION / height
+                );
+
+                width = Math.round(width * scale);
+                height = Math.round(height * scale);
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+
+            const context = canvas.getContext("2d");
+
+            if (!context) {
+                throw new Error("Unable to process the image.");
+            }
+
+            context.drawImage(image, 0, 0, width, height);
+
+            let quality = START_QUALITY;
+            let blob: Blob | null = null;
+
+            while (quality >= MIN_QUALITY) {
+                blob = await new Promise<Blob | null>((resolve) => {
+                    canvas.toBlob(
+                        (result) => resolve(result),
+                        "image/jpeg",
+                        quality
+                    );
+                });
+
+                if (!blob) {
+                    throw new Error("Unable to compress the image.");
+                }
+
+                if (blob.size <= TARGET_SIZE) {
+                    break;
+                }
+
+                quality -= QUALITY_STEP;
+            }
+
+            if (!blob) {
+                throw new Error("Unable to compress the image.");
+            }
+
+            const originalName =
+                file.name.replace(/\.[^/.]+$/, "") || "uploaded-photo";
+
+            return new File([blob], `${originalName}.jpg`, {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+            });
+        } finally {
+            URL.revokeObjectURL(objectUrl);
+        }
+    };
+
     const validateForm = () => {
         const nextErrors: Record<string, string> = {};
 
         if (!form.name.trim()) {
             nextErrors.name = "Name is required.";
         }
+
         if (!form.email.trim()) {
             nextErrors.email = "Email is required.";
         } else if (!isValidEmail(form.email)) {
@@ -77,13 +180,17 @@ export default function ContactPageForm() {
         if (!form.zip.trim()) {
             nextErrors.zip = "Zip is required.";
         }
+
         if (!form.message.trim()) {
             nextErrors.message = "Message is required.";
         }
+
         if (form.services.length === 0) {
             nextErrors.services = "Please select at least one service.";
         }
+
         setErrors(nextErrors);
+
         return Object.keys(nextErrors).length === 0;
     };
 
@@ -91,7 +198,11 @@ export default function ContactPageForm() {
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
-        setForm({ ...form, [name]: value });
+
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
 
         if (errors[name]) {
             const nextErrors = { ...errors };
@@ -133,17 +244,56 @@ export default function ContactPageForm() {
             data.append("services[]", service);
         });
 
-        if (form.photo) {
-            data.append("your-photo", form.photo, form.photo.name);
-        }
-
         const startTime = Date.now();
 
         try {
+            /**
+             * Optimize image before uploading.
+             * PDFs are passed through unchanged.
+             */
+            if (form.photo) {
+                try {
+                    const optimizedPhoto = await optimizeImage(form.photo);
+
+                    data.append(
+                        "your-photo",
+                        optimizedPhoto,
+                        optimizedPhoto.name
+                    );
+
+                    console.log(
+                        `Photo optimized: ${(
+                            form.photo.size /
+                            1024 /
+                            1024
+                        ).toFixed(2)}MB → ${(
+                            optimizedPhoto.size /
+                            1024 /
+                            1024
+                        ).toFixed(2)}MB`
+                    );
+                } catch (photoError) {
+                    console.error("Image optimization failed:", photoError);
+
+                    setError(
+                        "Unable to process the uploaded photo. Please try another image."
+                    );
+
+                    setLoading(false);
+                    return;
+                }
+            }
+
             const response = await fetch(CONTACT_FORM_ENDPOINT, {
                 method: "POST",
                 body: data,
             });
+
+            if (!response.ok) {
+                throw new Error(
+                    `Request failed with status ${response.status}.`
+                );
+            }
 
             const result = await response.json();
 
@@ -152,6 +302,7 @@ export default function ContactPageForm() {
                     result.message ||
                         "Thank you! We will reach out to you shortly."
                 );
+
                 setErrors({});
 
                 setForm({
@@ -163,16 +314,19 @@ export default function ContactPageForm() {
                     services: [],
                     photo: null,
                 });
+
                 router.push("/thank-you/");
                 return;
             } else {
                 const fieldErrors: Record<string, string> = {};
+
                 if (Array.isArray(result.invalid_fields)) {
                     for (const f of result.invalid_fields) {
                         const rawField = (f.field || "").replace(
                             /^wpcf7-f\d+-o1-/,
                             ""
                         );
+
                         const keyMap: Record<string, string> = {
                             "your-name": "name",
                             "your-email": "email",
@@ -182,7 +336,9 @@ export default function ContactPageForm() {
                             services: "services",
                             "your-photo": "photo",
                         };
+
                         const key = keyMap[rawField] || rawField;
+
                         if (key) {
                             fieldErrors[key] = f.message || "Invalid value.";
                         }
@@ -204,17 +360,20 @@ export default function ContactPageForm() {
             }
         } catch (err) {
             console.error("Contact form submission failed:", err);
+
             setError(
                 err instanceof Error ? err.message : "Something went wrong."
             );
         } finally {
             const elapsed = Date.now() - startTime;
             const minDisplay = 250;
+
             if (elapsed < minDisplay) {
                 await new Promise((resolve) =>
                     setTimeout(resolve, minDisplay - elapsed)
                 );
             }
+
             setLoading(false);
         }
     };
@@ -230,6 +389,7 @@ export default function ContactPageForm() {
                         placeholder="First and Last Name"
                         className="in-[.light]:border-primary in-[.light]:placeholder:text-primary w-full rounded-2xl border border-white px-5 py-4 text-center placeholder:text-white focus-visible:outline-none"
                     />
+
                     {errors.name && (
                         <p className="mt-1 text-center text-sm text-red-400">
                             {errors.name}
@@ -245,6 +405,7 @@ export default function ContactPageForm() {
                         placeholder="Email"
                         className="in-[.light]:border-primary in-[.light]:placeholder:text-primary w-full rounded-2xl border border-white px-5 py-4 text-center placeholder:text-white focus-visible:outline-none"
                     />
+
                     {errors.email && (
                         <p className="mt-1 text-center text-sm text-red-400">
                             {errors.email}
@@ -260,6 +421,7 @@ export default function ContactPageForm() {
                         placeholder="Phone Number"
                         className="in-[.light]:border-primary in-[.light]:placeholder:text-primary w-full rounded-2xl border border-white px-5 py-4 text-center placeholder:text-white focus-visible:outline-none"
                     />
+
                     {errors.phone && (
                         <p className="mt-1 text-center text-sm text-red-400">
                             {errors.phone}
@@ -275,6 +437,7 @@ export default function ContactPageForm() {
                         placeholder="Zip Code"
                         className="in-[.light]:border-primary in-[.light]:placeholder:text-primary w-full rounded-2xl border border-white px-5 py-4 text-center placeholder:text-white focus-visible:outline-none"
                     />
+
                     {errors.zip && (
                         <p className="mt-1 text-center text-sm text-red-400">
                             {errors.zip}
@@ -291,6 +454,7 @@ export default function ContactPageForm() {
                     placeholder="Message"
                     className="in-[.light]:border-primary in-[.light]:placeholder:text-primary h-48 w-full resize-none content-center rounded-2xl border border-white px-5 py-4 text-center placeholder:text-white focus-visible:outline-none"
                 />
+
                 {errors.message && (
                     <p className="mt-1 text-center text-sm text-red-400">
                         {errors.message}
@@ -317,9 +481,7 @@ export default function ContactPageForm() {
                                     />
 
                                     <span
-                                        className={`in-[.light]:border-primary relative h-3 w-5 rounded-full border border-white transition-colors duration-300 md:h-6 md:w-12 ${
-                                            checked ? "" : ""
-                                        }`}
+                                        className={`in-[.light]:border-primary relative h-3 w-5 rounded-full border border-white transition-colors duration-300 md:h-6 md:w-12`}
                                     >
                                         <span
                                             className={`absolute -top-px h-3 w-3 rounded-full transition-all duration-300 md:h-6 md:w-6 ${
@@ -337,6 +499,7 @@ export default function ContactPageForm() {
                             );
                         }
                     )}
+
                     {errors.services && (
                         <p className="absolute -bottom-6 mt-1 text-center text-sm text-red-400">
                             {errors.services}
@@ -367,7 +530,7 @@ export default function ContactPageForm() {
                         name="your-photo"
                         type="file"
                         hidden
-                        accept=".jpg,.jpeg,.png,.webp,.pdf"
+                        accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf"
                         onChange={(e) =>
                             setForm((prev) => ({
                                 ...prev,
@@ -376,12 +539,14 @@ export default function ContactPageForm() {
                         }
                     />
                 </label>
+
                 {form.photo && (
                     <p className="text-md absolute right-0 -bottom-8">
                         File: {form.photo.name}
                     </p>
                 )}
             </div>
+
             <div className="mt-12 text-center">
                 <button
                     type="submit"
@@ -391,6 +556,7 @@ export default function ContactPageForm() {
                     {loading ? (
                         <span className="relative inline-flex items-center justify-center">
                             <span className="invisible">Submit</span>
+
                             <span className="absolute inset-0 flex items-center justify-center">
                                 <svg
                                     className="h-6 w-6 animate-spin"
@@ -405,6 +571,7 @@ export default function ContactPageForm() {
                                         stroke="#E5E7EB"
                                         strokeWidth="3"
                                     />
+
                                     <path
                                         d="M20 3C13.1 3 7.2 7.1 4.6 13"
                                         stroke="#00BFFF"
@@ -413,12 +580,14 @@ export default function ContactPageForm() {
                                     />
                                 </svg>
                             </span>
+
                             <span className="sr-only">Sending...</span>
                         </span>
                     ) : (
                         "Submit"
                     )}
                 </button>
+
                 {success && (
                     <p className="mt-2 text-[14px] leading-5">
                         Thank you! We will reach out to you shortly.

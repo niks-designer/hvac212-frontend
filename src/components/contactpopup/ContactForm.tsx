@@ -51,6 +51,140 @@ export default function ContactForm() {
         }
     };
 
+    /**
+     * Optimize uploaded images before sending them to WordPress/CF7.
+     *
+     * JPG/JPEG/PNG/WebP:
+     * - Maximum dimension: 1600px
+     * - Target size: approximately 900KB
+     * - Converted to JPEG for better compression
+     *
+     * PDF / HEIC / HEIF:
+     * - Kept unchanged because browser-native conversion is not
+     *   reliable across all browsers.
+     */
+    const optimizeImage = async (file: File): Promise<File> => {
+        const fileType = file.type.toLowerCase();
+        const fileName = file.name.toLowerCase();
+
+        const isPdf =
+            fileType === "application/pdf" || fileName.endsWith(".pdf");
+
+        const isHeic =
+            fileType === "image/heic" ||
+            fileType === "image/heif" ||
+            fileName.endsWith(".heic") ||
+            fileName.endsWith(".heif");
+
+        const isSupportedImage =
+            fileType === "image/jpeg" ||
+            fileType === "image/jpg" ||
+            fileType === "image/png" ||
+            fileType === "image/webp" ||
+            fileName.endsWith(".jpg") ||
+            fileName.endsWith(".jpeg") ||
+            fileName.endsWith(".png") ||
+            fileName.endsWith(".webp");
+
+        // Keep PDF and HEIC/HEIF unchanged.
+        if (isPdf || isHeic || !isSupportedImage) {
+            return file;
+        }
+
+        const MAX_DIMENSION = 1600;
+        const TARGET_SIZE = 900 * 1024;
+        const START_QUALITY = 0.82;
+        const MIN_QUALITY = 0.45;
+        const QUALITY_STEP = 0.07;
+
+        const objectUrl = URL.createObjectURL(file);
+
+        try {
+            const image = await new Promise<HTMLImageElement>(
+                (resolve, reject) => {
+                    const img = new Image();
+
+                    img.onload = () => resolve(img);
+                    img.onerror = () =>
+                        reject(new Error("Unable to process the image."));
+
+                    img.src = objectUrl;
+                }
+            );
+
+            let width = image.naturalWidth;
+            let height = image.naturalHeight;
+
+            if (!width || !height) {
+                throw new Error("Unable to read the image dimensions.");
+            }
+
+            if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+                const scale = Math.min(
+                    MAX_DIMENSION / width,
+                    MAX_DIMENSION / height
+                );
+
+                width = Math.round(width * scale);
+                height = Math.round(height * scale);
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+
+            const context = canvas.getContext("2d");
+
+            if (!context) {
+                throw new Error("Unable to process the image.");
+            }
+
+            // White background prevents transparent PNG areas
+            // from becoming black after JPEG conversion.
+            context.fillStyle = "#ffffff";
+            context.fillRect(0, 0, width, height);
+
+            context.drawImage(image, 0, 0, width, height);
+
+            let quality = START_QUALITY;
+            let blob: Blob | null = null;
+
+            while (quality >= MIN_QUALITY) {
+                blob = await new Promise<Blob | null>((resolve) => {
+                    canvas.toBlob(
+                        (result) => resolve(result),
+                        "image/jpeg",
+                        quality
+                    );
+                });
+
+                if (!blob) {
+                    throw new Error("Unable to compress the image.");
+                }
+
+                if (blob.size <= TARGET_SIZE) {
+                    break;
+                }
+
+                quality -= QUALITY_STEP;
+            }
+
+            if (!blob) {
+                throw new Error("Unable to compress the image.");
+            }
+
+            const originalName =
+                file.name.replace(/\.[^/.]+$/, "") || "uploaded-photo";
+
+            return new File([blob], `${originalName}.jpg`, {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+            });
+        } finally {
+            URL.revokeObjectURL(objectUrl);
+        }
+    };
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -118,8 +252,6 @@ export default function ContactForm() {
         setError("");
         setErrors({});
 
-        // Client-side validation using the same custom validation approach
-        // as the CareerForm / ContactPageForm.
         if (!validateForm()) {
             return;
         }
@@ -142,28 +274,64 @@ export default function ContactForm() {
         data.append("your-zip", form.zip);
         data.append("your-message", form.message);
 
-        // CF7 checkbox field must match:
-        // [checkbox* services use_label_element
-        // "Emergency Repair"
-        // "Installation"
-        // "Maintenance"]
-        //
-        // Append the same field name for every selected value.
         form.services.forEach((service) => {
             data.append("services[]", service);
         });
 
-        if (form.photo) {
-            data.append("your-photo", form.photo, form.photo.name);
-        }
-
         const startTime = Date.now();
 
         try {
+            /**
+             * Optimize image before uploading.
+             *
+             * Large JPG/JPEG/PNG/WebP files are resized/compressed
+             * in the browser before they reach WordPress.
+             *
+             * PDF and HEIC/HEIF remain unchanged.
+             */
+            if (form.photo) {
+                try {
+                    const optimizedPhoto = await optimizeImage(form.photo);
+
+                    data.append(
+                        "your-photo",
+                        optimizedPhoto,
+                        optimizedPhoto.name
+                    );
+
+                    console.log(
+                        `Photo upload size: ${(
+                            form.photo.size /
+                            1024 /
+                            1024
+                        ).toFixed(2)}MB → ${(
+                            optimizedPhoto.size /
+                            1024 /
+                            1024
+                        ).toFixed(2)}MB`
+                    );
+                } catch (photoError) {
+                    console.error("Image optimization failed:", photoError);
+
+                    setError(
+                        "Unable to process the uploaded photo. Please try another image."
+                    );
+
+                    setLoading(false);
+                    return;
+                }
+            }
+
             const response = await fetch(CONTACT_FORM_ENDPOINT, {
                 method: "POST",
                 body: data,
             });
+
+            if (!response.ok) {
+                throw new Error(
+                    `Request failed with status ${response.status}.`
+                );
+            }
 
             const result = await response.json();
 
@@ -185,6 +353,7 @@ export default function ContactForm() {
                     services: [],
                     photo: null,
                 });
+
                 router.push("/thank-you/");
                 return;
             } else {
@@ -306,7 +475,7 @@ export default function ContactForm() {
                             name="zip"
                             value={form.zip}
                             onChange={handleChange}
-                            placeholder="Zip"
+                            placeholder="Zip Code"
                             className="text-primary w-full rounded-full bg-white px-4 py-1 text-center text-sm focus-visible:outline-none"
                         />
 
@@ -396,7 +565,7 @@ export default function ContactForm() {
                                 d="M7.83 6.61499V16.8647C7.83 18.55 6.33402 19.9212 4.5 19.9212C2.66598 19.9212 1.17 18.55 1.17 16.8647V3.2363C1.17 2.04666 2.2154 1.07877 3.51 1.07877C4.80461 1.07877 5.85 2.04666 5.85 3.2363V14.2037C5.85 14.8977 5.25519 15.4623 4.5 15.4623C3.74481 15.4623 3.15 14.8977 3.15 14.2037V6.61499H1.98V14.2037C1.98 15.4893 3.10109 16.5411 4.5 16.5411C5.89892 16.5411 7.02 15.4893 7.02 14.2037V3.2363C7.02 1.45635 5.44694 0 3.51 0C1.57307 0 0 1.45635 0 3.2363V16.8647C0 19.1391 2.025 21 4.5 21C6.975 21 9 19.1391 9 16.8647V6.61499H7.83Z"
                                 fill="#002D3E"
                             />
-                        </svg>{" "}
+                        </svg>
                         Upload unit photo
                     </span>
 
@@ -405,7 +574,7 @@ export default function ContactForm() {
                         name="your-photo"
                         type="file"
                         hidden
-                        accept=".jpg,.jpeg,.png,.webp,.pdf"
+                        accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf"
                         onChange={(e) => {
                             setForm((prev) => ({
                                 ...prev,
@@ -426,6 +595,12 @@ export default function ContactForm() {
                 {form.photo && (
                     <p className="-mt-1 text-center text-[11px] text-[#002D3E]">
                         File: {form.photo.name}
+                    </p>
+                )}
+
+                {errors.photo && (
+                    <p className="text-center text-[11px] text-[#9F1D20]">
+                        {errors.photo}
                     </p>
                 )}
 
@@ -462,6 +637,7 @@ export default function ContactForm() {
                                         />
                                     </svg>
                                 </span>
+
                                 <span className="sr-only">Sending...</span>
                             </span>
                         ) : (

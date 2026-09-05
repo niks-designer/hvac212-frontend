@@ -248,12 +248,14 @@ html.light .toggle-thumb,
     background: var(--color-yellow);
 }
 .h1-title {
-    font-size: clamp(3.0625rem, 1.6199rem + 3.0093vw, 3.875rem);
+    /* font-size: clamp(3.0625rem, 1.6199rem + 3.0093vw, 3.875rem); */
+    font-size: clamp(2.1rem, 1.6199rem + 3.0093vw, 3.875rem);
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.1;
 }
 .h2-title {
-    font-size: clamp(2.5rem, 1.1684rem + 2.7778vw, 3.25rem);
+    /* font-size: clamp(2.5rem, 1.1684rem + 2.7778vw, 3.25rem); */
+    font-size: clamp(1.5rem, 1.1684rem + 2.7778vw, 3.25rem);
     font-weight: 700;
     line-height: 1.2;
 }
