@@ -38,10 +38,13 @@ export function FAQSection({
                 {/* Section Header */}
                 <div className="sec-ttl mx-auto mb-6 space-y-5 text-center">
                     {title && <h2 className="h2-title">{title}</h2>}
+
                     {description && (
                         <div
                             className="fs-19"
-                            dangerouslySetInnerHTML={{ __html: description }}
+                            dangerouslySetInnerHTML={{
+                                __html: description,
+                            }}
                         />
                     )}
                 </div>
@@ -54,7 +57,6 @@ export function FAQSection({
                             className="w-[calc(50%-10px)] lg:w-[calc(25%-30px)]"
                         >
                             <AccordionItem
-                                key={index}
                                 faq={faq}
                                 index={index}
                                 expanded={expandedIndex === index}
@@ -82,25 +84,61 @@ function AccordionItem({
     const contentRef = useRef<HTMLDivElement | null>(null);
     const [maxHeight, setMaxHeight] = useState("0px");
 
+    /*
+     * Calculate the actual answer height.
+     * ResizeObserver also handles changes caused by:
+     * - responsive width
+     * - font loading
+     * - text wrapping
+     * - dynamic HTML content
+     */
     useEffect(() => {
-        if (expanded) {
-            const h = contentRef.current?.scrollHeight || 0;
-            setMaxHeight(`${h}px`);
-        } else {
-            setMaxHeight("0px");
-        }
+        const updateHeight = () => {
+            if (!contentRef.current) {
+                return;
+            }
+
+            if (expanded) {
+                setMaxHeight(`${contentRef.current.scrollHeight}px`);
+            } else {
+                setMaxHeight("0px");
+            }
+        };
+
+        updateHeight();
+
+        const frame = requestAnimationFrame(updateHeight);
+
+        return () => {
+            cancelAnimationFrame(frame);
+        };
     }, [expanded, faq.answer]);
 
-    const contentStyle: React.CSSProperties = {
-        maxHeight: maxHeight,
-        opacity: expanded ? 1 : 0,
-        overflow: "hidden",
-        transition:
-            "max-height 350ms ease, opacity 250ms ease, padding 250ms ease",
-    };
+    /*
+     * Keep the height synchronized if the answer content
+     * changes after the initial calculation.
+     */
+    useEffect(() => {
+        if (!expanded || !contentRef.current) {
+            return;
+        }
+
+        const resizeObserver = new ResizeObserver(() => {
+            if (contentRef.current) {
+                setMaxHeight(`${contentRef.current.scrollHeight}px`);
+            }
+        });
+
+        resizeObserver.observe(contentRef.current);
+
+        return () => {
+            resizeObserver.disconnect();
+        };
+    }, [expanded]);
 
     return (
         <div className="bg-testimonial flex h-full flex-col items-center justify-start rounded-2xl p-3 text-center transition-colors duration-300 md:p-5 lg:p-8">
+            {/* Quote Icon */}
             <div className="mb-4 text-6xl font-bold lg:mb-6">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -117,26 +155,39 @@ function AccordionItem({
                 </svg>
             </div>
 
+            {/* Question */}
             <h3
                 className="mb-auto text-base leading-5 font-bold lg:text-[26px] lg:leading-8"
-                dangerouslySetInnerHTML={{ __html: faq.question }}
+                dangerouslySetInnerHTML={{
+                    __html: faq.question,
+                }}
             />
 
+            {/* Answer */}
             <div
                 ref={contentRef}
-                className="md:text-md w-full text-sm"
+                className="w-full overflow-hidden"
                 style={{
-                    ...contentStyle,
-                    padding: expanded ? "20px 0 0" : "0rem",
+                    maxHeight,
+                    opacity: expanded ? 1 : 0,
+                    transition: "max-height 350ms ease, opacity 250ms ease",
                 }}
-                dangerouslySetInnerHTML={{ __html: faq.answer }}
-            />
+            >
+                <div
+                    className="md:text-md pt-5 text-sm"
+                    dangerouslySetInnerHTML={{
+                        __html: faq.answer,
+                    }}
+                />
+            </div>
 
+            {/* Button */}
             <button
+                type="button"
                 onClick={onToggle}
                 className="theme-btn"
                 style={{
-                    marginTop: expanded ? "20px" : "20px",
+                    marginTop: "20px",
                     backgroundColor: expanded ? "var(--color-white)" : "",
                     color: expanded ? "#070F1D" : "",
                 }}
