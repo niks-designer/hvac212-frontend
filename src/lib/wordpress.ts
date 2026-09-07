@@ -261,6 +261,12 @@ export interface WordPressPost {
     };
 }
 
+export interface WordPressPageSummary {
+    slug: string;
+    modified?: string;
+    status?: string;
+}
+
 export interface ACFFlexibleContent {
     acf_fc_layout: string;
     [key: string]: unknown;
@@ -463,6 +469,65 @@ export async function getPosts(
         console.error("Error fetching posts:", error);
         return [];
     }
+}
+
+/**
+ * Fetch all published posts for routes such as the sitemap.
+ */
+export async function getAllPosts(): Promise<WordPressPost[]> {
+    const posts: WordPressPost[] = [];
+
+    for (let page = 1; ; page += 1) {
+        const pagePosts = await getPosts(100, page);
+
+        if (pagePosts.length === 0) {
+            break;
+        }
+
+        posts.push(...pagePosts);
+
+        if (pagePosts.length < 100) {
+            break;
+        }
+    }
+
+    return posts;
+}
+
+/**
+ * Fetch published WordPress pages that are exposed at /{slug}/.
+ */
+export async function getAllPages(): Promise<WordPressPageSummary[]> {
+    const pages: WordPressPageSummary[] = [];
+
+    try {
+        for (let page = 1; ; page += 1) {
+            const pageSummaries = await wpGet<WordPressPageSummary[]>(
+                `wp/v2/pages?per_page=100&page=${page}&_fields=slug,modified,status`
+            );
+
+            if (pageSummaries.length === 0) {
+                break;
+            }
+
+            pages.push(
+                ...pageSummaries.filter((pageSummary) => {
+                    return (
+                        pageSummary.status === undefined ||
+                        pageSummary.status === "publish"
+                    );
+                })
+            );
+
+            if (pageSummaries.length < 100) {
+                break;
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching WordPress pages:", error);
+    }
+
+    return pages;
 }
 
 /**
