@@ -2,11 +2,15 @@ import type { Metadata } from "next";
 
 const SITE_URL = "https://www.212hvac.com";
 
+const SITE_NAME = "212 HVAC";
+
+const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-image.jpg`;
+
 const DEFAULT_SEO_TITLE =
     "HVAC Installation Brooklyn, NY | AC Repair NYC | 212 HVAC®";
 
 const DEFAULT_SEO_DESCRIPTION =
-    "212 HVAC® premier Air conditioning services company providing best AC Installation , repair & maintenance Brooklyn, NYC & nearby.";
+    "212 HVAC® premier Air conditioning services company providing best AC Installation, repair & maintenance Brooklyn, NYC & nearby.";
 
 interface PageSeoData {
     title?: string;
@@ -122,7 +126,7 @@ function getDynamicTitle(slug: string, pageTitle?: string): string {
     return getFallbackTitleBySlug(slug);
 }
 
-function buildRobots(seo?: PageSeoData): Metadata["robots"] | undefined {
+function buildRobots(seo?: PageSeoData): Metadata["robots"] {
     if (!seo) {
         return undefined;
     }
@@ -133,45 +137,58 @@ function buildRobots(seo?: PageSeoData): Metadata["robots"] | undefined {
     };
 }
 
-function buildOpenGraph(seo?: PageSeoData): Metadata["openGraph"] | undefined {
-    if (!seo) {
-        return undefined;
-    }
+function buildOpenGraph(seo?: PageSeoData): Metadata["openGraph"] {
+    const title =
+        toNonEmptyString(seo?.og_title) ||
+        toNonEmptyString(seo?.title) ||
+        DEFAULT_SEO_TITLE;
 
-    const title = seo.og_title || seo.title;
-    const description = seo.og_description || seo.description;
+    const description =
+        toNonEmptyString(seo?.og_description) ||
+        toNonEmptyString(seo?.description) ||
+        DEFAULT_SEO_DESCRIPTION;
 
-    if (!title && !description && !seo.og_image) {
-        return undefined;
-    }
+    const image = toNonEmptyString(seo?.og_image) || DEFAULT_OG_IMAGE;
 
     return {
         title,
         description,
-        images: seo.og_image ? [{ url: seo.og_image }] : undefined,
+        siteName: SITE_NAME,
+        url: SITE_URL,
+        type: "website",
+        images: [
+            {
+                url: image,
+                width: 1200,
+                height: 630,
+                alt: title,
+            },
+        ],
     };
 }
 
-function buildTwitter(seo?: PageSeoData): Metadata["twitter"] | undefined {
-    if (!seo) {
-        return undefined;
-    }
-
-    const title = seo.twitter_title || seo.og_title || seo.title;
+function buildTwitter(seo?: PageSeoData): Metadata["twitter"] {
+    const title =
+        toNonEmptyString(seo?.twitter_title) ||
+        toNonEmptyString(seo?.og_title) ||
+        toNonEmptyString(seo?.title) ||
+        DEFAULT_SEO_TITLE;
 
     const description =
-        seo.twitter_description || seo.og_description || seo.description;
+        toNonEmptyString(seo?.twitter_description) ||
+        toNonEmptyString(seo?.og_description) ||
+        toNonEmptyString(seo?.description) ||
+        DEFAULT_SEO_DESCRIPTION;
 
-    const image = seo.twitter_image || seo.og_image;
-
-    if (!title && !description && !image) {
-        return undefined;
-    }
+    const image =
+        toNonEmptyString(seo?.twitter_image) ||
+        toNonEmptyString(seo?.og_image) ||
+        DEFAULT_OG_IMAGE;
 
     return {
         title,
         description,
-        images: image ? [image] : undefined,
+        images: [image],
         card: "summary_large_image",
     };
 }
@@ -198,26 +215,45 @@ function buildMetadata(page: WordPressPageSeoResponse, slug: string): Metadata {
 
     const description =
         toNonEmptyString(seo?.description) ||
-        toNonEmptyString(normalizedExcerpt) ||
+        normalizedExcerpt ||
         DEFAULT_SEO_DESCRIPTION;
 
     const keywords = normalizeKeywords(seo?.focus_keyword);
 
-    // Use Yoast canonical when provided.
-    // Otherwise automatically use the current frontend URL.
+    /*
+     * Use WordPress/Yoast canonical when provided.
+     * Otherwise automatically use the current frontend URL.
+     */
     const canonical =
         toNonEmptyString(seo?.canonical) || buildCanonicalUrl(slug);
 
     const robots = buildRobots(seo);
+
+    /*
+     * Always generate Open Graph metadata.
+     * If WordPress does not provide an OG image,
+     * DEFAULT_OG_IMAGE will be used.
+     */
     const openGraph = buildOpenGraph(seo);
+
+    /*
+     * Always generate Twitter/X metadata.
+     * If Twitter image and OG image are missing,
+     * DEFAULT_OG_IMAGE will be used.
+     */
     const twitter = buildTwitter(seo);
 
     const metadata: Metadata = {
         title,
         description,
+
         alternates: {
             canonical,
         },
+
+        openGraph,
+
+        twitter,
     };
 
     if (keywords) {
@@ -226,14 +262,6 @@ function buildMetadata(page: WordPressPageSeoResponse, slug: string): Metadata {
 
     if (robots) {
         metadata.robots = robots;
-    }
-
-    if (openGraph) {
-        metadata.openGraph = openGraph;
-    }
-
-    if (twitter) {
-        metadata.twitter = twitter;
     }
 
     return metadata;
@@ -251,9 +279,34 @@ export async function getPageSEO(slug: string): Promise<Metadata> {
 
         return {
             title: getFallbackTitleBySlug(slug),
+
             description: DEFAULT_SEO_DESCRIPTION,
+
             alternates: {
                 canonical: buildCanonicalUrl(slug),
+            },
+
+            openGraph: {
+                title: DEFAULT_SEO_TITLE,
+                description: DEFAULT_SEO_DESCRIPTION,
+                siteName: SITE_NAME,
+                url: buildCanonicalUrl(slug),
+                type: "website",
+                images: [
+                    {
+                        url: DEFAULT_OG_IMAGE,
+                        width: 1200,
+                        height: 630,
+                        alt: DEFAULT_SEO_TITLE,
+                    },
+                ],
+            },
+
+            twitter: {
+                title: DEFAULT_SEO_TITLE,
+                description: DEFAULT_SEO_DESCRIPTION,
+                images: [DEFAULT_OG_IMAGE],
+                card: "summary_large_image",
             },
         };
     }
