@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
+const SITE_URL = "https://www.212hvac.com";
+
 const DEFAULT_SEO_TITLE =
     "HVAC Installation Brooklyn, NY | AC Repair NYC | 212 HVAC®";
+
 const DEFAULT_SEO_DESCRIPTION =
     "212 HVAC® premier Air conditioning services company providing best AC Installation , repair & maintenance Brooklyn, NYC & nearby.";
 
@@ -80,6 +83,7 @@ function toNonEmptyString(value: unknown): string | undefined {
     }
 
     const trimmed = value.trim();
+
     return trimmed.length > 0 ? trimmed : undefined;
 }
 
@@ -104,6 +108,7 @@ function withSiteSuffix(title: string): string {
 
 function getFallbackTitleBySlug(slug: string): string {
     const pageTitle = formatSlugAsTitle(slug);
+
     return pageTitle ? withSiteSuffix(pageTitle) : DEFAULT_SEO_TITLE;
 }
 
@@ -153,8 +158,10 @@ function buildTwitter(seo?: PageSeoData): Metadata["twitter"] | undefined {
     }
 
     const title = seo.twitter_title || seo.og_title || seo.title;
+
     const description =
         seo.twitter_description || seo.og_description || seo.description;
+
     const image = seo.twitter_image || seo.og_image;
 
     if (!title && !description && !image) {
@@ -169,20 +176,38 @@ function buildTwitter(seo?: PageSeoData): Metadata["twitter"] | undefined {
     };
 }
 
+function buildCanonicalUrl(slug: string): string {
+    const normalizedSlug = slug.replace(/^\/+|\/+$/g, "");
+
+    if (!normalizedSlug) {
+        return `${SITE_URL}/`;
+    }
+
+    return `${SITE_URL}/${normalizedSlug}/`;
+}
+
 function buildMetadata(page: WordPressPageSeoResponse, slug: string): Metadata {
     const seo = page.seo;
+
     const title =
         toNonEmptyString(seo?.title) || getDynamicTitle(slug, page.title);
 
     const pageExcerpt = toNonEmptyString(page.excerpt);
+
     const normalizedExcerpt = pageExcerpt ? stripHtml(pageExcerpt) : undefined;
 
     const description =
         toNonEmptyString(seo?.description) ||
         toNonEmptyString(normalizedExcerpt) ||
         DEFAULT_SEO_DESCRIPTION;
+
     const keywords = normalizeKeywords(seo?.focus_keyword);
-    const canonical = seo?.canonical;
+
+    // Use Yoast canonical when provided.
+    // Otherwise automatically use the current frontend URL.
+    const canonical =
+        toNonEmptyString(seo?.canonical) || buildCanonicalUrl(slug);
+
     const robots = buildRobots(seo);
     const openGraph = buildOpenGraph(seo);
     const twitter = buildTwitter(seo);
@@ -190,14 +215,13 @@ function buildMetadata(page: WordPressPageSeoResponse, slug: string): Metadata {
     const metadata: Metadata = {
         title,
         description,
+        alternates: {
+            canonical,
+        },
     };
 
     if (keywords) {
         metadata.keywords = keywords;
-    }
-
-    if (canonical) {
-        metadata.alternates = { canonical };
     }
 
     if (robots) {
@@ -220,12 +244,17 @@ export async function getPageSEO(slug: string): Promise<Metadata> {
         const page = await wpGet<WordPressPageSeoResponse>(
             `hvac/v1/page/${slug}`
         );
+
         return buildMetadata(page, slug);
     } catch (error) {
         console.error("Error fetching SEO metadata:", error);
+
         return {
             title: getFallbackTitleBySlug(slug),
             description: DEFAULT_SEO_DESCRIPTION,
+            alternates: {
+                canonical: buildCanonicalUrl(slug),
+            },
         };
     }
 }
