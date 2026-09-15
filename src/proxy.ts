@@ -1,45 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const WP_API_URL =
+const REDIRECT_API =
     "https://nextjs212hvac.wpenginepowered.com/wp-json/hvac/v1/redirects";
 
 interface RedirectRule {
     source: string;
     destination: string;
     status: number;
-    regex?: boolean;
+    regex: boolean;
 }
 
-let redirectsCache: RedirectRule[] | null = null;
-let redirectsCacheTime = 0;
-
-const CACHE_DURATION = 60 * 1000; // 1 minute
-
 async function getRedirects(): Promise<RedirectRule[]> {
-    const now = Date.now();
-
-    if (redirectsCache && now - redirectsCacheTime < CACHE_DURATION) {
-        return redirectsCache;
-    }
-
     try {
-        const response = await fetch(WP_API_URL, {
-            next: {
-                revalidate: 60,
-            },
+        const response = await fetch(REDIRECT_API, {
+            cache: "no-store",
         });
 
         if (!response.ok) {
+            console.error("Redirect API error:", response.status);
+
             return [];
         }
 
-        const data = (await response.json()) as RedirectRule[];
+        const data = await response.json();
 
-        redirectsCache = Array.isArray(data) ? data : [];
-        redirectsCacheTime = now;
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error("Redirect API fetch failed:", error);
 
-        return redirectsCache;
-    } catch {
         return [];
     }
 }
