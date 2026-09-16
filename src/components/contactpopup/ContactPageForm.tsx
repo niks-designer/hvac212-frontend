@@ -15,6 +15,7 @@ export default function ContactPageForm() {
         message: "",
         services: [] as string[],
         photo: null as File | null,
+        smsConsent: false,
     });
 
     const [loading, setLoading] = useState(false);
@@ -189,6 +190,11 @@ export default function ContactPageForm() {
             nextErrors.services = "Please select at least one service.";
         }
 
+        if (!form.smsConsent) {
+            nextErrors.smsConsent =
+                "Please check the box to consent to receive SMS messages.";
+        }
+
         setErrors(nextErrors);
 
         return Object.keys(nextErrors).length === 0;
@@ -313,6 +319,7 @@ export default function ContactPageForm() {
                     message: "",
                     services: [],
                     photo: null,
+                    smsConsent: false,
                 });
 
                 router.push("/thank-you/");
@@ -379,7 +386,7 @@ export default function ContactPageForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} noValidate className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
                 <div className="relative">
                     <input
@@ -601,11 +608,52 @@ export default function ContactPageForm() {
                 )}
             </div>
 
-            <p className="mx-auto mt-5 mb-1 max-w-180 text-center text-[15px] leading-5">
-                By submitting, you agree to receive emails and texts from 212
-                HVAC LLC. Message & data rates may apply. Frequency varies.
-                Reply STOP to opt out of texts. Unsubscribe links included in
-                emails.
+            <p className="mx-auto mt-5 mb-1 text-[15px] leading-5">
+                <label className="inline-flex cursor-pointer items-start gap-2 text-center">
+                    <span className="relative h-5 w-5 shrink-0">
+                        <input
+                            type="checkbox"
+                            name="smsConsent"
+                            checked={form.smsConsent}
+                            required
+                            onChange={(e) => {
+                                setForm((prev) => ({
+                                    ...prev,
+                                    smsConsent: e.target.checked,
+                                }));
+
+                                if (e.target.checked && errors.smsConsent) {
+                                    const nextErrors = { ...errors };
+                                    delete nextErrors.smsConsent;
+                                    setErrors(nextErrors);
+                                }
+                            }}
+                            className="peer in-[.light]:border-primary in-[.light]:checked:border-primary absolute inset-0 h-5 w-5 cursor-pointer appearance-none rounded-sm border border-white bg-transparent checked:border-white checked:bg-transparent"
+                        />
+
+                        <span className="in-[.light]:border-primary pointer-events-none absolute top-0.75 left-1.75 hidden h-2.75 w-1.5 rotate-45 border-r-2 border-b-2 border-white peer-checked:block" />
+                    </span>
+
+                    <span>
+                        By checking this box, I consent to receive customer care
+                        SMS from 212 HVAC LLC. Reply STOP to opt out; reply HELP
+                        for support. Message and data rates may apply. Messaging
+                        frequency may vary. Visit{" "}
+                        <a
+                            href="/privacy-policy/"
+                            rel="noreferrer"
+                            className="hover:text-blue underline"
+                        >
+                            https://www.212hvac.com/privacy-policy/
+                        </a>{" "}
+                        to view our Privacy Policy.
+                    </span>
+                </label>
+                {errors.smsConsent && (
+                    <span className="mt-1 block text-center text-sm text-red-400">
+                        {errors.smsConsent}
+                    </span>
+                )}
             </p>
         </form>
     );
