@@ -31,11 +31,6 @@ const nextConfig: NextConfig = {
                 permanent: true,
             },
             {
-                source: "/hvac-repairs/",
-                destination: "/hvac-repair/",
-                permanent: true,
-            },
-            {
                 source: "/11231-red-hook/",
                 destination: "/",
                 permanent: true,
