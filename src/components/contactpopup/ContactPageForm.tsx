@@ -190,11 +190,6 @@ export default function ContactPageForm() {
             nextErrors.services = "Please select at least one service.";
         }
 
-        if (!form.smsConsent) {
-            nextErrors.smsConsent =
-                "Please check the box to consent to receive SMS messages.";
-        }
-
         setErrors(nextErrors);
 
         return Object.keys(nextErrors).length === 0;
@@ -615,7 +610,6 @@ export default function ContactPageForm() {
                             type="checkbox"
                             name="smsConsent"
                             checked={form.smsConsent}
-                            required
                             onChange={(e) => {
                                 setForm((prev) => ({
                                     ...prev,
