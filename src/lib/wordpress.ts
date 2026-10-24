@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 
 const API_URL = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 
-function getApiUrl(path: string): string {
+export function getApiUrl(path: string): string {
     if (!API_URL) {
         throw new Error("NEXT_PUBLIC_WORDPRESS_API_URL is not defined");
     }
@@ -83,6 +83,12 @@ export interface FooterSettings {
     head_code?: string | null;
     body_start_code?: string | null;
     body_end_code?: string | null;
+}
+
+export interface PageSchemaCode {
+    header_schema_code?: string | null;
+    after_body_start_code?: string | null;
+    before_body_end_code?: string | null;
 }
 
 export function decodeWordPressHtml(value?: string | null): string {
@@ -244,6 +250,7 @@ export interface WordPressPost {
     featured_media?: number;
     date: string;
     slug: string;
+    acf?: PageSchemaCode;
     _embedded?: {
         "wp:featuredmedia"?: Array<{
             source_url?: string;
@@ -296,6 +303,9 @@ interface WordPressPageWithACF {
     excerpt?: string | { rendered?: string };
     acf?: {
         page_builder?: ACFFlexibleContent[];
+        header_schema_code?: string | null;
+        after_body_start_code?: string | null;
+        before_body_end_code?: string | null;
         [key: string]: unknown;
     };
     seo?: PageSeoData;
